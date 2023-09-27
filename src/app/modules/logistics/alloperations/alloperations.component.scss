@@ -1,0 +1,37 @@
+:host ::ng-deep .p-panel-content{
+    height: 82% !important;
+}
+:host ::ng-deep .p-panel {
+    height: 100% !important;
+}
+:host ::ng-deep .p-toggleable-content {
+    height: 100% !important;
+}
+:host ::ng-deep .p-panel-title{
+    font-size: 24px !important;
+}
+
+:host ::ng-deep #stg1 .p-panel-header {
+    background-color: var(--yellow-100);
+//    color: #ffffff;
+}
+:host ::ng-deep #stg2 .p-panel-header {
+    background-color: var(--blue-100);
+    //    color: #ffffff;
+}
+:host ::ng-deep #stg3 .p-panel-header {
+    background-color: var(--red-100);
+    //    color: #ffffff;
+}
+:host ::ng-deep #stg4 .p-panel-header {
+    background-color: var(--green-100);
+    //    color: #ffffff;
+}
+:host ::ng-deep #stg5 .p-panel-header {
+    background-color: var(--purple-100);
+    //    color: #ffffff;
+}
+:host ::ng-deep #stg6 .p-panel-header {
+    background-color: var(--bluegray-100);
+    //    color: #ffffff;
+}

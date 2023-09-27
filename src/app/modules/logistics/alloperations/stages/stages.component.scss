@@ -1,0 +1,11 @@
+:host ::ng-deep .p-datatable-wrapper	{
+   // height: calc(100vh - 415px)!important;
+}
+label{
+    margin-bottom: 4px;
+}
+:host ::ng-deep .p-datatable-thead {
+    position: sticky;
+    top: -2px;
+    z-index: 1;
+}

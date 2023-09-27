@@ -1,0 +1,226 @@
+<!--<div>-->
+<!--    <img [src]="'assets/demo/images/product/' + item.image" [alt]="item.image" width="150"-->
+<!--         class="mt-0 mx-auto mb-5 block shadow-2" *ngIf="item.image">-->
+<!--    <div class="field">-->
+<!--        <label for="name">Name</label>-->
+<!--        <input type="text" pInputText id="name" [(ngModel)]="item.name" required autofocus-->
+<!--               [ngClass]="{'ng-invalid ng-dirty' : submitted && !item.name}"/>-->
+<!--        <small class="ng-dirty ng-invalid" *ngIf="submitted && !item.name">Name is required.</small>-->
+<!--    </div>-->
+<!--    <div class="field">-->
+<!--        <label for="description">Description</label>-->
+<!--        <textarea id="description" pInputTextarea [(ngModel)]="item.description" required rows="3"-->
+<!--                  cols="20"></textarea>-->
+<!--    </div>-->
+<!--    <div class="field">-->
+<!--        <label for="status">Inventory Status</label>-->
+<!--        <p-dropdown [(ngModel)]="item.inventoryStatus" inputId="inventoryStatus" optionValue="label"-->
+<!--                    [options]="statuses" placeholder="Select">-->
+<!--            <ng-template pTemplate="selectedItem">-->
+<!--                            <span *ngIf="item && item.inventoryStatus"-->
+<!--                                  [class]="'product-badge status-' + item.inventoryStatus.toString().toLowerCase()">{{item.inventoryStatus}}</span>-->
+<!--            </ng-template>-->
+<!--            <ng-template let-option pTemplate="item">-->
+<!--                <span [class]="'product-badge status-' + option.value">{{option.label}}</span>-->
+<!--            </ng-template>-->
+<!--        </p-dropdown>-->
+<!--    </div>-->
+
+<!--    <div class="field">-->
+<!--        <label class="mb-3">Category</label>-->
+<!--        <div class="formgrid grid">-->
+<!--            <div class="field-radiobutton col-6">-->
+<!--                <p-radioButton id="category1" name="category" value="Accessories"-->
+<!--                               [(ngModel)]="item.category"></p-radioButton>-->
+<!--                <label for="category1">Accessories</label>-->
+<!--            </div>-->
+<!--            <div class="field-radiobutton col-6">-->
+<!--                <p-radioButton id="category2" name="category" value="Clothing"-->
+<!--                               [(ngModel)]="item.category"></p-radioButton>-->
+<!--                <label for="category2">Clothing</label>-->
+<!--            </div>-->
+<!--            <div class="field-radiobutton col-6">-->
+<!--                <p-radioButton id="category3" name="category" value="Electronics"-->
+<!--                               [(ngModel)]="item.category"></p-radioButton>-->
+<!--                <label for="category3">Electronics</label>-->
+<!--            </div>-->
+<!--            <div class="field-radiobutton col-6">-->
+<!--                <p-radioButton id="category4" name="category" value="Fitness"-->
+<!--                               [(ngModel)]="item.category"></p-radioButton>-->
+<!--                <label for="category4">Fitness</label>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div class="formgrid grid">-->
+<!--        <div class="field col">-->
+<!--            <label for="price">Price</label>-->
+<!--            <p-inputNumber id="price" [(ngModel)]="item.price" mode="currency" currency="USD"-->
+<!--                           locale="en-US"></p-inputNumber>-->
+<!--        </div>-->
+<!--        <div class="field col">-->
+<!--            <label for="quantity">Quantity</label>-->
+<!--            <p-inputNumber id="quantity" [(ngModel)]="item.quantity"></p-inputNumber>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+<p-toast></p-toast>
+
+<p-card header="Database Connections">
+    <p-table #dt [value]="data" [tableStyle]="{ 'min-width': '50rem' }" styleClass="p-datatable-gridlines"
+             [showCurrentPageReport]="true"
+             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+             [rowsPerPageOptions]="[10, 25, 50]"
+             [loading]="loading"
+             [paginator]="true" [rows]="10">
+        <ng-template pTemplate="caption">
+            <div class="flex flex-column-reverse md:flex-row justify-content-end">
+                <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2"
+                        (click)="openNew()"></button>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Id</th>
+                <th>Url</th>
+                <th>Username</th>
+                <th>Password</th>
+                <th>ssh Enabled</th>
+                <th>Database Name</th>
+                <th>Database Host</th>
+                <th>Database Port</th>
+                <th>ssh Host</th>
+                <th>ssh Port</th>
+                <th>ssh Username</th>
+                <th>ssh Password</th>
+                <th>Users</th>
+                <th></th>
+
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-data>
+            <tr>
+                <td>{{data.id}}</td>
+                <td>{{data.url}}</td>
+                <td>{{data.username}}</td>
+                <td>{{data.password}}</td>
+                <td><p-tag [value]="data.sshEnabled?'Enabled':'Disabled'" [severity]="data.sshEnabled?'success':'danger'"></p-tag></td>
+                <td>{{data.databaseName}}</td>
+                <td>{{data.dataBaseHost}}</td>
+                <td>{{data.dataBasePort}}</td>
+                <td>{{data.sshHost}}</td>
+                <td>{{data.sshPort}}</td>
+                <td>{{data.sshUsername}}</td>
+                <td>{{data.sshPassword}}</td>
+                <td>{{getUsers(data)}}</td>
+                <td>
+                    <div class="flex">
+                        <button pButton pRipple icon="pi pi-pencil"
+                                class="p-button-rounded p-button-success mr-2"
+                                (click)="editItem(data)"></button>
+                        <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                                (click)="deleteItem(data)"></button>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-card>
+<p-dialog [(visible)]="itemDialog" [style]="{width: '650px'}" header="Connection Details" [modal]="true"
+          class="p-fluid">
+    <ng-template pTemplate="content">
+        <form [formGroup]='itemForm'>
+        <div class="formgrid grid">
+            <div class="field col">
+                <label for="url">Url</label>
+                <input  formControlName="url" id="url" type="text" pInputText>
+            </div>
+        </div>
+        <div class="formgrid grid">
+            <div class="field col">
+                <label for="username">Username</label>
+                <input  formControlName="username"   id="username" type="text" pInputText>
+            </div>
+            <div class="field col">
+                <label for="password">Password</label>
+                <input   formControlName="password"   id="password" type="text" pInputText>
+            </div>
+        </div>
+
+        <div class="formgrid grid">
+            <div class="field col">
+                <label for="databaseUsers">Database Users</label>
+                <p-multiSelect   formControlName="userId" [options]="users" id="databaseUsers" optionLabel="username" optionValue="id"></p-multiSelect>
+            </div>
+
+        </div>
+        <p-divider align="left">
+            <div class="flex">
+                <div class="font-bold" for="sshEnabled">SSH Enabled</div>
+                <div class="flex  justify-content-center align-items-center px-2">
+                    <p-inputSwitch id="sshEnabled"  formControlName="sshEnabled"  ></p-inputSwitch>
+                </div>
+            </div>
+
+          </p-divider>
+          <div  [ngClass]="!sshEnabled.value?'disabled':''" class="formgrid grid">
+            <div class="field col">
+                <label for="databaseName">Database Name</label>
+                <input  formControlName="databaseName" pInputText   id="databaseName" type="text" >
+            </div>
+            <div class="field col">
+                <label for="databaseHost">Database Host</label>
+                <input  formControlName="dataBaseHost"  id="databaseHost" type="text" pInputText>
+            </div>
+            <div class="field col">
+                <label for="databasePort">Database Port</label>
+                <input  formControlName="dataBasePort"  id="databasePort" type="text" pInputText>
+            </div>
+        </div>
+        <div  [ngClass]="!sshEnabled.value?'disabled':''" class="formgrid grid">
+
+            <div  class="field col">
+                <label for="sshHost">SSH Host</label>
+                <input formControlName="sshHost"  id="sshHost" type="text" pInputText>
+            </div>
+            <div class="field col">
+                <label for="sshPort">SSH Port</label>
+                <input formControlName="sshPort"  id="sshPort" type="text" pInputText>
+            </div>
+        </div>
+
+        <div [ngClass]="!sshEnabled.value?'disabled':''" class="formgrid grid">
+            <div class="field col">
+                <label for="sshUsername">SSH Username</label>
+                <input formControlName="sshUsername"    id="sshUsername" type="text" pInputText>
+            </div>
+            <div class="field col">
+                <label for="sshPassword">SSH Password</label>
+                <input formControlName="sshPassword"  id="sshPassword" type="text" pInputText>
+            </div>
+        </div>
+        
+    </form>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
+                (click)="hideDialog()"></button>
+        <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]='!itemForm.valid'  [loading]="loading"
+                (click)="saveItem()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="deleteItemDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
+    <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span *ngIf="item">Are you sure you want to delete <b>{{item.name}}</b>?</span>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+                (click)="deleteItemDialog = false"></button>
+        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" [loading]="loading"
+                (click)="confirmDelete()"></button>
+    </ng-template>
+</p-dialog>
+

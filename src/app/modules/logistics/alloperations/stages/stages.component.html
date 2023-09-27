@@ -1,0 +1,208 @@
+<p-card [header]="stageEnum[stage] + ' - ' + stepEnum[step]">
+    <p-table [value]="data" [tableStyle]="{ 'min-width': '50rem' }" styleClass="p-datatable-gridlines"
+             [showCurrentPageReport]="true" [lazy]=false [totalRecords]='totalRecords'
+             currentPageReportTemplate="عرض {first} إلى {last} من {totalRecords} إدخالات ."
+             [loading]="loading"
+             [paginator]="true" [rows]="10">
+        <ng-template pTemplate="caption">
+
+            <div class="flex flex-column-reverse md:flex-row md:justify-content-start flex-wrap gap-4 mb-4">
+                <div *ngIf="filterDisplay.qManifestId" class="flex flex-col  ">
+                    <label>رقم المنفيست</label>
+
+                    <input pInputText type="text" [(ngModel)]="filters.qManifestId"
+                           class="w-full"/>
+                </div>
+                <div *ngIf="filterDisplay.cc_rtnmanifestid" class="flex flex-col  ">
+                    <label>رقم المنفيست الارجاع</label>
+
+                    <input pInputText type="text" [(ngModel)]="filters.cc_rtnmanifestid"
+                           class="w-full"/>
+                </div>
+                <div *ngIf="filterDisplay.c_id" class="flex flex-col  ">
+                    <label>كود الشحنه</label>
+
+                    <input pInputText type="text" [(ngModel)]="filters.c_id"
+                           class="w-full"/>
+                </div>
+                <div *ngIf="filterDisplay.stateNameArabic" class="flex flex-col min-w-[200px]">
+                    <label>المحافظة</label>
+                    <p-dropdown class="w-full h-full"  [filter]='true' styleClass="w-full h-full"  [placeholder]="' '"  (onChange)="changeState($event)" [options]="state.states"
+                                [showClear]=true [(ngModel)]="filters.stateNameArabic"></p-dropdown>
+                </div>
+                <div *ngIf="filterDisplay.agentName" class="flex flex-col min-w-[200px]">
+                    <label>مندوب التوصيل</label>
+                    <p-dropdown class="w-full h-full" [filter]='true' styleClass="w-full h-full" [placeholder]="' '" [options]="state.deliveryAgents"
+                                [showClear]=true [(ngModel)]="filters.agentName"></p-dropdown>
+                </div>
+                <div *ngIf="filterDisplay.qManifestId" class="flex flex-col min-w-[200px]">
+                    <label>المتجر</label>
+                    <p-dropdown class="w-full h-full" [filter]='true' styleClass="w-full h-full"  [placeholder]="' '"  [options]="districts"
+                                [showClear]=true [(ngModel)]="filters.qManifestId"></p-dropdown>
+                </div>
+                <div *ngIf="filterDisplay.c_rcv_district" class="flex flex-col min-w-[200px]">
+                    <label>المنطقة</label>
+                    <p-dropdown class="w-full h-full" [filter]='true' styleClass="w-full h-full"  [placeholder]="' '"  [options]="state.distrits"
+                                [showClear]=true [(ngModel)]="filters.c_rcv_district"></p-dropdown>
+                </div>
+                <div *ngIf="filterDisplay.cc_tobranch" class="flex flex-col min-w-[200px]">
+                    <label>قادمة من فرع</label>
+                    <p-dropdown class="w-full h-full" [filter]='true' styleClass="w-full h-full"  [placeholder]="' '"  [options]="state.branches"
+                                [showClear]=true [(ngModel)]="filters.cc_tobranch"></p-dropdown>
+                </div>
+                <div *ngIf="filterDisplay.cc_frombranch" class="flex flex-col min-w-[200px]">
+                    <label>إلى فرع</label>
+                    <p-dropdown class="w-full h-full" [filter]='true' styleClass="w-full h-full"  [placeholder]="' '"  [options]="state.branches"
+                                [showClear]=true [(ngModel)]="filters.cc_frombranch"></p-dropdown>
+                </div>
+                <div *ngIf="filterDisplay.cc_liaisonagentid" class="flex flex-col min-w-[200px]">
+                    <label>مندوب ألأرتباط</label>
+                    <p-dropdown class="w-full h-full" [filter]='true' styleClass="w-full h-full"  [placeholder]="' '"  [options]="state.liaisonAgent"
+                                [showClear]=true [(ngModel)]="filters.cc_liaisonagentid"></p-dropdown>
+                </div>
+                <div *ngIf="filterDisplay.c_createddt" class="flex flex-col ">
+                    <label>تاريخ الشحنه</label>
+                    <p-calendar [dir]="'ltr'" [inputStyleClass]="'w-full'" styleClass="w-full" [showIcon]="true"
+                                [showButtonBar]="true" [(ngModel)]="filters.c_createddt"
+                                [readonlyInput]="true"></p-calendar>
+                </div>
+                <div *ngIf="filterDisplay.from" class="flex flex-col ">
+                    <label>بتاريخ</label>
+                    <p-calendar [dir]="'ltr'" [inputStyleClass]="'w-full'" styleClass="w-full" [showIcon]="true"
+                                [showButtonBar]="true" [(ngModel)]="filters.from"
+                                [readonlyInput]="true"></p-calendar>
+                </div>
+                <div *ngIf="filterDisplay.to" class="flex flex-col ">
+                    <label>إلى تاريخ</label>
+                    <p-calendar [dir]="'ltr'" [inputStyleClass]="'w-full'" styleClass="w-full" [showIcon]="true"
+                                [showButtonBar]="true" [(ngModel)]="filters.to"
+                                [readonlyInput]="true"></p-calendar>
+                </div>
+
+
+                <div *ngIf="filterDisplay.cCustreceiptnoori" class="flex flex-col  ">
+                    <label>رقم الوصل</label>
+                    <input pInputText type="text" [(ngModel)]="filters.cCustreceiptnoori"
+                           class="w-full"/>
+                </div>
+                <div *ngIf="filterDisplay.c_dlvagent_manifestid" class="flex flex-col  ">
+                    <label>منفيست مندوب التوصيل</label>
+
+                    <input pInputText type="text" [(ngModel)]="filters.c_dlvagent_manifestid"
+                           class="w-full"/>
+                </div>
+                <div *ngIf="filterDisplay.c_rcv_hp1" class="flex flex-col  ">
+                    <label>هاتف المستلم</label>
+
+                    <input pInputText type="text" [(ngModel)]="filters.c_rcv_hp1"
+                           class="w-full"/>
+                </div>
+
+            </div>
+            <div class="flex gap-2 justify-content-end">
+                <div class="flex justify-content-center">
+                    <p-button label="بحث" (click)="getData()" icon="pi pi-search" [loading]="loading"
+                              styleClass="p-button-success hidden md:flex"></p-button>
+                    <p-button label="Search" class="block md:hidden w-full" [loading]="loading" styleClass="w-full"
+                              (click)="getData()"></p-button>
+
+                </div>
+                <div class="flex justify-content-center align-items-center">
+                    <button type="button" pButton pRipple icon="pi pi-filter-slash" (click)="resetFilter()"
+                            class="p-button-secondary mr-2 hidden md:flex" pTooltip="Reset Filters"
+                            tooltipPosition="bottom"></button>
+                    <button type="button" pButton pRipple icon="pi pi-filter-slash" (click)="resetFilter()"
+                            class="p-button-secondary w-full flex md:hidden " pTooltip="Reset Filters"
+                            tooltipPosition="bottom"></button>
+
+                </div>
+
+            </div>
+
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th>#</th>
+                <th *ngFor="let col of columns">
+                    {{col.name}}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-data let-rowIndex="rowIndex">
+            <tr>
+                <td>{{rowIndex + 1}}</td>
+                <td *ngFor="let col of columns">
+                    <div *ngIf="col.type == 'string'">
+                        {{data[col.key]}}
+                    </div>
+                    <div *ngIf="col.type == 'date'">
+                        {{data[col.key] | date:'short'}}
+                    </div>
+                    <div *ngIf="col.type == 'dropdown'" class="h-[44px]">
+                        <p-dropdown [appendTo]="'body'"  [options]="operation" class="w-full h-full" [placeholder]="' '" (onChange)="changeDecision($event)" [filter]='true'
+                                    styleClass="w-full h-full"></p-dropdown>
+                    </div>
+                    <div *ngIf="col.type == 'note'">
+                        <input pInputText type="text"
+                               class="w-full"/>
+                    </div>
+                    <div *ngIf="col.type == 'button'">
+                        <p-button [label]="col.title"></p-button>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-card>
+
+<p-dialog header="تغيير الحالة" [(visible)]="stepDialogVisible" [style]="{width: '50vw'}">
+    <div class="flex flex-column gap-2">
+        <label htmlFor="agent">مندوب التوصيل</label>
+        <p-dropdown id="agent" [options]="state.deliveryAgents" class="w-full" [filter]='true'
+                    styleClass="w-full"></p-dropdown>
+    </div>
+    <div class="flex flex-column gap-2">
+        <label htmlFor="returnReasones">سبب الأرجاع</label>
+        <p-dropdown id="returnReasones" [options]="state.returnReasones" class="w-full" [filter]='true'
+                    styleClass="w-full"></p-dropdown>
+    </div>
+    <div class="flex flex-column gap-2">
+        <label>تم التأجيل الى</label>
+        <p-calendar [dir]="'ltr'" [inputStyleClass]="'w-full'" styleClass="w-full" [showIcon]="true"
+                    [showButtonBar]="true"
+                    [readonlyInput]="true"></p-calendar>
+    </div>
+    <div class="flex flex-column gap-2">
+        <label htmlFor="postponeReason">تأجيل السبب</label>
+        <input id="postponeReason" pInputText type="text"
+               class="w-full"/>
+    </div>
+    <div class="flex flex-column gap-2">
+        <label  >مبلغ الوصل د.ع	</label>
+        <input  pInputText type="text"
+               class="w-full"/>
+    </div>
+    <div class="flex flex-column gap-2">
+        <label >مبلغ الوصل $	</label>
+        <input   pInputText type="text"
+               class="w-full"/>
+    </div>
+    <div class="flex flex-column gap-2">
+        <label >تم إرجاع الكمية</label>
+        <input  pInputText type="text"
+               class="w-full"/>
+    </div>
+    <div class="flex flex-column gap-2">
+        <label htmlFor="note">ملاحظات</label>
+        <input id="note" pInputText type="text"
+               class="w-full"/>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="mt-[21px]">
+            <p-button icon="pi pi-check" (click)="stepDialogVisible = false" label="تغيير"
+            ></p-button>
+        </div>
+
+    </ng-template>
+</p-dialog>

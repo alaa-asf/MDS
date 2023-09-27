@@ -1,0 +1,48 @@
+<div class="surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
+    <div class="flex flex-column align-items-center justify-content-center w-full md:w-auto">
+        <img src="assets/layout/images/{{layoutService.config.colorScheme === 'light' ? 'logo-dark' : 'logo-white'}}.svg" class="mb-5 w-6rem flex-shrink-0">
+        <div class="w-10 md:w-auto" style="border-radius:56px; padding:0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%);">
+            <div class="w-full surface-card py-8 px-5 sm:px-8" style="border-radius:53px">
+                <div class="text-center mb-5">
+                    <div class="text-900 text-3xl font-medium mb-3">مرحباً!</div>
+                    <span class="text-600 font-medium">تسجيل الدخول للمتابعة</span>
+                </div>
+
+                <div>
+                    <label for="email1" class="block text-900 text-xl font-medium mb-2">اسم المستخدم</label>
+                    <input id="email1" type="text" [(ngModel)]="username" placeholder="اسم المستخدم" pInputText class="w-full md:w-30rem mb-5" style="padding:1rem">
+
+                    <label for="password1" class="block text-900 font-medium text-xl mb-2">كلمة المرور</label>
+                    <p-password id="password1" [(ngModel)]="password" placeholder="كلمة المرور" [toggleMask]="true" [feedback]="false" styleClass="w-full mb-5" inputStyleClass="w-full p-3 md:w-30rem"></p-password>
+
+                    <div class="flex align-items-center justify-content-between mb-5 gap-5">
+<!--                        <div class="flex align-items-center">-->
+<!--                            <p-checkbox id="rememberme1" [binary]="true" styleClass="mr-2"></p-checkbox>-->
+<!--                            <label for="rememberme1">Remember me</label>-->
+<!--                        </div>-->
+<!--                        <a class="font-medium no-underline ml-2 text-right cursor-pointer" style="color: var(&#45;&#45;primary-color)">Forgot password?</a>-->
+                    </div>
+                    <button pButton pRipple label="تسجيل الدخول" class="w-full p-3 text-xl"  [loading]="loading" (click)="login()"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<p-toast></p-toast>
+<p-dialog [(visible)]="resetPasswordShow" [style]="{width: '450px'}" header="الرجاء إضافة كلمة المرور الجديدة الخاصة بك" [modal]="true"
+          class="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="formgrid grid">
+            <div class="field col">
+<!--                <label for="Password">New Password</label>-->
+                <p-password id="Password" [(ngModel)]="newPassword" placeholder="كلمة المرور الجديدة" [toggleMask]="true" [feedback]="false"></p-password>
+
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="تحديث كلمة المرور" icon="pi pi-check" class="p-button-text"
+                (click)="resetPassword()"  [loading]='loading'  [disabled]='!OTP || !newPassword'></button>
+    </ng-template>
+</p-dialog>
