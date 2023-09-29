@@ -14,7 +14,7 @@ export class UtilityService {
 
     logout() {
         this.authService.removeToken()
-        //this.router.navigate(['/auth','login'])
+        this.router.navigate(['/auth','login'])
     }
 
     convertDate(date: Date): any {
