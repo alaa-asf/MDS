@@ -1,0 +1,65 @@
+<div class="card">
+  <div class=" flex justify-content-start">
+    <div class="">
+      <p-dropdown [editable]="true" optionLabel="name"></p-dropdown>
+    </div>
+    <div> <p-button icon="pi pi-search" label="عرض تفاصيل الراجع للمتجر" class="p-button-success px-5 ms-5"></p-button>
+    </div>
+  </div>
+</div>
+<div class="card">
+  <div class="">
+    <span class="boxBalance text-primary">
+
+      barcode
+    </span>
+    <p-inputNumber style="height: 28px;" mode="decimal" inputId="withoutgrouping" [useGrouping]="false">
+    </p-inputNumber>
+    <span class="m-5">
+      ارجاع الكل<p-checkbox class="px-5" [binary]="true" inputId="binary"></p-checkbox>
+
+    </span>
+  </div>
+</div>
+<div class="card">
+
+  <div class="flex justify-content-between">
+    <span class="boxBalance">الرواجع للزبائن</span>
+    <div></div>
+
+  </div>
+
+  <p-table [value]="products" [paginator]="true" [rows]="5" selectionMode="single" [showCurrentPageReport]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10, 25, 50]"
+    [tableStyle]="{ 'min-width': '50rem' }">
+    <ng-template pTemplate="header">
+      <tr>
+        <th class="tab-header">رقم الأيصال </th>
+        <th class="tab-header">تاريخ الاستلام الفعلي </th>
+        <th class="tab-header">أنشئ بواسطة </th>
+        <th class="tab-header">ملاحظات </th>
+        <th class="tab-header">طباعة ايصال الاستلام </th>
+        <th class="tab-header">acr_closed</th>
+        <th class="tab-header"></th>
+
+        <th class="tab-header"></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-product>
+      <tr>
+        <td>{{ product.transactionType }}</td>
+        <td>{{ product.transactionName }}</td>
+        <td>{{ product.transactionEntity }}</td>
+        <td>{{ product.transactionAmountIQD }}</td>
+        <td>{{ product.transactionAmountUSD }}</td>
+        <td>{{ product.notes }}</td>
+        <td>{{ product.accountantBoxId }}</td>
+        <td><p-button icon="pi pi-print" label="طباعة ايصال المستلمات"></p-button></td>
+        <td>  </td>
+        <td>
+          <p-button icon="pi pi-trash" styleClass="p-button-outlined p-button-danger"></p-button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
