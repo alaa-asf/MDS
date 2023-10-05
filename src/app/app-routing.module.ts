@@ -51,6 +51,86 @@ import { RoleGuard } from './shared/guard/role.guard';
                             roles: ['ITBOSS']
                         }
                     },
+                    {
+                        path: 'safe',
+                        loadChildren: () => import('./modules/safe/safe.module').then(m => m.SafeModule),
+                        canActivate: [RoleGuard],
+                        data: {
+                            roles: ['ITBOSS']
+                        }
+                    },
+                    {
+                        path: 'finfunds',
+                        loadChildren: () => import('./modules/financial-funds/financial-funds.module').then(m => m.FinancialFundsModule),
+                        canActivate: [RoleGuard],
+                        data: {
+                            roles: ['ITBOSS']
+                        }
+                    },
+                    {
+                        path: 'outBoxTransactions',
+                        loadChildren: () => import('./modules/out-box-transactions/out-box-transactions.module').then(m => m.OutBoxTransactionsModule),
+                        canActivate: [RoleGuard],
+                        data: {
+                            roles: ['ITBOSS']
+                        }
+                    },
+                    {
+                        path: 'safeCashTransReport',
+                        loadChildren: () => import('./modules/safe-cash-trans-report/safe-cash-trans-report.module').then(m => m.SafeCashTransReportModule),
+                        canActivate: [RoleGuard],
+                        data: {
+                            roles: ['ITBOSS']
+                        }
+                    },
+                    {
+                        path: 'payDebtToSafe',
+                        loadChildren: () => import('./modules/pay-debt-to-safe/pay-debt-to-safe.module').then(m => m.PayDebtToSafeModule),
+                        canActivate: [RoleGuard],
+                        data: {
+                            roles: ['ITBOSS']
+                        }
+                    },
+                    {
+                        path: 'branchReturnables',
+                        loadChildren: () => import('./modules/branch-returnables/branch-returnables.module').then(m => m.BranchReturnablesModule),
+                        canActivate: [RoleGuard],
+                        data: {
+                            roles: ['ITBOSS']
+                        }
+                    },
+                    {
+                        path: 'rtn_barcode_isolator',
+                        loadChildren: () => import('./modules/rtn-barcode-isolator/rtn-barcode-isolator.module').then(m => m.RtnBarcodeIsolatorModule),
+                        canActivate: [RoleGuard],
+                        data: {
+                            roles: ['ITBOSS']
+                        }
+                    },
+                    {
+                        path: 'pickupagent_return',
+                        loadChildren: () => import('./modules/pickupagent-return/pickupagent-return.module').then(m => m.PickupagentReturnModule),
+                        canActivate: [RoleGuard],
+                        data: {
+                            roles: ['ITBOSS']
+                        }
+                    },
+                    {
+                        path: 'customerReturnables',
+                        loadChildren: () => import('./modules/customer-returnables/customer-returnables.module').then(m => m.CustomerReturnablesModule),
+                        canActivate: [RoleGuard],
+                        data: {
+                            roles: ['ITBOSS']
+                        }
+                    },
+                    {
+                        path: 'agentReturnables',
+                        loadChildren: () => import('./modules/agent-returnables/agent-returnables.module').then(m => m.AgentReturnablesModule),
+                        canActivate: [RoleGuard],
+                        data: {
+                            roles: ['ITBOSS']
+                        }
+                    },
                     ///{ path: '**', redirectTo: '/logistics' },
 
                 ]

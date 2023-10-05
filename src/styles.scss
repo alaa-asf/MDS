@@ -15,12 +15,29 @@ $gutter: 1rem; //for primeflex grid system
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-.disabled{
+
+.disabled {
     opacity: 0.5;
 }
-::ng-deep .highcharts-credits{
+
+::ng-deep .highcharts-credits {
     display: none !important;
 }
-button, [type='button'], [type='reset'], [type='submit']{
-    background-color:var(--primary-color) ;
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+    background-color: var(--primary-color);
+}
+
+* {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+}
+.boxBalance{
+    font-weight: 500;
+    letter-spacing: 0.05rem;
+    font-size: 1.12rem;
+    
 }

@@ -1,0 +1,49 @@
+<div class="card">
+  <div class="flex justify-content-around">
+      <div class="">
+          <span class="text-select">نوع المعاملة</span>
+          <div class="pt-2" style="direction: initial">
+              <p-dropdown [editable]="true" optionLabel="name"></p-dropdown>
+          </div>
+      </div>
+      <div class="">
+          <span class="text-select">من تاريخ</span>
+          <div class="pt-2" style="direction: initial">
+              <p-calendar
+                  [showIcon]="true"
+                  formControlName="date"
+              ></p-calendar>
+          </div>
+      </div>
+      <div class="">
+          <span class="text-select">الى تاريخ</span>
+          <div class="pt-2" style="direction: initial">
+              <p-calendar
+                  [showIcon]="true"
+                  formControlName="date"
+              ></p-calendar>
+          </div>
+      </div>
+      <div class="">
+        <span class="text-select">طرف  المعاملة</span>
+        <div class="pt-2" style="direction: initial">
+            <p-dropdown [editable]="true" optionLabel="name"></p-dropdown>
+        </div>
+    </div>
+  </div>
+  <div class="flex pt-5 justify-content-end">
+      <p-button
+          icon="pi pi-search"
+          label="بحث"
+          class="p-button-success px-5 ms-5"
+      ></p-button>
+      <p-button
+          label="الغاء البحث"
+          icon="pi pi-times"
+          styleClass="p-button-outlined p-button-warning"
+      ></p-button>
+  </div>
+</div>
+<div class="card ">
+حركات الصندوق
+</div>
