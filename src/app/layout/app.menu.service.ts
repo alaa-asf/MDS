@@ -8,6 +8,20 @@ import {MenuChangeEvent} from './api/menuchangeevent';
 export class MenuService {
     menu: any = [
         {
+            label: 'طلبات الشحن',
+            visible: false,
+            items: [
+                {label: 'انشاء شحنات على مستوى المحافظة',roles: ['ITBOSS'], icon: 'pi pi-box', visible: false, routerLink: ['/new-shipping']}
+            ]
+        },
+        // {
+        //     label: 'طلبات الشحن',
+        //     visible: false,
+        //     items: [
+        //         {label: 'انشاء شحنات على مستوى المحافظة',roles: ['user'], icon: 'pi pi-box', visible: false, routerLink: ['/new-shipping']},
+        //     ]
+        // },
+        {
             label: '',
             visible: false,
             items: [
@@ -29,7 +43,8 @@ export class MenuService {
                 {label: 'الأدوار',roles: ['ITBOSS'], icon: 'pi pi-fw pi-user-plus', visible: false, routerLink: ['/roles']},
                 {label: 'المستخدمين',roles: ['ITBOSS'], icon: 'pi pi-fw pi-user', visible: false, routerLink: ['/users']},
             ]
-        }
+        },
+
     ];
 
     private menuSource = new Subject<MenuChangeEvent>();

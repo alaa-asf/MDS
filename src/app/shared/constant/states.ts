@@ -64,7 +64,8 @@ export const permissionsArray:any=
         { key: 'logistics/alloperations', value: 'logistics' },
         { key: 'users', value: 'ITBOSS' },
         { key: 'roles', value: 'ITBOSS' },
-        { key: 'permissions', value: 'ITBOSS' }
+        { key: 'permissions', value: 'ITBOSS' },
+        { key: 'new-shipping', value: 'user' }
     ]
 export const permissionsIndex:any={
     'Dashboard': '',

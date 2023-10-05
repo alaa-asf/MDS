@@ -51,6 +51,14 @@ import { RoleGuard } from './shared/guard/role.guard';
                             roles: ['ITBOSS']
                         }
                     },
+                    {
+                        path: 'new-shipping',
+                        loadChildren: () => import('./modules/newshipping/newshipping.module').then(m => m.NewshippingModule),
+                        canActivate: [RoleGuard],
+                        data: {
+                            roles: ['ITBOSS']
+                        }
+                    }
                     ///{ path: '**', redirectTo: '/logistics' },
 
                 ]
