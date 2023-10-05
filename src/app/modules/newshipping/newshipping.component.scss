@@ -1,0 +1,19 @@
+.container-items {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.item {
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+:host ::ng-deep .p-dropdown.p-component {
+    width: 100%;
+}
+
+:host ::ng-deep .p-inputnumber.p-component {
+    width: 100%;
+}

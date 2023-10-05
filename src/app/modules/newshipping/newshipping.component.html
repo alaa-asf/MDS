@@ -1,0 +1,47 @@
+<p-card header="خلق شحنه جديدة - محافظة">
+  <form [formGroup]="newShippingForm">
+    <div class="container-items">
+      <div class="item">
+        <label>المحافظة</label>
+        <p-dropdown id="governorates" formControlName="state" [options]="governorates"
+          optionLabel="label"></p-dropdown>
+      </div>
+      <div class="item">
+        <label>المنطقة</label>
+        <p-dropdown id="regions" formControlName="district" [options]="regions" optionLabel="name"></p-dropdown>
+      </div>
+      <div class="item">
+        <label>المتجر</label>
+        <p-dropdown id="stores" formControlName="merchantName" [options]="stores" optionLabel="name"></p-dropdown>
+      </div>
+      <div class="item">
+        <label>هاتف المتجر</label>
+        <p-inputNumber inputId="integeronly" formControlName="handPhone"></p-inputNumber>
+      </div>
+      <div class="item">
+        <label>رقم الوصل</label>
+        <p-inputNumber inputId="integeronly" formControlName="receiptNumber"></p-inputNumber>
+      </div>
+      <div class="item">
+        <label>مبلغ الوصل د.ع</label>
+        <p-inputNumber inputId="integeronly" formControlName="receiptAmount"></p-inputNumber>
+      </div>
+      <div class="item">
+        <label>مبلغ الوصل $</label>
+        <p-inputNumber inputId="integeronly" formControlName="receiptAmountUsd"></p-inputNumber>
+      </div>
+      <div class="item">
+        <label>هاتف المستلم</label>
+        <p-inputNumber inputId="integeronly" formControlName="endCustomerPhone"></p-inputNumber>
+      </div>
+      <div class="item">
+        <label>تفاصيل العنوان</label>
+        <textarea rows="5" cols="30" pInputTextarea formControlName="addressDetails"></textarea>
+      </div>
+      <div class="item">
+        <label>ملاحظات</label>
+        <textarea rows="5" cols="30" pInputTextarea formControlName="notes"></textarea>
+      </div>
+    </div>
+  </form>
+</p-card>

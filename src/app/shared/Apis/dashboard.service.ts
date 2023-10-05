@@ -22,4 +22,7 @@ export class DashboardService {
     getDecisionsByStep(step:any) {
         return this.httpClient.get(environment.apiUrl + `/PCases/getDecisionsByStep?stepId=${step}`)
     }
+    addNewCase(shipment:any){
+        return this.httpClient.post(environment.apiUrl + `/PCases`,shipment)
+    }
 }
