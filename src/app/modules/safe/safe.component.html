@@ -1,0 +1,169 @@
+<div class="card flex justify-content-between">
+    <p-button
+        label="جرد القاصة"
+        styleClass="p-button-outlined p-button-warning"
+    ></p-button>
+
+    <button
+        (click)="showDialog()"
+        icon="pi pi-plus"
+        pButton
+        pRipple
+        label="إضافة"
+        class="p-button-success"
+    ></button>
+</div>
+<p-dialog
+    header="اضافة قاصة"
+    [(visible)]="visible"
+    [breakpoints]="{ '960px': '75vw' }"
+    [style]="{ width: '50vw' }"
+    [draggable]="true"
+    [resizable]="true"
+>
+    <div class="flex justify-content-between">
+        <div class="">
+            <span>نوع المعاملة</span>
+            <div class="pt-2">
+                <p-dropdown [editable]="true" optionLabel="name"></p-dropdown>
+            </div>
+        </div>
+        <div class="">
+            <span>أسم المعاملة</span>
+            <div class="pt-2">
+                <p-dropdown [editable]="true" optionLabel="name"></p-dropdown>
+            </div>
+        </div>
+        <div class="">
+            <span>طرف المعاملة</span>
+            <div class="pt-2">
+                <p-dropdown [editable]="true" optionLabel="name"></p-dropdown>
+            </div>
+        </div>
+    </div>
+    <div class="flex justify-content-between">
+        <div class="">
+            <span>مبلغ المعاملة د.ع</span>
+            <div class="pt-2">
+                <p-inputNumber
+                    mode="decimal"
+                    inputId="withoutgrouping"
+                    [useGrouping]="false"
+                >
+                </p-inputNumber>
+            </div>
+        </div>
+        <div class="">
+            <span>مبلغ المعاملة $</span>
+            <div class="pt-2">
+                <p-inputNumber
+                    mode="decimal"
+                    inputId="withoutgrouping"
+                    [useGrouping]="false"
+                >
+                </p-inputNumber>
+            </div>
+        </div>
+        <div class="">
+            <span>ملاحظات</span>
+            <form>
+                <textarea
+                    rows="5"
+                    cols="30"
+                    pInputTextarea
+                    formControlName="text"
+                ></textarea>
+            </form>
+        </div>
+    </div>
+    <div class="flex justify-content-between">
+        <div class="">
+            <span>تمت من خلال</span>
+            <div class="pt-2">
+                <p-dropdown [editable]="true" optionLabel="name"></p-dropdown>
+            </div>
+        </div>
+        <div class="">
+            <span>الرصيد قبل د.ع</span>
+            <div class="pt-2">
+                <p-inputNumber
+                    mode="decimal"
+                    inputId="withoutgrouping"
+                    [useGrouping]="false"
+                >
+                </p-inputNumber>
+            </div>
+        </div>
+        <div class="">
+            <span>الرصيد قبل $</span>
+            <div class="pt-2">
+                <p-inputNumber
+                    mode="decimal"
+                    inputId="withoutgrouping"
+                    [useGrouping]="false"
+                >
+                </p-inputNumber>
+            </div>
+        </div>
+    </div>
+    <div class="flex justify-content-between">
+        <div class="">
+            <span>فرع</span>
+            <div class="pt-2">
+                <p-dropdown [editable]="true" optionLabel="name"></p-dropdown>
+            </div>
+        </div>
+    </div>
+    <div class="flex justify-content-between pt-3">
+        <button
+            (click)="showDialog()"
+            icon="pi pi-thumbs-up"
+            pButton
+            pRipple
+            label="حفظ"
+            class="p-button-success"
+        ></button>
+    </div>
+</p-dialog>
+<div class="card">
+    <p-table
+        [value]="products"
+        [paginator]="true"
+        [rows]="5"
+        selectionMode="single"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [rowsPerPageOptions]="[10, 25, 50]"
+        [tableStyle]="{ 'min-width': '50rem' }"
+    >
+        <ng-template pTemplate="header">
+            <tr>
+                <th class="tab-header">نوع المعاملة</th>
+                <th class="tab-header">أسم المعاملة</th>
+                <th class="tab-header">طرف المعاملة</th>
+                <th class="tab-header">مبلغ المعاملة د.ع</th>
+                <th class="tab-header">مبلغ المعاملة $</th>
+                <th class="tab-header">ملاحظات</th>
+                <th class="tab-header">رقم الدفعة</th>
+
+                <th class="tab-header"></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-product>
+            <tr>
+                <td>{{ product.transactionType }}</td>
+                <td>{{ product.transactionName }}</td>
+                <td>{{ product.transactionEntity }}</td>
+                <td>{{ product.transactionAmountIQD }}</td>
+                <td>{{ product.transactionAmountUSD }}</td>
+                <td>{{ product.notes }}</td>
+                <td>{{ product.accountantBoxId }}</td>
+
+                <td></td>
+                <td>
+                    <p-button  icon="pi pi-trash"  styleClass="p-button-outlined p-button-danger"></p-button>
+                </td>
+            </tr></ng-template
+        >
+    </p-table>
+</div>

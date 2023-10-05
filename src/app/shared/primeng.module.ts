@@ -9,6 +9,7 @@ import { DividerModule } from 'primeng/divider';
 import { CheckboxModule } from 'primeng/checkbox';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 import { DialogModule } from 'primeng/dialog';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { InputSwitchModule } from 'primeng/inputswitch';
@@ -47,6 +48,7 @@ import {SelectButtonModule} from "primeng/selectbutton";
     CommonModule
   ],
   exports:[
+    AutoCompleteModule,
     MessagesModule,
     CardModule,
     DividerModule,
