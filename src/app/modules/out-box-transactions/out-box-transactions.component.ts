@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Safe } from 'src/app/shared/Apis/safe';
+import { FilterDate } from 'src/app/shared/pipe-service/filter-date.pipe';
 
 @Component({
   selector: 'app-out-box-transactions',
@@ -6,10 +8,45 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./out-box-transactions.component.scss']
 })
 export class OutBoxTransactionsComponent implements OnInit {
-
-  constructor() { }
+  fromDate: any
+  toDate: any
+  safeBox: any
+  nameSafeBox: any
+  safeName: any
+  disabledButton: boolean = true
+  progressSpinner: boolean = false
+  persons: any = []
+  products: any = []
+  constructor(private safe: Safe, private pipe: FilterDate) { }
 
   ngOnInit() {
+    this.safe.getAllacctbox().subscribe((res: any) => {
+      this.persons = res
+
+    })
+  }
+  clickSearch() {
+    this.progressSpinner = true
+    this.safe.getaccountantBoxesBranch(this.safeBox, this.pipe.transform(this.fromDate), this.pipe.transform(this.toDate)).subscribe((res: any) => {
+      console.log(res);
+      this.products = res
+      this.progressSpinner = false
+    })
+
+  }
+  ngDoCheck() {
+    if (this.toDate && this.fromDate && this.safeBox) {
+      this.disabledButton = false
+    }
+  }
+  onChange(event: any) {
+    console.log(event);
+    this.safeBox = event.boxId
+    this.nameSafeBox = event.accountant
+  }
+  cancleSearch() {
+    this.toDate = '', this.fromDate = '', this.safeName = '', this.disabledButton = true
+
   }
 
 }

@@ -8,26 +8,28 @@ import { Safe } from 'src/app/shared/Apis/safe';
 })
 export class SafeComponent implements OnInit {
     visible: boolean = false;
-
+    safeBalanceIQD: string = '';
+    safeBalanceUSD: string = '';
     products = [
-        {
-            transactionType: 'DB_SAFE',
-            transactionName: 'ADD_SAFE',
-            transactionEntity: '12040',
-            transactionAmountIQD: 123123,
-            transactionAmountUSD: 1000,
-            notes: 'the ttttttttttttttttttttttttttt',
-            accountantBoxId: 2112,
-        },
+
     ];
-    constructor(private safe: Safe) {}
+    constructor(private safe: Safe) { }
 
     ngOnInit() {
         this.safe.getAllSafe().subscribe((res: any) => {
             console.log(res);
+
+            this.products = res
+           
+
         });
+        this.safe.getSafeBalance().subscribe((res: any) => {
+            this.safeBalanceIQD = res.safeBalanceIQD
+            this.safeBalanceUSD = res.safeBalanceUSD
+        })
     }
     showDialog() {
         this.visible = true;
     }
+  
 }

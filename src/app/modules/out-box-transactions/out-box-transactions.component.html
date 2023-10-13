@@ -3,41 +3,68 @@
         <div class="">
             <span class="text-select">صندوق</span>
             <div class="pt-2" style="direction: initial">
-                <p-dropdown [editable]="true" optionLabel="name"></p-dropdown>
+                <p-dropdown [(ngModel)]="safeName"  [options]="persons" [editable]="true"  optionLabel="accountant"
+                    (onChange)="onChange(safeName)"></p-dropdown>
             </div>
         </div>
         <div class="">
             <span class="text-select">من تاريخ</span>
             <div class="pt-2" style="direction: initial">
-                <p-calendar
-                    [showIcon]="true"
-                    formControlName="date"
-                ></p-calendar>
+                <p-calendar aria-label="from" [showIcon]="true" [(ngModel)]="fromDate"></p-calendar>
             </div>
         </div>
         <div class="">
             <span class="text-select">الى تاريخ</span>
             <div class="pt-2" style="direction: initial">
-                <p-calendar
-                    [showIcon]="true"
-                    formControlName="date"
-                ></p-calendar>
+                <p-calendar [showIcon]="true" [(ngModel)]="toDate"></p-calendar>
             </div>
         </div>
     </div>
     <div class="flex pt-5 justify-content-end">
-        <p-button
-            icon="pi pi-search"
-            label="بحث"
-            class="p-button-success px-5 ms-5"
-        ></p-button>
-        <p-button
-            label="الغاء البحث"
-            icon="pi pi-times"
-            styleClass="p-button-outlined p-button-warning"
-        ></p-button>
+        <p-button (click)="clickSearch()" [disabled]="disabledButton" icon="pi pi-search" label="بحث"
+            class="p-button-success px-5 ms-5"></p-button>
+        <p-button (click)="cancleSearch()" label="الغاء البحث" icon="pi pi-times" styleClass="p-button-outlined p-button-warning"></p-button>
     </div>
 </div>
 <div class="card ">
-  حركات الصندوق
+    <div class="boxBalance">حركات الصندوق</div>
+    <p-progressSpinner *ngIf="progressSpinner" styleClass="w-4rem h-4rem" strokeWidth="8" fill="var(--surface-ground)"
+        animationDuration=".5s"></p-progressSpinner>
+    <div *ngIf="!progressSpinner">
+        <p-table [value]="products" [paginator]="true" [rows]="5" selectionMode="single" [showCurrentPageReport]="true"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            [rowsPerPageOptions]="[10, 25, 50]" [tableStyle]="{ 'min-width': '50rem' }">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th class="tab-header bg-bluegray-500 text-white">#</th>
+                    <th class="tab-header bg-bluegray-500 text-white">تاريخ العملية</th>
+                    <th class="tab-header bg-bluegray-500 text-white">قبل العملية د.ع</th>
+                    <th class="tab-header bg-bluegray-500 text-white">مبلغ العملية د.ع</th>
+                    <th class="tab-header bg-bluegray-500 text-white">بعد العملية د.ع</th>
+                    <th class="tab-header bg-bluegray-500 text-white">العملية</th>
+                    <th class="tab-header bg-bluegray-500 text-white">قبل العملية $</th>
+                    <th class="tab-header bg-bluegray-500 text-white">مبلغ العملية $</th>
+                    <th class="tab-header bg-bluegray-500 text-white">بعد العملية $</th>
+
+                    <th class="tab-header"></th>
+                </tr>
+            </ng-template>
+            <ng-template let-i="rowIndex" pTemplate="body" let-product>
+                <tr>
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ product.transactionDate | filterDate }}</td>
+                    <td>{{ product.balanceBeforeIQD }}</td>
+                    <td [class]="product.paymentIQD >= 0 ? 'bg-cyan-400':'bg-red-100' ">{{ product.paymentIQD }}</td>
+                    <td>{{ product.balanceAfterIQD }}</td>
+                    <td>{{ product.transactionDescription }}</td>
+                    <td>{{ product.balanceBeforeUSD }}</td>
+                    <td [class]="product.paymentIQD >= 0 ? '':'bg-red-100' ">{{ product.paymentUSD }}</td>
+                    <td>{{ product.balanceAfterUSD }}</td>
+
+
+                    <td></td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
 </div>

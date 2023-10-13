@@ -13,6 +13,8 @@ export class FinancialFundsComponent implements OnInit {
     ngOnInit() {
         this.safe.getAllacctbox().subscribe((res: any) => {          
             this.products = res;
+            console.log(res);
+            
         });
     }
 }
