@@ -12,14 +12,15 @@
 
             <div class="flex flex-col gap-2">
                 <div *ngFor="let n of stepByStage('INIT')" [routerLink]="['INIT',n.code]"
-                     class="flex justify-between p-2 rounded-xl cursor-pointer hover:bg-gray-100 items-center">
+                    class="flex justify-between p-2 rounded-xl cursor-pointer hover:bg-gray-100 items-center">
                     <div class="text-lg font-semibold text-gray-700">{{n.name}}</div>
                     <p-skeleton *ngIf="isLoading" shape="circle" size="2rem" styleClass="mr-2"></p-skeleton>
-                    <h3 *ngIf="!isLoading"  class="text-lg bg-yellow-100 p-2 rounded-full font-semibold text-yellow-500 ">{{n.value}}</h3>
+                    <h3 *ngIf="!isLoading"
+                        class="text-lg bg-yellow-100 p-2 rounded-full font-semibold text-yellow-500 ">{{n.value}}</h3>
                 </div>
             </div>
         </p-panel>
-        <p-panel class="w-1/2"  id="stg2">
+        <p-panel class="w-1/2" id="stg2">
             <ng-template pTemplate="header">
                 <div class="flex justify-between items-center flex-row-reverse w-full">
                     <div class="p-panel-title">عند المندوب</div>
@@ -30,17 +31,16 @@
             </ng-template>
             <div class="flex flex-col gap-2">
                 <div *ngFor="let n of stepByStage('AGENTOP')" [routerLink]="['AGENTOP',n.code]"
-                     class="flex justify-between p-2 rounded-xl cursor-pointer hover:bg-gray-100 items-center">
+                    class="flex justify-between p-2 rounded-xl cursor-pointer hover:bg-gray-100 items-center">
                     <div class="text-lg font-semibold text-gray-700">{{n.name}}</div>
                     <p-skeleton *ngIf="isLoading" shape="circle" size="2rem" styleClass="mr-2"></p-skeleton>
 
-                    <h3  *ngIf="!isLoading" class="text-lg bg-blue-100 p-2 rounded-full font-semibold text-blue-500 ">{{n.value}}</h3>
+                    <h3 *ngIf="!isLoading" class="text-lg bg-blue-100 p-2 rounded-full font-semibold text-blue-500 ">
+                        {{n.value}}</h3>
                 </div>
             </div>
         </p-panel>
-    </div>
-    <div class="flex gap-4 ">
-        <p-panel class="w-1/2"  id="stg3">
+        <p-panel class="w-1/2" id="stg3">
             <ng-template pTemplate="header">
                 <div class="flex justify-between items-center flex-row-reverse w-full">
                     <div class="p-panel-title">الراجع</div>
@@ -51,15 +51,18 @@
             </ng-template>
             <div class="flex flex-col gap-2">
                 <div *ngFor="let n of stepByStage('CNCL')" [routerLink]="['CNCL',n.code]"
-                     class="flex justify-between p-2 rounded-xl cursor-pointer hover:bg-gray-100 items-center">
+                    class="flex justify-between p-2 rounded-xl cursor-pointer hover:bg-gray-100 items-center">
                     <div class="text-lg font-semibold text-gray-700">{{n.name}}</div>
                     <p-skeleton *ngIf="isLoading" shape="circle" size="2rem" styleClass="mr-2"></p-skeleton>
 
-                    <h3  *ngIf="!isLoading" class="text-lg bg-red-100 p-2 rounded-full font-semibold text-red-500 ">{{n.value}}</h3>
+                    <h3 *ngIf="!isLoading" class="text-lg bg-red-100 p-2 rounded-full font-semibold text-red-500 ">
+                        {{n.value}}</h3>
                 </div>
             </div>
         </p-panel>
-        <p-panel class="w-1/2"  id="stg4">
+    </div>
+    <div class="flex gap-4 ">
+        <p-panel class="w-1/2" id="stg4">
             <ng-template pTemplate="header">
                 <div class="flex justify-between items-center flex-row-reverse w-full">
                     <div class="p-panel-title">الواصل</div>
@@ -70,17 +73,16 @@
             </ng-template>
             <div class="flex flex-col gap-2">
                 <div *ngFor="let n of stepByStage('DLV')" [routerLink]="['DLV',n.code]"
-                     class="flex justify-between p-2 rounded-xl cursor-pointer hover:bg-gray-100 items-center">
+                    class="flex justify-between p-2 rounded-xl cursor-pointer hover:bg-gray-100 items-center">
                     <div class="text-lg font-semibold text-gray-700">{{n.name}}</div>
                     <p-skeleton *ngIf="isLoading" shape="circle" size="2rem" styleClass="mr-2"></p-skeleton>
 
-                    <h3  *ngIf="!isLoading" class="text-lg bg-green-100 p-2 rounded-full font-semibold text-green-500 ">{{n.value}}</h3>
+                    <h3 *ngIf="!isLoading" class="text-lg bg-green-100 p-2 rounded-full font-semibold text-green-500 ">
+                        {{n.value}}</h3>
                 </div>
             </div>
         </p-panel>
-    </div>
-    <div class="flex gap-4 ">
-        <p-panel class="w-1/2"  id="stg5">
+        <p-panel class="w-1/2" id="stg5">
             <ng-template pTemplate="header">
                 <div class="flex justify-between items-center flex-row-reverse w-full">
                     <div class="p-panel-title">النقل بين الفروع</div>
@@ -91,15 +93,16 @@
             </ng-template>
             <div class="flex flex-col gap-2">
                 <div *ngFor="let n of stepByStage('BRANCHES')" [routerLink]="['BRANCHES',n.code]"
-                     class="flex justify-between p-2 rounded-xl cursor-pointer hover:bg-gray-100 items-center">
+                    class="flex justify-between p-2 rounded-xl cursor-pointer hover:bg-gray-100 items-center">
                     <div class="text-lg font-semibold text-gray-700">{{n.name}}</div>
                     <p-skeleton *ngIf="isLoading" shape="circle" size="2rem" styleClass="mr-2"></p-skeleton>
 
-                    <h3  *ngIf="!isLoading" class="text-lg bg-purple-100 p-2 rounded-full font-semibold text-purple-500 ">{{n.value}}</h3>
+                    <h3 *ngIf="!isLoading"
+                        class="text-lg bg-purple-100 p-2 rounded-full font-semibold text-purple-500 ">{{n.value}}</h3>
                 </div>
             </div>
         </p-panel>
-        <p-panel class="w-1/2"  id="stg6">
+        <p-panel class="w-1/2" id="stg6">
             <ng-template pTemplate="header">
                 <div class="flex justify-between items-center flex-row-reverse w-full">
                     <div class="p-panel-title">شحنات جديدة عند العميل</div>
@@ -110,14 +113,14 @@
             </ng-template>
             <div class="flex flex-col gap-2">
                 <div *ngFor="let n of stepByStage('NEWCUSTLOGI')" [routerLink]="['NEWCUSTLOGI',n.code]"
-                     class="flex justify-between p-2 rounded-xl cursor-pointer hover:bg-gray-100 items-center">
+                    class="flex justify-between p-2 rounded-xl cursor-pointer hover:bg-gray-100 items-center">
                     <div class="text-lg font-semibold text-gray-700">{{n.name}}</div>
                     <p-skeleton *ngIf="isLoading" shape="circle" size="2rem" styleClass="mr-2"></p-skeleton>
-                    <h3  *ngIf="!isLoading" class="text-lg bg-bluegray-100 p-2 rounded-full font-semibold text-bluegray-500 ">{{n.value}}</h3>
+                    <h3 *ngIf="!isLoading"
+                        class="text-lg bg-bluegray-100 p-2 rounded-full font-semibold text-bluegray-500 ">{{n.value}}
+                    </h3>
                 </div>
             </div>
         </p-panel>
     </div>
-
 </div>
-
