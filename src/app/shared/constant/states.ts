@@ -60,7 +60,7 @@ export const stringToCode:any  = {
 }
 export const permissionsArray:any=
     [
-    { key: '', value: 'Dashboard' },
+        { key: '', value: 'Dashboard' },
         { key: 'logistics/alloperations', value: 'logistics' },
         { key: 'users', value: 'ITBOSS' },
         { key: 'roles', value: 'ITBOSS' },

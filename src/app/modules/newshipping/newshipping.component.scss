@@ -1,7 +1,7 @@
 .container-items {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
 .item {
@@ -10,10 +10,16 @@
     flex-direction: column;
 }
 
-:host ::ng-deep .p-dropdown.p-component {
-    width: 100%;
-}
+:host ::ng-deep {
+    .p-dropdown.p-component {
+        width: 181px;
+    }
 
-:host ::ng-deep .p-inputnumber.p-component {
-    width: 100%;
+    .p-inputnumber.p-component {
+        width: 181px;
+    }
+
+    .p-inputtextarea {
+        width: 181px;
+    }
 }

@@ -15,6 +15,17 @@ import { RoleGuard } from './shared/guard/role.guard';
                     canActivate: [AuthGuard],
                     children: [
                         {
+                            path: '',
+                            loadChildren: () =>
+                                import(
+                                    './modules/dashboard/dashboard.module'
+                                ).then((m) => m.DashboardModule),
+                            canActivate: [RoleGuard],
+                            data: {
+                                roles: ['ITBOSS'],
+                            },
+                        },
+                        {
                             path: 'logistics',
                             children: [
                                 {
@@ -181,7 +192,7 @@ import { RoleGuard } from './shared/guard/role.guard';
                                 roles: ['ITBOSS'],
                             },
                         },
-                        ///{ path: '**', redirectTo: '/logistics' },
+                        { path: '**', redirectTo: '/' },
                     ],
                 },
                 {

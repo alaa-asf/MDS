@@ -28,7 +28,6 @@ export class NewshippingComponent implements OnInit {
 
     constructor(
         public fb: FormBuilder,
-        private _reportsService: ReportsService,
         private _stateService: StateService
     ) {
         this.changeName(this._stateService.states);
@@ -104,6 +103,12 @@ export class NewshippingComponent implements OnInit {
                     break;
             }
         });
+    }
+
+    selectGovernorates(governorate: any){
+        console.log(governorate.value);
+        this._stateService.deliveryAgents(governorate.value);
+
     }
 }
 //for dropdown

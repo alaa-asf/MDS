@@ -28,4 +28,15 @@ export class ReportsService {
     getAllDistritCodes(district:any){
         return this.httpClient.get(environment.apiUrl+'/multi/get_all_distritCodes/'+district)
     }
+
+    getOrders(filter:any){
+        return this.httpClient.post(environment.apiUrl+'/Reporting/orders',filter)
+    }
+    getInsertedOrders(filter:any){
+        return this.httpClient.post(environment.apiUrl+'/Reporting/InsertedOrders',filter)
+    }
+    getPickUpAgentOrders(filter:any){
+        return this.httpClient.post(environment.apiUrl+'/Reporting/PickUpAgentOrders',filter)
+    }
+    
  }
