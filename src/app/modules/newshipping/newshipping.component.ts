@@ -12,7 +12,8 @@ export class NewshippingComponent implements OnInit {
     governorates: [] = [];
     stores: [] = [];
     regions: [] = [];
-
+    loading = false;
+    totalCases: any = ['1'];
     newShippingForm = this.fb.group({
         state: ['', [Validators.required]], //المحافظة
         merchantName: [''], //المتجر id
@@ -109,6 +110,12 @@ export class NewshippingComponent implements OnInit {
         console.log(governorate.value);
         this._stateService.deliveryAgents(governorate.value);
 
+    }
+
+    addCase(){
+        this.loading = true;
+        this.totalCases.push("1");
+        this.loading = false;
     }
 }
 //for dropdown

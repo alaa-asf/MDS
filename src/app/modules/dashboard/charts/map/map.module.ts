@@ -8,6 +8,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
     CommonModule,
     SharedModule
   ],
-  declarations: [MapComponent]
+  declarations: [MapComponent],
+  exports:[MapComponent]
 })
 export class MapModule { }
