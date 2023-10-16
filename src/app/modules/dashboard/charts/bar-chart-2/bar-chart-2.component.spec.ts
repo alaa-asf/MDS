@@ -11,9 +11,9 @@ describe('BarChart2Component', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ BarChart2Component ]
+      declarations: [BarChart2Component]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

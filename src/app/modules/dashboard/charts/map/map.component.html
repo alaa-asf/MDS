@@ -10,8 +10,7 @@
     (onChange)='getMapData($event.value)'></p-dropdown>
 
 </div>
-<div *ngIf="mapLoading" class="flex justify-content-center align-items-center background-color"
-  style="width: 100%; height: 600px; display: block;">
+<div *ngIf="mapLoading" class="flex justify-content-center align-items-center background-color map-loader">
   <datom-spinner [width]="'50px'"></datom-spinner>
 </div>
 
