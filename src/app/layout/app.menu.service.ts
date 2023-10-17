@@ -12,7 +12,7 @@ export class MenuService {
             visible: false,
             items: [
                 {
-                    label: 'Dashboard',
+                    label: 'الواجهة الرئيسية',
                     roles: ['ITBOSS'],
                     icon: 'pi pi-fw pi-chart-bar',
                     visible: false,

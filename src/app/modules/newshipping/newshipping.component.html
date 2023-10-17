@@ -10,7 +10,7 @@
       <div class="container-items">
         <div class="item">
           <label>المنطقة</label>
-          <p-dropdown id="regions" formControlName="district" [options]="regions" optionLabel="name"></p-dropdown>
+          <p-dropdown id="regions" formControlName="district" [options]="districts" optionLabel="name"></p-dropdown>
         </div>
         <div class="item">
           <label>المتجر</label>
@@ -47,6 +47,6 @@
       </div>
     </p-card>
     <br>
-    <p-button label="Submit" [loading]="loading" (onClick)="addCase()"></p-button>
+    <p-button label="إضافة وصل اخر" [loading]="loading" (onClick)="addCase()"></p-button>
   </form>
 </p-card>

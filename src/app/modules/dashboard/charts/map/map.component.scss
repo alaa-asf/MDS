@@ -21,3 +21,9 @@
     height: 600px;
     display: block;
 }
+
+:host ::ng-deep {
+    .p-card-title {
+        text-align: center;
+    }
+}
