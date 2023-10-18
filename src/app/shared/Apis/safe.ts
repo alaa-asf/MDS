@@ -19,6 +19,12 @@ export class Safe {
     }
     getaccountantBoxesBranch(boxId: any, from: any, to: any) {
         return this.httpClient.get(environment.apiUrl + `/accountantboxtransactions/transactions-by-box?boxId=${boxId}&fromDate=${from}&toDate=${to}`)
+    }
 
+    addSafe(transaction: any) {
+        return this.httpClient.post(environment.apiUrl + '/safe/create-safe-transaction', transaction);
+    }
+    getTransactionName(transactionType: any) {
+        return this.httpClient.get(environment.apiUrl + `/safe/transaction-name?transactionType=${transactionType}`);
     }
 }

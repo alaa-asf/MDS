@@ -32,7 +32,8 @@ button,
 }
 
 * {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Din Next LT', Tahoma, Geneva, Verdana, sans-serif;
+    
 
 }
 .tab-header{
@@ -43,4 +44,10 @@ button,
     letter-spacing: 0.05rem;
     font-size: 1.12rem;
     
+}
+
+@font-face {
+    font-family: 'Din Next LT';
+    src: url('./assets/fonts/DINNextLTArabic-Regular.ttf') format('ttf'),
+         url('./assets/fonts/DINNextLTArabic-Medium.ttf') format('ttf');
 }

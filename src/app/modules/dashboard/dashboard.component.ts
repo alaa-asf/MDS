@@ -12,14 +12,14 @@ export class DashboardComponent implements OnInit {
     title1: any = "عدد الشحنات المدخلة";
     title2: any = "تقرير الشحنات لمندوب الاستلام";
     constructor(private _reportsService: ReportsService) {
-      let filter ={
-        "startDate": "2023-03-27 ",
-        "endDate": "2024-06-11 ",
-        "branchId":4
-      }
-      this.getOrdersData(filter);
-      this.getInsertedOrders(filter);
-      this.getPickUpAgentOrders(filter);
+    //   let filter ={
+    //     "startDate": "2023-03-27 ",
+    //     "endDate": "2024-06-11 ",
+    //     "branchId":4
+    //   }
+    //   this.getOrdersData(filter);
+    //   this.getInsertedOrders(filter);
+    //   this.getPickUpAgentOrders(filter);
     }
 
     ngOnInit() {
@@ -50,28 +50,6 @@ export class DashboardComponent implements OnInit {
     //         },
     //     ],
     // };
-    this.parentData2 = this.parentData1;
-    }
-
-    getOrdersData(filter: any) {
-        this._reportsService.getOrders(filter).subscribe((data) => {
-            console.log(data);
-        });
-    }
-
-    getInsertedOrders(filter: any) {
-        this._reportsService.getInsertedOrders(filter).subscribe((data:any) => {
-            console.log(data);
-            this.parentData1.labels = Array.from(new Set(data.map((item:any) => item.creationDate)));
-            this.parentData1.datasets.data = Array.from(new Set(data.map((item:any) => item.totalCases)));
-            console.log(this.parentData1);
-            
-          });
-    }
-
-    getPickUpAgentOrders(filter: any) {
-        this._reportsService.getPickUpAgentOrders(filter).subscribe((data) => {
-            console.log(data);
-        });
+    // this.parentData2 = this.parentData1;
     }
 }

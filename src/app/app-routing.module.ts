@@ -192,7 +192,7 @@ import { RoleGuard } from './shared/guard/role.guard';
                                 roles: ['ITBOSS'],
                             },
                         },
-                        { path: '**', redirectTo: '/' },
+                        // { path: '**', redirectTo: '/' },
                     ],
                 },
                 {

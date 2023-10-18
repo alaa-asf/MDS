@@ -1,63 +1,102 @@
 <div class="card">
   <div class=" flex justify-content-start">
     <div class="">
-      <p-dropdown [editable]="true" optionLabel="name"></p-dropdown>
+      <p-dropdown [options]="agents" [(ngModel)]="agent" optionLabel="userName"
+        (onChange)='getData($event.value)'></p-dropdown>
     </div>
-    <div> <p-button icon="pi pi-search" label="عرض الرواجع لمندوب التوصيل"
-        class="p-button-success px-5 ms-5"></p-button></div>
+    <!-- <div> <p-button icon="pi pi-search" label="عرض الرواجع لمندوب التوصيل"
+        class="p-button-success px-5 ms-5"></p-button></div> -->
   </div>
 </div>
 <div class="card">
   <div class="boxBalance text-primary">
     barcode <p-inputNumber style="height: 28px;" mode="decimal" inputId="withoutgrouping" [useGrouping]="false">
-    </p-inputNumber><p-checkbox class="px-5"  [binary]="true" inputId="binary"></p-checkbox></div>
+    </p-inputNumber><p-checkbox class="px-5" [binary]="true" inputId="binary"></p-checkbox></div>
 </div>
 <div class="card">
-<div class="flex justify-content-between">
-  <span class="boxBalance">الرواجع المستلمة من المندوب</span>
-<div><p-button  label="اللاحق"
-  styleClass="p-button-danger"></p-button></div>
+  <div class="flex justify-content-between">
+    <span class="boxBalance">الرواجع المستلمة من المندوب</span>
+    <div><p-button label="اللاحق" styleClass="p-button-danger"></p-button></div>
 
-</div>
+  </div>
 
-  <p-table
-      [value]="products"
-      [paginator]="true"
-      [rows]="5"
-      selectionMode="single"
-      [showCurrentPageReport]="true"
-      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-      [rowsPerPageOptions]="[10, 25, 50]"
-      [tableStyle]="{ 'min-width': '50rem' }"
-  >
-      <ng-template pTemplate="header">
-          <tr>
-              <th class="tab-header">رقم الأيصال	</th>
-              <th class="tab-header">تاريخ الاستلام الفعلي	</th>
-              <th class="tab-header">أنشئ بواسطة	</th>
-              <th class="tab-header">ملاحظات	</th>
-              <th class="tab-header">طباعة ايصال الاستلام	 </th>
-              <th class="tab-header"></th>
+  <p-table [value]="manifestiddates" [paginator]="true" [rows]="5" selectionMode="single" [showCurrentPageReport]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10, 25, 50]"
+    [tableStyle]="{ 'min-width': '50rem' }">
+    <ng-template pTemplate="header">
+      <tr>
+        <th class="tab-header">المتجر</th>
+        <th class="tab-header">من فرع</th>
+        <th class="tab-header">كود الشحنة</th>
+        <th class="tab-header">تاريخ الادخال</th>
+        <th class="tab-header">هاتف</th>
+        <th class="tab-header">العنوان</th>
+        <th class="tab-header">رقم الوصل</th>
+        <th class="tab-header">القطع الراجعة</th>
+        <th class="tab-header">الحالة</th>
+        <th class="tab-header">سبب الراجع</th>
+        <th class="tab-header">مبلغ وصل د.ع </th>
+        <th class="tab-header">مبلغ وصل دولار </th>
+        <th class="tab-header">ملاحظات </th>
+        <th class="tab-header"></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-manifest>
+      <tr>
+        <td>{{ manifest.merchantName }}</td>
+        <td>{{ manifest.addr }}</td>
+        <td>{{ manifest.caseId }}</td>
+        <td>{{ manifest.manifestiddate }}</td>
+        <td>{{ manifest.phone }}</td>
+        <td>{{ manifest.notes }}</td>
+        <td>{{ manifest.deliverReceiptNumber }}</td>
+        <td>{{ manifest.stat }}</td>
+        <td>{{ manifest.stat }}</td>
+        <td>{{ manifest.lastAction }}</td>
+        <td>{{ manifest.receiptIqd }}</td>
+        <td>{{ manifest.receiptUSD }}</td>
+        <td>
+          <p-checkbox [(ngModel)]="manifest.caseId" [binary]="true" inputId="binary" (onChange)="toggleSelection(manifest.caseId)"></p-checkbox>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+  <br>
 
-              <th class="tab-header"></th>
-          </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-product>
-          <tr>
-              <td>{{ product.transactionType }}</td>
-              <td>{{ product.transactionName }}</td>
-              <td>{{ product.transactionEntity }}</td>
-              <td>{{ product.transactionAmountIQD }}</td>
-              <td>{{ product.transactionAmountUSD }}</td>
-              <td>{{ product.notes }}</td>
-              <td>{{ product.accountantBoxId }}</td>
+  <div>
+    <h1>الرواجع المستلمة من المندوب</h1>
+  </div>
 
-              <td><p-button icon="pi pi-print" label="طباعة ايصال المستلمات"
-                ></p-button></td>
-              <td>
-                  <p-button  icon="pi pi-trash"  styleClass="p-button-outlined p-button-danger"></p-button>
-              </td>
-          </tr></ng-template
-      >
+  <p-table [value]="manifestiddates" [paginator]="true" [rows]="5" selectionMode="single" [showCurrentPageReport]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10, 25, 50]"
+    [tableStyle]="{ 'min-width': '50rem' }">
+    <ng-template pTemplate="header">
+      <tr>
+        <th class="tab-header">رقم الأيصال </th>
+        <th class="tab-header">تاريخ الاستلام الفعلي </th>
+        <th class="tab-header">أنشئ بواسطة </th>
+        <th class="tab-header">ملاحظات </th>
+        <th class="tab-header">طباعة ايصال الاستلام </th>
+        <th class="tab-header"></th>
+
+        <th class="tab-header"></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-manifest>
+      <tr>
+        <td>{{ manifest.transactionType }}</td>
+        <td>{{ manifest.transactionName }}</td>
+        <td>{{ manifest.transactionEntity }}</td>
+        <td>{{ manifest.transactionAmountIQD }}</td>
+        <td>{{ manifest.transactionAmountUSD }}</td>
+        <td>{{ manifest.notes }}</td>
+        <td>{{ manifest.accountantBoxId }}</td>
+
+        <td><p-button icon="pi pi-print" label="طباعة ايصال المستلمات"></p-button></td>
+        <td>
+          <p-button icon="pi pi-trash" styleClass="p-button-outlined p-button-danger"></p-button>
+        </td>
+      </tr>
+    </ng-template>
   </p-table>
 </div>

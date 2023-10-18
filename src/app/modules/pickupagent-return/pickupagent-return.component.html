@@ -1,7 +1,8 @@
 <div class="card">
   <div class=" flex justify-content-start">
     <div class="">
-      <p-dropdown [editable]="true" optionLabel="name"></p-dropdown>
+      <p-dropdown [options]="pickupagents" [(ngModel)]="pickupagent" optionLabel="customerName"
+      (onChange)='getData($event.value)'></p-dropdown>
     </div>
     <div> <p-button icon="pi pi-search" label="عرض الرواجع لمندوب الاستلام"
         class="p-button-success px-5 ms-5"></p-button></div>

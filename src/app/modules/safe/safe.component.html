@@ -1,11 +1,11 @@
 <div class="card flex justify-content-between">
     <p-button label="جرد القاصة" styleClass="p-button-outlined p-button-warning"></p-button>
-    <div style="padding: 0.2rem 0.5rem; font-weight: 500; display: flex;   color: #FFFFFF;    color: #FFFFFF;background-color: aqua;justify-content: center;
+    <div style="padding: 0.2rem 0.5rem; font-weight: 500; display: flex;   color: #FFFFFF;    color: #FFFFFF;background-color: skyblue;justify-content: center;
     animation: auto;
     align-items: center;
     border-radius: 10px;">
         {{safeBalanceIQD}} <span>دينار عراقي</span> </div>
-    <div style="padding: 0.2rem 0.5rem;    color: #FFFFFF; display: flex;   font-weight: 500;background-color: orangered;justify-content: center;
+    <div style="padding: 0.2rem 0.5rem;    color: #FFFFFF; display: flex;   font-weight: 500;background-color: lightgreen;justify-content: center;
     animation: auto;
     align-items: center;
     border-radius: 10px;">
@@ -18,19 +18,20 @@
         <div class="">
             <span>نوع المعاملة</span>
             <div class="pt-2">
-                <p-dropdown [editable]="true" optionLabel="name"></p-dropdown>
+                <p-dropdown [options]="transactionTypes" [(ngModel)]="transactionType" optionLabel="name"
+                (onChange)='getTransactionName(transactionType)'></p-dropdown>
             </div>
         </div>
         <div class="">
             <span>أسم المعاملة</span>
             <div class="pt-2">
-                <p-dropdown [editable]="true" optionLabel="name"></p-dropdown>
+                <p-dropdown [options]="transactionNames" [(ngModel)]="transactionName" optionLabel="name"></p-dropdown>
             </div>
         </div>
         <div class="">
             <span>طرف المعاملة</span>
             <div class="pt-2">
-                <p-dropdown [editable]="true" optionLabel="name"></p-dropdown>
+                <p-dropdown [options]="transactionSides" [(ngModel)]="transactionSide" optionLabel="accountant"></p-dropdown>
             </div>
         </div>
     </div>

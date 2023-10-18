@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ReportsService } from 'src/app/shared/Apis/reports.service';
+import { ShippingService } from 'src/app/shared/Apis/shipping.service';
 import { StateService } from 'src/app/shared/services/state.service';
 
 @Component({
@@ -12,34 +13,34 @@ export class NewshippingComponent implements OnInit {
     governorates: [] = [];
     stores: [] = [];
     regions: [] = [];
-
-    newShippingForm = this.fb.group({
-        state: ['', [Validators.required]], //المحافظة
-        merchantName: [''], //المتجر id
-        district: [''], //المنطقة الي جبتا حسب المحافظة
-        handPhone: [''], //هاتف المتجر
-        receiptNumber: [''], //رقم الوصل
-        receiptAmount: [''], //مبلغ الوصل دينار عراقي
-        receiptAmountUsd: [''], //مبلغ الوصل دولار
-        endCustomerPhone: [''], //هاتف المستلم
-        addressDetails: [''], //العنوان
-        notes: [''], //ملاحظات
-    });
-
+    loading = false;
+    totalCases: any = ['1'];
+    newShippingForm: any;
+    districts:[] = [];
+    district: any;
     constructor(
         public fb: FormBuilder,
-        private _stateService: StateService
+        private _stateService: StateService,
+        private _shippingService: ShippingService
     ) {
         this.changeName(this._stateService.states);
         this.governorates = this._stateService.states;
         console.log(this._stateService.states);
+        this.newShippingForm = this.fb.group({
+            state: ['', [Validators.required]], //المحافظة
+            merchantName: [''], //المتجر id
+            district: [''], //المنطقة الي جبتا حسب المحافظة
+            handPhone: [''], //هاتف المتجر
+            receiptNumber: [''], //رقم الوصل
+            receiptAmount: [''], //مبلغ الوصل دينار عراقي
+            receiptAmountUsd: [''], //مبلغ الوصل دولار
+            endCustomerPhone: [''], //هاتف المستلم
+            addressDetails: [''], //العنوان
+            notes: [''], //ملاحظات
+        });
     }
 
-    ngOnInit() {}
-
-    getAllDistritCodes(district: any) {
-        this._stateService.deliveryAgents(district);
-    }
+    ngOnInit() { }
 
     changeName(states: any) {
         states?.forEach((state: any) => {
@@ -105,17 +106,27 @@ export class NewshippingComponent implements OnInit {
         });
     }
 
-    selectGovernorates(governorate: any){
+    selectGovernorates(governorate: any) {
         console.log(governorate.value);
-        this._stateService.deliveryAgents(governorate.value);
-
+        this.getAllDistritCodes(governorate.value);
     }
+
+    addCase() {
+        this.loading = true;
+        this.totalCases.push("1");
+        this.loading = false;
+    }
+
+    getAllDistritCodes(stateCode: any) {
+        this._shippingService.get_all_distritCodes(stateCode.value).subscribe((data: any) => {
+            console.log(data);
+            let newArray = data.map((element:any) => {
+                return { name: element };
+              });
+            this.districts = newArray;
+        })
+    }
+
+    
 }
-//for dropdown
-// this.cities = [
-//   { name: 'New York', code: 'NY' },
-//   { name: 'Rome', code: 'RM' },
-//   { name: 'London', code: 'LDN' },
-//   { name: 'Istanbul', code: 'IST' },
-//   { name: 'Paris', code: 'PRS' }
-// ];
+
