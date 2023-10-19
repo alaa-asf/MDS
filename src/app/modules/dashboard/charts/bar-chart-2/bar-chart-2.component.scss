@@ -1,0 +1,12 @@
+:host ::ng-deep {
+    .p-card-title {
+        text-align: center;
+    }
+}
+
+:host ::ng-deep .p-calendar {
+    position: relative;
+    display: inline-flex;
+    max-width: 100%;
+    flex-direction: row-reverse;
+}

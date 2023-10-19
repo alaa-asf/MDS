@@ -109,6 +109,8 @@ export class StagesComponent extends BaseComponent implements OnInit {
                 });
             }, {});
         this.dashboardService.getCaseFilterd(filter).subscribe((res: any) => {
+            console.log(filter);
+            
             this.data = res
             this.loading = false
         })
