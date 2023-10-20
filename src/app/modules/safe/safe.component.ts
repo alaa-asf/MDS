@@ -47,10 +47,20 @@ export class SafeComponent implements OnInit {
         this.visible = true;
     }
 
+    getName(name: any) {
+        console.log(name);
+
+    }
+    getType(type: any) {
+        console.log(type);
+
+    }
     getTransactionName(transactionType: any) {
+        console.log(transactionType);
+
         this.safe.getTransactionName(transactionType.value).subscribe(data => {
+            console.log(data);
             this.transactionNames = data;
-            console.log(this.transactionName);
 
         })
     }
@@ -59,7 +69,7 @@ export class SafeComponent implements OnInit {
         this.safe.getAllacctbox().subscribe(data => {
             this.transactionSides = data;
             console.log(data);
-            
+
         })
     }
 
@@ -73,7 +83,6 @@ export class SafeComponent implements OnInit {
         this.newSafe.accountantBoxId = this.transactionName;
         this.safe.addSafe(this.newSafe).subscribe(res => {
             console.log(res);
-            
         })
     }
 

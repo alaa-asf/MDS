@@ -1,4 +1,5 @@
-import { HttpClient } from '@angular/common/http';
+
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 
@@ -6,7 +7,9 @@ import { environment } from 'src/environments/environment';
     providedIn: 'root',
 })
 export class ReturnablesService {
-    constructor(private httpClient: HttpClient) {}
+
+    constructor(private httpClient: HttpClient) { }
+
 
     getPickupAgent() {
         return this.httpClient.get(`${environment.apiUrl}/branch/pickupAgent`);
@@ -22,12 +25,98 @@ export class ReturnablesService {
         );
     }
 
-    getAgentsCases(agentAcc: any) {
-        return this.httpClient.get(
-            `${environment.apiUrl}/financials/agent/Cases?agentAcc=${agentAcc}`
-        );
+    returnToCustomer(agentId: any, id: any) {
+        if (id) {
+            return this.httpClient.patch(
+                `${environment.apiUrl}/PCases/return_to_customer?id=${agentId}&id=${id}`,
+                null
+                , {
+                    headers: new HttpHeaders({
+                        'Content-Type': 'application/json',
+                    })
+                }
+            );
+        } else {
+            return this.httpClient.patch(
+                `${environment.apiUrl}/PCases/return_to_customer?id=${agentId}`,
+                null
+                , {
+                    headers: new HttpHeaders({
+                        'Content-Type': 'application/json',
+                    })
+                }
+            );
+        }
+
     }
 
+    getAgentsCases(body: any, id: any) {
+
+        if (id) {
+            return this.httpClient.patch(`${environment.apiUrl}/PCases/return_from_agent?id=${body}&id=${id}`,
+
+                null
+                , {
+                    headers: new HttpHeaders({
+                        'Content-Type': 'application/json',
+                    })
+                }
+            )
+        } else {
+            return this.httpClient.patch(`${environment.apiUrl}/PCases/return_from_agent?id=${body}`,
+
+                null
+                , {
+                    headers: new HttpHeaders({
+                        'Content-Type': 'application/json',
+                    })
+                }
+            )
+        }
+
+
+    }
+    getPickupagentReturn(body: any, id: any) {
+
+        if (id) {
+            return this.httpClient.patch(`${environment.apiUrl}/PCases/return_to_pickup_agent?id=${body}&id=${id}`,
+
+                null
+                , {
+                    headers: new HttpHeaders({
+                        'Content-Type': 'application/json',
+                    })
+                }
+            )
+        } else {
+            return this.httpClient.patch(`${environment.apiUrl}/PCases/return_to_pickup_agent?id=${body}`,
+
+                null
+                , {
+                    headers: new HttpHeaders({
+                        'Content-Type': 'application/json',
+                    })
+                }
+            )
+        }
+
+
+    }
+    print(id: any) {
+        var docprint: any = window.open("about:blank", "_blank");//new page
+        var oTable = document.getElementById(id); //get the 1st row by a selector    
+        docprint.document.open();
+        docprint.document.write('-', oTable?.innerHTML, '-'); //select the TR's HTML and add it to the new page
+        docprint.document.close();
+        docprint.print();
+        docprint.close();
+    }
+    deleteSelection(id: number, array: []): void {
+        const index = array.findIndex((cId: any) => cId = id);
+        if (index > -1) {
+            array.splice(index, 1); // Remove ID if already present
+        }
+    }
     // getSummaryData() {
     //     return this.httpClient.get(environment.apiUrl + '/PCases/logistics?')
     // }

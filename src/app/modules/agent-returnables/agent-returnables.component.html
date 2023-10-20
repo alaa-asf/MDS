@@ -1,22 +1,25 @@
 <div class="card">
   <div class=" flex justify-content-start">
     <div class="">
-      <p-dropdown [options]="agents" [(ngModel)]="agent" optionLabel="userName"
+
+      <p-dropdown [required]="true" placeholder="اختر اسم" [options]="agents" optionLabel="userName"
         (onChange)='getData($event.value)'></p-dropdown>
     </div>
-    <!-- <div> <p-button icon="pi pi-search" label="عرض الرواجع لمندوب التوصيل"
-        class="p-button-success px-5 ms-5"></p-button></div> -->
+    <div> <p-button [disabled]="disabled" (click)="getAgentCheckbox()" icon="pi pi-search" label="عرض تفاصيل الراجع من المندوب" class="p-button-success px-5 ms-5"></p-button>
+    </div>
   </div>
 </div>
 <div class="card">
   <div class="boxBalance text-primary">
-    barcode <p-inputNumber style="height: 28px;" mode="decimal" inputId="withoutgrouping" [useGrouping]="false">
-    </p-inputNumber><p-checkbox class="px-5" [binary]="true" inputId="binary"></p-checkbox></div>
+
+    باركود <p-inputNumber [(ngModel)]="agent" style="height: 28px;" mode="decimal" inputId="withoutgrouping"
+      [useGrouping]="false">
+    </p-inputNumber><p-checkbox class="px-5"  [(ngModel)]="agentCheckbox"
+      [binary]="true" inputId="binary"></p-checkbox></div>
 </div>
 <div class="card">
   <div class="flex justify-content-between">
     <span class="boxBalance">الرواجع المستلمة من المندوب</span>
-    <div><p-button label="اللاحق" styleClass="p-button-danger"></p-button></div>
 
   </div>
 
@@ -25,38 +28,30 @@
     [tableStyle]="{ 'min-width': '50rem' }">
     <ng-template pTemplate="header">
       <tr>
-        <th class="tab-header">المتجر</th>
-        <th class="tab-header">من فرع</th>
-        <th class="tab-header">كود الشحنة</th>
-        <th class="tab-header">تاريخ الادخال</th>
-        <th class="tab-header">هاتف</th>
-        <th class="tab-header">العنوان</th>
-        <th class="tab-header">رقم الوصل</th>
-        <th class="tab-header">القطع الراجعة</th>
-        <th class="tab-header">الحالة</th>
-        <th class="tab-header">سبب الراجع</th>
-        <th class="tab-header">مبلغ وصل د.ع </th>
-        <th class="tab-header">مبلغ وصل دولار </th>
-        <th class="tab-header">ملاحظات </th>
+
+        <th>#</th>
+
+        <th class="tab-header">رقم الأيصال</th>
+        <th class="tab-header">تاريخ الاستلام الفعلي</th>
+        <th class="tab-header">أنشئ بواسطة</th>
+        <th class="tab-header">ملاحظات</th>
+        <th class="tab-header">طباعة ايصال الاستلام</th>
         <th class="tab-header"></th>
+     
       </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-manifest>
-      <tr>
-        <td>{{ manifest.merchantName }}</td>
-        <td>{{ manifest.addr }}</td>
-        <td>{{ manifest.caseId }}</td>
-        <td>{{ manifest.manifestiddate }}</td>
-        <td>{{ manifest.phone }}</td>
-        <td>{{ manifest.notes }}</td>
-        <td>{{ manifest.deliverReceiptNumber }}</td>
-        <td>{{ manifest.stat }}</td>
-        <td>{{ manifest.stat }}</td>
-        <td>{{ manifest.lastAction }}</td>
-        <td>{{ manifest.receiptIqd }}</td>
-        <td>{{ manifest.receiptUSD }}</td>
+    <ng-template let-i="rowIndex" pTemplate="body" let-manifest>
+      <tr [id]="manifest?.cId">
+        <td>{{ i + 1 }}</td>
+
+        <td>{{ manifest.cRcvDistrict }}</td>
+        <td>{{ manifest.cCreateddt |filterDate }}</td>
+        <td>{{ manifest.cCreatedby }}</td>
+        <td>{{ manifest.cCreationstartpoint }}</td>
+
+        <td><p-button (click)="print(manifest?.cId)" icon="pi pi-print" label="طباعة ايصال المستلمات"></p-button></td>
         <td>
-          <p-checkbox [(ngModel)]="manifest.caseId" [binary]="true" inputId="binary" (onChange)="toggleSelection(manifest.caseId)"></p-checkbox>
+          <p-button (click)="deleteSelection(manifest?.cId)" icon="pi pi-trash" styleClass="p-button-outlined p-button-danger"></p-button>
         </td>
       </tr>
     </ng-template>
@@ -67,36 +62,5 @@
     <h1>الرواجع المستلمة من المندوب</h1>
   </div>
 
-  <p-table [value]="manifestiddates" [paginator]="true" [rows]="5" selectionMode="single" [showCurrentPageReport]="true"
-    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10, 25, 50]"
-    [tableStyle]="{ 'min-width': '50rem' }">
-    <ng-template pTemplate="header">
-      <tr>
-        <th class="tab-header">رقم الأيصال </th>
-        <th class="tab-header">تاريخ الاستلام الفعلي </th>
-        <th class="tab-header">أنشئ بواسطة </th>
-        <th class="tab-header">ملاحظات </th>
-        <th class="tab-header">طباعة ايصال الاستلام </th>
-        <th class="tab-header"></th>
 
-        <th class="tab-header"></th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-manifest>
-      <tr>
-        <td>{{ manifest.transactionType }}</td>
-        <td>{{ manifest.transactionName }}</td>
-        <td>{{ manifest.transactionEntity }}</td>
-        <td>{{ manifest.transactionAmountIQD }}</td>
-        <td>{{ manifest.transactionAmountUSD }}</td>
-        <td>{{ manifest.notes }}</td>
-        <td>{{ manifest.accountantBoxId }}</td>
-
-        <td><p-button icon="pi pi-print" label="طباعة ايصال المستلمات"></p-button></td>
-        <td>
-          <p-button icon="pi pi-trash" styleClass="p-button-outlined p-button-danger"></p-button>
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
 </div>

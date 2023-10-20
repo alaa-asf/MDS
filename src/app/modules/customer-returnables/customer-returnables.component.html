@@ -1,10 +1,12 @@
 <div class="card">
   <div class=" flex justify-content-start">
     <div class="">
-      <p-dropdown [options]="customers" [(ngModel)]="customer" optionLabel="customerName"
-      (onChange)='getData($event.value)'></p-dropdown>
+
+      <p-dropdown (onChange)='getUserId($event.value)' placeholder="اختر اسم" [options]="customers" [(ngModel)]="customer" optionLabel="customerName"
+      ></p-dropdown>
+
     </div>
-    <div> <p-button icon="pi pi-search" label="عرض تفاصيل الراجع للمتجر" class="p-button-success px-5 ms-5"></p-button>
+    <div> <p-button [disabled]="disabled" (click)="getAgentCheckbox()" icon="pi pi-search" label="عرض تفاصيل الراجع للمتجر" class="p-button-success px-5 ms-5"></p-button>
     </div>
   </div>
 </div>
@@ -12,12 +14,12 @@
   <div class="">
     <span class="boxBalance text-primary">
 
-      barcode
+      باركود
     </span>
-    <p-inputNumber style="height: 28px;" mode="decimal" inputId="withoutgrouping" [useGrouping]="false">
+    <p-inputNumber style="height: 28px;" mode="decimal" inputId="withoutgrouping" [(ngModel)]="agent" [useGrouping]="false">
     </p-inputNumber>
     <span class="m-5">
-      ارجاع الكل<p-checkbox class="px-5" [binary]="true" inputId="binary"></p-checkbox>
+      ارجاع الكل<p-checkbox [(ngModel)]="agentCheckbox" class="px-5"  [binary]="true" inputId="binary"></p-checkbox>
 
     </span>
   </div>
@@ -35,31 +37,32 @@
     [tableStyle]="{ 'min-width': '50rem' }">
     <ng-template pTemplate="header">
       <tr>
-        <th class="tab-header">رقم الأيصال </th>
-        <th class="tab-header">تاريخ الاستلام الفعلي </th>
-        <th class="tab-header">أنشئ بواسطة </th>
-        <th class="tab-header">ملاحظات </th>
-        <th class="tab-header">طباعة ايصال الاستلام </th>
-        <th class="tab-header">acr_closed</th>
-        <th class="tab-header"></th>
+        <th>#</th>
 
+        <th class="tab-header">رقم الأيصال</th>
+        <th class="tab-header">تاريخ الاستلام الفعلي</th>
+        <th class="tab-header">أنشئ بواسطة</th>
+        <th class="tab-header">ملاحظات</th>
+        <th class="tab-header">طباعة ايصال الاستلام</th>
         <th class="tab-header"></th>
+     
       </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-product>
-      <tr>
-        <td>{{ product.transactionType }}</td>
-        <td>{{ product.transactionName }}</td>
-        <td>{{ product.transactionEntity }}</td>
-        <td>{{ product.transactionAmountIQD }}</td>
-        <td>{{ product.transactionAmountUSD }}</td>
-        <td>{{ product.notes }}</td>
-        <td>{{ product.accountantBoxId }}</td>
-        <td><p-button icon="pi pi-print" label="طباعة ايصال المستلمات"></p-button></td>
-        <td>  </td>
+    <ng-template let-i="rowIndex" pTemplate="body" let-manifest>
+      <tr [id]="manifest?.cId">
+        <td>{{ i + 1 }}</td>
+
+        <td>{{ manifest.cRcvDistrict }}</td>
+        <td>{{ manifest.cCreateddt |filterDate }}</td>
+        <td>{{ manifest.cCreatedby }}</td>
+        <td>{{ manifest.cCreationstartpoint }}</td>
+
+        <td><p-button (click)="print(manifest?.cId)" icon="pi pi-print" label="طباعة ايصال المستلمات"></p-button></td>
         <td>
-          <p-button icon="pi pi-trash" styleClass="p-button-outlined p-button-danger"></p-button>
+          <p-button (click)="deleteSelection(manifest?.cId)" icon="pi pi-trash" styleClass="p-button-outlined p-button-danger"></p-button>
         </td>
+
+        
       </tr>
     </ng-template>
   </p-table>
