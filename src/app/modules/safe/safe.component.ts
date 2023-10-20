@@ -46,6 +46,7 @@ export class SafeComponent implements OnInit {
     showDialog() {
         this.visible = true;
     }
+
     getName(name: any) {
         console.log(name);
 
@@ -82,7 +83,6 @@ export class SafeComponent implements OnInit {
         this.newSafe.accountantBoxId = this.transactionName;
         this.safe.addSafe(this.newSafe).subscribe(res => {
             console.log(res);
-
         })
     }
 

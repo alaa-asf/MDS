@@ -1,3 +1,4 @@
+
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
@@ -6,7 +7,9 @@ import { environment } from 'src/environments/environment';
     providedIn: 'root',
 })
 export class ReturnablesService {
+
     constructor(private httpClient: HttpClient) { }
+
 
     getPickupAgent() {
         return this.httpClient.get(`${environment.apiUrl}/branch/pickupAgent`);
@@ -21,6 +24,7 @@ export class ReturnablesService {
             `${environment.apiUrl}/customers/branch-customers`
         );
     }
+
     returnToCustomer(agentId: any, id: any) {
         if (id) {
             return this.httpClient.patch(

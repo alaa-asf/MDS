@@ -19,13 +19,17 @@
             <span>نوع المعاملة</span>
             <div class="pt-2">
                 <p-dropdown [options]="transactionTypes" [(ngModel)]="transactionType" optionLabel="name"
+
                 (onChange)='getType(transactionType)'></p-dropdown>
+
             </div>
         </div>
         <div class="">
             <span>أسم المعاملة</span>
             <div class="pt-2">
+
                 <p-dropdown [options]="transactionNames" (onChange)='getName(transactionName)' [(ngModel)]="transactionName" optionLabel="name"></p-dropdown>
+
             </div>
         </div>
         <div class="">

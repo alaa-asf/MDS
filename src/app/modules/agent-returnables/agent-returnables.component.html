@@ -1,16 +1,17 @@
 <div class="card">
   <div class=" flex justify-content-start">
     <div class="">
+
       <p-dropdown [required]="true" placeholder="اختر اسم" [options]="agents" optionLabel="userName"
         (onChange)='getData($event.value)'></p-dropdown>
     </div>
     <div> <p-button [disabled]="disabled" (click)="getAgentCheckbox()" icon="pi pi-search" label="عرض تفاصيل الراجع من المندوب" class="p-button-success px-5 ms-5"></p-button>
     </div>
-
   </div>
 </div>
 <div class="card">
   <div class="boxBalance text-primary">
+
     باركود <p-inputNumber [(ngModel)]="agent" style="height: 28px;" mode="decimal" inputId="withoutgrouping"
       [useGrouping]="false">
     </p-inputNumber><p-checkbox class="px-5"  [(ngModel)]="agentCheckbox"
@@ -27,6 +28,7 @@
     [tableStyle]="{ 'min-width': '50rem' }">
     <ng-template pTemplate="header">
       <tr>
+
         <th>#</th>
 
         <th class="tab-header">رقم الأيصال</th>
@@ -51,8 +53,6 @@
         <td>
           <p-button (click)="deleteSelection(manifest?.cId)" icon="pi pi-trash" styleClass="p-button-outlined p-button-danger"></p-button>
         </td>
-
-        
       </tr>
     </ng-template>
   </p-table>

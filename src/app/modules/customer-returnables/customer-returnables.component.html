@@ -1,8 +1,10 @@
 <div class="card">
   <div class=" flex justify-content-start">
     <div class="">
+
       <p-dropdown (onChange)='getUserId($event.value)' placeholder="اختر اسم" [options]="customers" [(ngModel)]="customer" optionLabel="customerName"
       ></p-dropdown>
+
     </div>
     <div> <p-button [disabled]="disabled" (click)="getAgentCheckbox()" icon="pi pi-search" label="عرض تفاصيل الراجع للمتجر" class="p-button-success px-5 ms-5"></p-button>
     </div>

@@ -21,6 +21,7 @@ export class CustomerReturnablesComponent implements OnInit {
             this.customers = data;
         });
     }
+
     getUserId(value: any) {       
         console.log(value);
          

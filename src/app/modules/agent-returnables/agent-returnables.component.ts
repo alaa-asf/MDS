@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ReturnablesService } from 'src/app/shared/Apis/returnables.service';
 
 @Component({
+
   selector: 'app-agent-returnables',
   templateUrl: './agent-returnables.component.html',
   styleUrls: ['./agent-returnables.component.scss'],
