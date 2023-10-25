@@ -2,39 +2,42 @@
   <form [formGroup]="newShippingForm">
     <div class="item w-100">
       <label>المحافظة</label>
-      <p-dropdown class="w-100" id="governorates" formControlName="state" [options]="governorates" optionLabel="label"
-        (onChange)="selectGovernorates($event)"></p-dropdown>
+      <p-dropdown placeholder="اختر محافظة" class="w-100" id="governorates" formControlName="state"
+        [options]="governorates" optionLabel="label" (onChange)="selectGovernorates($event)"></p-dropdown>
     </div>
-    <br>
-    <p-card *ngFor="let case of totalCases">
+    <br><br><br>
+    <p-card *ngFor="let case of totalCases; let i = index;">
       <div class="container-items">
         <div class="item">
           <label>المنطقة</label>
-          <p-dropdown id="regions" formControlName="district" [options]="districts" optionLabel="name"></p-dropdown>
+          <p-dropdown placeholder="اختر محافظة أولاً" id="regions" formControlName="district" [options]="districts"
+            optionLabel="code" (onChange)="selectDistrict($event)"></p-dropdown>
         </div>
         <div class="item">
           <label>المتجر</label>
-          <p-dropdown id="stores" formControlName="merchantName" [options]="stores" optionLabel="name"></p-dropdown>
+          <p-dropdown placeholder="اختر منطقة أولاً" id="stores" formControlName="merchantName" [options]="stores"
+            optionLabel="customerName" (onChange)="selectStore($event)"></p-dropdown>
         </div>
         <div class="item">
           <label>هاتف المتجر</label>
-          <p-inputNumber inputId="integeronly" formControlName="handPhone"></p-inputNumber>
+          <p-inputNumber [disabled]="true" mode="decimal" inputId="withoutgrouping" [useGrouping]="false"
+            formControlName="handPhone"></p-inputNumber>
         </div>
         <div class="item">
           <label>رقم الوصل</label>
-          <p-inputNumber inputId="integeronly" formControlName="receiptNumber"></p-inputNumber>
+          <input pInputText pKeyFilter="int" placeholder="" formControlName="receiptNumber" />
         </div>
         <div class="item">
           <label>مبلغ الوصل د.ع</label>
-          <p-inputNumber inputId="integeronly" formControlName="receiptAmount"></p-inputNumber>
+          <p-inputNumber formControlName="receiptAmount"></p-inputNumber>
         </div>
         <div class="item">
           <label>مبلغ الوصل $</label>
-          <p-inputNumber inputId="integeronly" formControlName="receiptAmountUsd"></p-inputNumber>
+          <p-inputNumber formControlName="receiptAmountUsd"></p-inputNumber>
         </div>
         <div class="item">
           <label>هاتف المستلم</label>
-          <p-inputNumber inputId="integeronly" formControlName="endCustomerPhone"></p-inputNumber>
+          <input pInputText pKeyFilter="int" placeholder="" formControlName="endCustomerPhone" />
         </div>
         <div class="item">
           <label>تفاصيل العنوان</label>
@@ -44,9 +47,18 @@
           <label>ملاحظات</label>
           <textarea rows="5" cols="30" pInputTextarea formControlName="notes"></textarea>
         </div>
+        <i class="pi pi-trash" style="font-size: 1.5rem; color: red;     position: absolute;
+        top: 0;
+        left: 0;
+        margin: 10px;" (click)="deleteCase(i)"></i>
+
       </div>
     </p-card>
     <br>
-    <p-button label="إضافة وصل اخر" [loading]="loading" (onClick)="addCase()"></p-button>
+    <p-button label="إضافة وصل اخر" (click)="addCase()"></p-button>
   </form>
+  <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 25px;">
+    <p-button label="حفظ" (click)="sendAllCases()" icon="pi pi-check"></p-button>
+    <p-button label="الغاء" (click)="deleteAllCases()" icon="pi pi-times" styleClass="p-button-secondary"></p-button>
+  </div>
 </p-card>
