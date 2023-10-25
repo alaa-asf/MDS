@@ -1,10 +1,11 @@
-import {Component, Injector, OnInit} from '@angular/core';
-import {BaseComponent} from "../../../../shared/base.component";
-import {ActivatedRoute} from "@angular/router";
-import {DashboardService} from "../../../../shared/Apis/dashboard.service";
-import {StateService} from "../../../../shared/services/state.service";
-import {stage, step, stepId} from "../../../../shared/constant/stage";
-import {MainService} from "../../../../shared/Apis/main.service";
+import { Component, Injector, OnInit } from '@angular/core';
+import { BaseComponent } from "../../../../shared/base.component";
+import { ActivatedRoute } from "@angular/router";
+import { DashboardService } from "../../../../shared/Apis/dashboard.service";
+import { StateService } from "../../../../shared/services/state.service";
+import { stage, step, stepId } from "../../../../shared/constant/stage";
+import { MainService } from "../../../../shared/Apis/main.service";
+import * as moment from 'moment';
 
 @Component({
     selector: 'app-stages',
@@ -23,11 +24,12 @@ export class StagesComponent extends BaseComponent implements OnInit {
     totalRecords = 0
     stepDialogVisible = false
     loading: boolean = false
-    decisionId:any
-    filters:any = {
+    decisionId: any
+    optionForAction: any = {}
+    filters: any = {
         c_dlvagent_manifestid: null,//منفيست مندوب التوصيل
         c_id: null,//كود الشحنه
-        cCustreceiptnoori: null,//رقم الوصل
+        cCustreceiptnoori: null,//رقم الوصلF
         merchantName: null,//المتجر
         from: null,//بتاريخ
         to: null,//إلى تاريخ
@@ -65,33 +67,166 @@ export class StagesComponent extends BaseComponent implements OnInit {
         cc_frombranch: true,
         barcode_checker: false
     }
-    operation:any = []
+    operation: any = []
     constructor(injector: Injector, private route: ActivatedRoute,
-                public state:StateService,
-                private mainService:MainService,
-                private dashboardService: DashboardService) {
+        public state: StateService,
+        private mainService: MainService,
+        private dashboardService: DashboardService) {
         super(injector)
         this.stage = this.route.snapshot.paramMap.get('stage');
         this.step = this.route.snapshot.paramMap.get('step');
 
     }
-    changeState(ev:any){
+    changeState(ev: any) {
         this.mainService.getAllDistritCodes(ev.value)
     }
     ngOnInit() {
-        this.dashboardService.getDecisionsByStep(stepId[this.step]).subscribe((des:any)=>{
-            this.operation = des.map((obj:any) => ({
-                value: obj.decisionId,
+        this.dashboardService.getDecisionsByStep(stepId[this.step]).subscribe((des: any) => {
+            this.operation = des.map((obj: any) => ({
+                value: obj.actionCode,
                 label: obj.description
             }));
+            this.optionForAction = {
+                'RTN_WTIHAGENT': [
+                    {
+                        type: 'dropdown',
+                        key: 'rtnReasonMap',
+                        options: this.state.returnReasones,
+                        placeholder: 'سبب الراجع',
+                        selected: null
+                    }
+        
+                ],
+                "RTN_TO_AGENT": [
+                    {
+                        type: 'dropdown',
+                        key: 'rtnReasonMap',
+                        options: this.state.returnReasones,
+                        placeholder: 'سبب الراجع',
+                        selected: null
+                    }
+        
+                ],
+                "POSTPONED": [
+                    {
+                        type: 'date',
+                        key: 'postponedToMap',
+                        selected: null
+                    },
+                    {
+                        type: 'dropdown',
+                        key: 'postponedOptionMap',
+                        options: this.state.postponedResonse,
+                        selected: null,
+                        placeholder: 'سبب التأجيل',
+        
+                    },
+        
+                ],
+                'RTN_TOSTORE': [
+                    {
+                        type: 'dropdown',
+                        key: 'rtnReasonMap',
+                        options: this.state.returnReasones,
+                        selected: null,
+                        placeholder: 'سبب الراجع',
+                    }
+        
+                ],
+                'PART_SUCC': [
+                    {
+                        type: 'input',
+                        key: 'newReceiptsAmtIqdMap',
+                        selected: null,
+                        placeholder: 'مبلغ الوصل د.ع',
+                    },
+                    {
+                        type: 'input',
+                        key: 'newReceiptsAmtUsdMap',
+                        selected: null,
+                        placeholder: 'مبلغ الوصل$',
+                    },
+                    {
+                        type: 'input',
+                        key: 'partialQtyReturnMap',
+                        selected: null,
+                        placeholder: 'القطع الراجعة',
+                    }
+                ],
+                'SUCS_DLV_CHANGEAMT': [
+                    {
+                        type: 'input',
+                        key: 'newReceiptsAmtIqdMap',
+                        selected: null,
+                        placeholder: 'مبلغ الوصل د.ع',
+                    },
+                    {
+                        type: 'input',
+                        key: 'newReceiptsAmtUsdMap',
+                        selected: null,
+                        placeholder: 'مبلغ الوصل$',
+                    },
+        
+                ]
+            }
         })
+   
         this.setFilters()
         this.setData()
         this.getData()
     }
-    changeDecision(ev:any){
-        if (ev){
-            this.stepDialogVisible = true
+    save() {
+        let updatedCases = this.data.filter(el => el.decision)
+        let casesIds = updatedCases.map(el => el.caseId)
+        let actionsMap: any = {}
+
+        updatedCases.forEach((obj: any) => {
+            actionsMap[obj.caseId] = obj.decision;
+        });
+        let otherData: any = {
+            "newReceiptsAmtIqdMap": {},
+            "newReceiptsAmtUsdMap": {},
+            "rtnReasonMap": {},
+            "postponedOptionMap": {},
+            "postponedToMap": {},
+            "queueColsToUpdate": {},
+            "partialQtyReturnMap": {},
+            "casesToRmkMap": {},
+        }
+
+        updatedCases.forEach((obj: any) => {
+            if (obj.optionForAction) {
+                obj.optionForAction.forEach((opt: any) => {
+                    if (opt.key == 'postponedToMap') {
+                        otherData[opt.key][obj.caseId] = moment(opt.selected).format('yyyy-MM-DD')
+                    } else {
+                        otherData[opt.key][obj.caseId] = opt.selected
+                    }
+                });
+            }
+        });
+
+        let base = {
+            "stepCode": this.step,
+            "casesIds": casesIds,
+            ...otherData,
+            "actionsMap": actionsMap
+        }
+        console.log(base)
+
+        this.loading = true
+        this.dashboardService.updateCase(base).subscribe(res => {
+            this.loading = false
+            this.getData()
+        }, () => {
+            this.loading = false
+        })
+    }
+    changeDecision(data: any, ev: any) {
+        if (this.optionForAction[ev.value]) {
+            data.optionForAction = JSON.parse(JSON.stringify(this.optionForAction[ev.value]));
+        } else {
+            data.optionForAction = null
         }
     }
     resetFilter() {
@@ -102,16 +237,16 @@ export class StagesComponent extends BaseComponent implements OnInit {
     getData() {
         this.loading = true
         const filter = Object.keys(this.filters)
-            .filter((key) => ['step', 'stage', 'cCustreceiptnoori', 'qManifestId', 'merchantName', 'from', 'to', 'stateNameArabic', 'agentName', 'c_rcv_hp1', 'branchCode'].includes(key))
-            .reduce((obj:any, key:any) => {
+            .filter((key) => ['step', 'stage', 'cCustreceiptnoori','c_createddt','qManifestId', 'merchantName', 'from', 'to', 'stateNameArabic', 'agentName', 'c_rcv_hp1', 'branchCode'].includes(key))
+            .reduce((obj: any, key: any) => {
                 return Object.assign(obj, {
                     [key]: this.filters[key]
                 });
             }, {});
         this.dashboardService.getCaseFilterd(filter).subscribe((res: any) => {
-            console.log(filter);
-            
             this.data = res
+            this.loading = false
+        },()=>{
             this.loading = false
         })
         // this.dashboardService.getCasesByStageAndStep(this.stage, this.step).subscribe((res: any) => {
@@ -300,12 +435,12 @@ export class StagesComponent extends BaseComponent implements OnInit {
             },
             {
                 name: 'ملاحظات',
-                type: 'string',
+                type: 'note',
                 key: 'note'
             },
             {
                 name: 'العمليه',
-                option:this.operation,
+                option: this.operation,
                 type: 'string',
                 key: ''
             },
@@ -363,19 +498,19 @@ export class StagesComponent extends BaseComponent implements OnInit {
             {
                 name: 'عدد الشحنات',
                 type: 'button',
-                title:'عرض جميع الشحنات - العدد 6',
+                title: 'عرض جميع الشحنات - العدد 6',
                 key: 'totcases'
             },
             {
                 name: 'طباعة الكشف',
                 type: 'button',
-                title:'PDF طباعة الكشف',
+                title: 'PDF طباعة الكشف',
                 key: ''
             },
             {
                 name: '',
                 type: 'button',
-                title:'استلام الشحنات باركود',
+                title: 'استلام الشحنات باركود',
                 key: ''
             },
             {
@@ -385,7 +520,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
             },
             {
                 name: 'العمليه',
-                option:this.operation,
+                option: this.operation,
                 type: 'dropdown',
                 key: ''
             },
@@ -463,13 +598,13 @@ export class StagesComponent extends BaseComponent implements OnInit {
             },
             {
                 name: 'العمليه',
-                option:this.operation,
+                option: this.operation,
                 type: 'dropdown',
                 key: ''
             },
             {
                 name: 'ملاحظات',
-                type: 'string',
+                type: 'note',
                 key: 'note'
             },
             {
@@ -550,13 +685,13 @@ export class StagesComponent extends BaseComponent implements OnInit {
             },
             {
                 name: 'العمليه',
-                option:this.operation,
+                option: this.operation,
                 type: 'dropdown',
                 key: ''
             },
             {
                 name: 'ملاحظات',
-                type: 'string',
+                type: 'note',
                 key: 'note'
             },
             {
@@ -637,13 +772,13 @@ export class StagesComponent extends BaseComponent implements OnInit {
             },
             {
                 name: 'العمليه',
-                option:this.operation,
+                option: this.operation,
                 type: 'dropdown',
                 key: ''
             },
             {
                 name: 'ملاحظات',
-                type: 'string',
+                type: 'note',
                 key: 'note'
             },
             {
@@ -746,7 +881,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
             },
             {
                 name: 'العمليه',
-                option:this.operation,
+                option: this.operation,
                 type: 'dropdown',
                 key: ''
             }
@@ -814,7 +949,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
             },
             {
                 name: 'العمليه',
-                option:this.operation,
+                option: this.operation,
                 type: 'dropdown',
                 key: ''
             }
@@ -882,7 +1017,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
             },
             {
                 name: 'العمليه',
-                option:this.operation,
+                option: this.operation,
                 type: 'dropdown',
                 key: ''
             }
@@ -950,7 +1085,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
             },
             {
                 name: 'العمليه',
-                option:this.operation,
+                option: this.operation,
                 type: 'dropdown',
                 key: ''
             }
@@ -1018,7 +1153,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
             },
             {
                 name: 'العمليه',
-                option:this.operation,
+                option: this.operation,
                 type: 'dropdown',
                 key: ''
             }
@@ -1081,7 +1216,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
             },
             {
                 name: 'العمليه',
-                option:this.operation,
+                option: this.operation,
                 type: 'dropdown',
                 key: ''
             }
@@ -1149,7 +1284,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
             },
             {
                 name: 'العمليه',
-                option:this.operation,
+                option: this.operation,
                 type: 'dropdown',
                 key: ''
             },
@@ -1160,7 +1295,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
             },
             {
                 name: 'مندوب التوصيل',
-                option:this.state.deliveryAgents,
+                option: this.state.deliveryAgents,
                 type: 'string',
                 key: ''
             },
@@ -1255,7 +1390,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
             },
             {
                 name: 'العمليه',
-                option:this.operation,
+                option: this.operation,
                 type: 'string',
                 key: ''
             },
@@ -1323,7 +1458,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
             },
             {
                 name: 'العمليه',
-                option:this.operation,
+                option: this.operation,
                 type: 'string',
                 key: ''
             }
@@ -1391,7 +1526,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
             },
             {
                 name: 'العمليه',
-                option:this.operation,
+                option: this.operation,
                 type: 'dropdown',
                 key: ''
             }
@@ -1459,7 +1594,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
             },
             {
                 name: 'العمليه',
-                option:this.operation,
+                option: this.operation,
                 type: 'dropdown',
                 key: ''
             }

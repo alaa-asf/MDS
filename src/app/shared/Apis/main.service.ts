@@ -21,12 +21,21 @@ export class MainService {
         })
     }
     getReturnReasones() {
-        return this.httpClient.get(environment.apiUrl + '/users/getReturnReasones').subscribe(el=>{
-            const array = Object.entries(el).map(([key, value]) => ({
-                value: value,
-                label: key
+        return this.httpClient.get(environment.apiUrl + '/PCases/getReturnReasones').subscribe((el:any)=>{
+            const array = el.map((el:any) => ({
+                value: el.rtnCode,
+                label: el.rtnDesc
             }));
             this.StateService.returnReasones = array
+        })
+    }
+    getPostponedResonse() {
+        return this.httpClient.get(environment.apiUrl + '/PCases/getPostponedResonse').subscribe((el:any)=>{
+            const array = el.map((el:any) => ({
+                value: el.code,
+                label: el.description
+            }));
+            this.StateService.postponedResonse = array
         })
     }
     getLiaisonAgent() {

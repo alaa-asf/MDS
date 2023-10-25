@@ -15,6 +15,7 @@ export class AppComponent extends BaseComponent implements OnInit {
     ngOnInit() {
         this.MainService.getDeliveryAgent()
         this.MainService.getReturnReasones()
+        this.MainService.getPostponedResonse()
         this.MainService.getBranchs()
         this.MainService.getAllStateCode()
 
