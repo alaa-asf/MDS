@@ -1,5 +1,5 @@
 <p-card [header]="stageEnum[stage] + ' - ' + stepEnum[step]">
-    <p-table [value]="data" [tableStyle]="{ 'min-width': '50rem' }" styleClass="p-datatable-gridlines"
+    <p-table  [scrollable]="true" [value]="data" [tableStyle]="{ 'min-width': '75rem' }" styleClass="p-datatable-gridlines"
              [showCurrentPageReport]="true" [lazy]=false [totalRecords]='totalRecords'
              currentPageReportTemplate="عرض {first} إلى {last} من {totalRecords} إدخالات ."
              [loading]="loading"
@@ -99,31 +99,43 @@
                 </div>
 
             </div>
-            <div class="flex gap-2 justify-content-end">
-                <div class="flex justify-content-center">
-                    <p-button label="بحث" (click)="getData()" icon="pi pi-search" [loading]="loading"
-                              styleClass="p-button-success hidden md:flex"></p-button>
-                    <p-button label="Search" class="block md:hidden w-full" [loading]="loading" styleClass="w-full"
-                              (click)="getData()"></p-button>
-
+            <div class="flex justify-content-between">
+                <div class="flex gap-2 justify-content-end">
+                    <div class="flex justify-content-center">
+                        <p-button label="بحث" (click)="getData()" icon="pi pi-search" [loading]="loading"
+                                  styleClass="p-button-success hidden md:flex"></p-button>
+                        <p-button label="Search" class="block md:hidden w-full" [loading]="loading" styleClass="w-full"
+                                  (click)="getData()"></p-button>
+    
+                    </div>
+                    <div class="flex justify-content-center align-items-center">
+                        <button type="button" pButton pRipple icon="pi pi-filter-slash" (click)="resetFilter()"
+                                class="p-button-secondary mr-2 hidden md:flex" pTooltip="Reset Filters"
+                                tooltipPosition="bottom"></button>
+                        <button type="button" pButton pRipple icon="pi pi-filter-slash" (click)="resetFilter()"
+                                class="p-button-secondary w-full flex md:hidden " pTooltip="Reset Filters"
+                                tooltipPosition="bottom"></button>
+    
+                    </div>
                 </div>
-                <div class="flex justify-content-center align-items-center">
-                    <button type="button" pButton pRipple icon="pi pi-filter-slash" (click)="resetFilter()"
-                            class="p-button-secondary mr-2 hidden md:flex" pTooltip="Reset Filters"
-                            tooltipPosition="bottom"></button>
-                    <button type="button" pButton pRipple icon="pi pi-filter-slash" (click)="resetFilter()"
-                            class="p-button-secondary w-full flex md:hidden " pTooltip="Reset Filters"
-                            tooltipPosition="bottom"></button>
-
+                <div>
+                    <div class="flex justify-content-center align-items-center">
+                        <button type="button" pButton pRipple icon="pi pi-save" (click)="save()"
+                                class="p-button-success mr-2 hidden md:flex" pTooltip="save"
+                                tooltipPosition="bottom"></button>
+                        <button type="button" pButton pRipple icon="pi pi-save" (click)="save()"
+                                class="p-button-success w-full flex md:hidden " pTooltip="save"
+                                tooltipPosition="bottom"></button>
+    
+                    </div>
                 </div>
-
             </div>
 
         </ng-template>
         <ng-template pTemplate="header">
             <tr>
                 <th>#</th>
-                <th *ngFor="let col of columns">
+                <th *ngFor="let col of columns" [ngClass]="col.type == 'dropdown'?'min-w-[200px]':'min-w-[150px]'">
                     {{col.name}}
                 </th>
             </tr>
@@ -139,70 +151,39 @@
                         {{data[col.key] | date:'short'}}
                     </div>
                     <div *ngIf="col.type == 'dropdown'" class="h-[44px]">
-                        <p-dropdown [appendTo]="'body'"  [options]="operation" class="w-full h-full" [placeholder]="' '" (onChange)="changeDecision($event)" [filter]='true'
+                        <p-dropdown [appendTo]="'body'"  [options]="operation" [showClear]="true" [(ngModel)]="data.decision"  class="w-full h-full" [placeholder]="' '" (onChange)="changeDecision(data,$event)" [filter]='true'
                                     styleClass="w-full h-full"></p-dropdown>
+
                     </div>
                     <div *ngIf="col.type == 'note'">
-                        <input pInputText type="text"
+                        <input pInputText type="text"  [ngModel]="data.note" 
                                class="w-full"/>
                     </div>
                     <div *ngIf="col.type == 'button'">
                         <p-button [label]="col.title"></p-button>
+                    </div>
+                    <div *ngIf="col.type == 'dropdown' && data.optionForAction" >
+                        <div *ngFor="let option of data.optionForAction " class="mt-2" >
+                            <div *ngIf=" option.type == 'date'" class="h-[44px]">
+                                <p-calendar [dir]="'ltr'" [inputStyleClass]="'w-full'" styleClass="w-full" [showIcon]="true"
+                                [showButtonBar]="true" [(ngModel)]="option.selected"
+                                [readonlyInput]="true"></p-calendar>
+                            </div>
+                            <div *ngIf=" option.type == 'dropdown'" class="h-[44px]">
+                                <p-dropdown [appendTo]="'body'" [(ngModel)]="option.selected" [options]="option.options" class="w-full h-full" [placeholder]="option.placeholder"  [filter]='true'
+                                styleClass="w-full h-full"></p-dropdown>
+                            </div>
+                            <div *ngIf=" option.type == 'input'" class="h-[44px]">
+                                <p-inputNumber pKeyFilter="num" styleClass="w-full"  [(ngModel)]="option.selected"  [placeholder]="option.placeholder"  
+                                class="!w-full"/>
+                            </div>
+                        </div>
+         
+                     
+                                    
                     </div>
                 </td>
             </tr>
         </ng-template>
     </p-table>
 </p-card>
-
-<p-dialog header="تغيير الحالة" [(visible)]="stepDialogVisible" [style]="{width: '50vw'}">
-    <div class="flex flex-column gap-2">
-        <label htmlFor="agent">مندوب التوصيل</label>
-        <p-dropdown id="agent" [options]="state.deliveryAgents" class="w-full" [filter]='true'
-                    styleClass="w-full"></p-dropdown>
-    </div>
-    <div class="flex flex-column gap-2">
-        <label htmlFor="returnReasones">سبب الأرجاع</label>
-        <p-dropdown id="returnReasones" [options]="state.returnReasones" class="w-full" [filter]='true'
-                    styleClass="w-full"></p-dropdown>
-    </div>
-    <div class="flex flex-column gap-2">
-        <label>تم التأجيل الى</label>
-        <p-calendar [dir]="'ltr'" [inputStyleClass]="'w-full'" styleClass="w-full" [showIcon]="true"
-                    [showButtonBar]="true"
-                    [readonlyInput]="true"></p-calendar>
-    </div>
-    <div class="flex flex-column gap-2">
-        <label htmlFor="postponeReason">تأجيل السبب</label>
-        <input id="postponeReason" pInputText type="text"
-               class="w-full"/>
-    </div>
-    <div class="flex flex-column gap-2">
-        <label  >مبلغ الوصل د.ع	</label>
-        <input  pInputText type="text"
-               class="w-full"/>
-    </div>
-    <div class="flex flex-column gap-2">
-        <label >مبلغ الوصل $	</label>
-        <input   pInputText type="text"
-               class="w-full"/>
-    </div>
-    <div class="flex flex-column gap-2">
-        <label >تم إرجاع الكمية</label>
-        <input  pInputText type="text"
-               class="w-full"/>
-    </div>
-    <div class="flex flex-column gap-2">
-        <label htmlFor="note">ملاحظات</label>
-        <input id="note" pInputText type="text"
-               class="w-full"/>
-    </div>
-
-    <ng-template pTemplate="footer">
-        <div class="mt-[21px]">
-            <p-button icon="pi pi-check" (click)="stepDialogVisible = false" label="تغيير"
-            ></p-button>
-        </div>
-
-    </ng-template>
-</p-dialog>
