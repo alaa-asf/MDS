@@ -25,4 +25,7 @@ export class DashboardService {
     addNewCase(shipment:any){
         return this.httpClient.post(environment.apiUrl + `/PCases`,shipment)
     }
+    updateCase(data:any){
+        return this.httpClient.post(environment.apiUrl + `/Flow/AgentOperations`,data)
+    }
 }

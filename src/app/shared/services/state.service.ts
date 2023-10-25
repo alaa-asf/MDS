@@ -28,12 +28,20 @@ export class StateService {
     set deliveryAgents(value: any) {
         this._deliveryAgents = value;
     }
+    get postponedResonse(): any {
+        return this._postponedResonse;
+    }
+    set postponedResonse(value: any) {
+        this._postponedResonse = value;
+    }
     private _deliveryAgents:any
     private _returnReasones:any
     private _liaisonAgent:any
     private _branches:any
+    private _postponedResonse:any
     public states:any
     public distrits:any
+
 
   constructor() { }
 }
