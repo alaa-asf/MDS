@@ -4138,6 +4138,7 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     margin: 0.143rem;
     transition: box-shadow 0.2s;
     border-radius: 50%;
+    transform: rotate(180deg);
 }
 
 .p-paginator .p-paginator-first:not(.p-disabled):not(.p-highlight):hover,

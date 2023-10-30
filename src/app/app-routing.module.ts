@@ -202,6 +202,12 @@ import { RoleGuard } from './shared/guard/role.guard';
                             data: {
                                 roles: ['ITBOSS'],
                             },
+                        },{
+                          path: 'income-outcome',
+                            loadChildren: () =>
+                                import(
+                                    './modules/income-outcome/income-outcome.module'
+                                    ).then((m) => m.IncomeOutcomeModule),
                         },
                         {
                             path: 'setup_district',

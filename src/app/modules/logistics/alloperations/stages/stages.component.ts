@@ -95,7 +95,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
                         placeholder: 'سبب الراجع',
                         selected: null
                     }
-        
+
                 ],
                 "RTN_TO_AGENT": [
                     {
@@ -105,7 +105,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
                         placeholder: 'سبب الراجع',
                         selected: null
                     }
-        
+
                 ],
                 "POSTPONED": [
                     {
@@ -119,9 +119,9 @@ export class StagesComponent extends BaseComponent implements OnInit {
                         options: this.state.postponedResonse,
                         selected: null,
                         placeholder: 'سبب التأجيل',
-        
+
                     },
-        
+
                 ],
                 'RTN_TOSTORE': [
                     {
@@ -131,7 +131,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
                         selected: null,
                         placeholder: 'سبب الراجع',
                     }
-        
+
                 ],
                 'PART_SUCC': [
                     {
@@ -166,11 +166,11 @@ export class StagesComponent extends BaseComponent implements OnInit {
                         selected: null,
                         placeholder: 'مبلغ الوصل$',
                     },
-        
+
                 ]
             }
         })
-   
+
         this.setFilters()
         this.setData()
         this.getData()
@@ -208,12 +208,11 @@ export class StagesComponent extends BaseComponent implements OnInit {
 
         let base = {
             "stepCode": this.step,
+            "stage":this.stage,
             "casesIds": casesIds,
             ...otherData,
             "actionsMap": actionsMap
         }
-        // console.log(base)
-
         this.loading = true
         this.dashboardService.updateCase(base).subscribe(res => {
             this.loading = false
