@@ -153,6 +153,18 @@ export class MenuService {
                 },
             ],
         },
+        {
+            label: 'أيرادات ومصروفات',
+            visible: false,
+            items:[
+                {
+                    label: 'حسابات مندوب التوصيل',
+                    roles: ['ITBOSS'],
+                    visible: false,
+                    routerLink: ['/income-outcome/agent-account'],
+                },
+            ]
+        }
     ];
 
     private menuSource = new Subject<MenuChangeEvent>();
