@@ -1,0 +1,260 @@
+<div class="card">
+    <div class=" flex justify-content-start">
+        <div class="">
+
+            <p-dropdown [required]="true" placeholder="اختر مندوب التوصيل" [options]="agents" optionLabel="userName"
+                        (onChange)='getData($event.value)'></p-dropdown>
+        </div>
+        <div>
+            <p-button [loading]="loading" [disabled]="!agentId" (click)="getAgentData()" icon="pi pi-search"
+                      label="عرض التفاصيل الماليه لمندوب التوصيل" class="p-button-success px-5 ms-5"></p-button>
+        </div>
+    </div>
+</div>
+
+<p-tabView (onChange)="changeTab($event)">
+    <p-tabPanel header="محاسبة المندوب">
+        <div class="card">
+            <p-table  #table [loading]="loading" [value]="agentOrders"
+                      styleClass="p-datatable-gridlines"
+                      rowGroupMode="subheader" groupRowsBy="manifestId" [dataKey]="'manifestId'"
+                      [tableStyle]="{ 'min-width': '50rem' }">
+                <ng-template pTemplate="caption">
+                    <div class="flex justify-between">
+
+                        <div class="p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input [(ngModel)]="searchValue" pInputText type="text" (keyup.enter)="search()"
+                                   placeholder="بحث عن وصل"/>
+                        </div>
+                        <div>
+                            <p-button [loading]="loading" [disabled]="selectedItems.length<1" (onClick)="showAgentDialog = true"
+                                      label="محاسبة المندوب" class="p-button-success px-5 ms-5"></p-button>
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>#</th>
+                        <th class="tab-header">العميل</th>
+                        <th class="tab-header">إسم المستلم</th>
+                        <th class="tab-header">هاتف</th>
+                        <th class="tab-header">العنوان</th>
+                        <th class="tab-header">رقم الوصل</th>
+                        <th class="tab-header">مبلغ الوصل $</th>
+                        <th class="tab-header">مبلغ الوصل د.ع</th>
+                        <th class="tab-header">حصة مندوب التوصيل</th>
+                        <th class="tab-header">الحاله</th>
+                        <th class="tab-header">أخر من حدث الحالة</th>
+                        <th style="width: 4rem">
+                            <p-checkbox [(ngModel)]="checkedAll" (onChange)="checkRow($event,{},true)" [binary]="true" ></p-checkbox>
+                        </th>
+
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="groupheader" let-item let-rowIndex="rowIndex" let-expanded="expanded">
+                    <tr style="background-color: #f8f9fa">
+                        <td colspan="12">
+                            <div class="flex items-center gap-2">
+                                <button type="button" pButton pRipple [pRowToggler]="item"
+                                        class="p-button-text p-button-rounded p-button-plain"
+                                        [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                                <span
+                                    class="font-bold">  منفيست رقم {{item.manifestId}} {{item.manifestiddate | date:'long'}}</span>
+                            </div>
+
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="groupfooter" let-item>
+                    <tr class="p-rowgroup-footer" style="background-color: #f8f9fa">
+                        <td style="text-align: right">المجموع</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>{{totalReceiptIqd(item.manifestId).toLocaleString()}}</td>
+                        <td>{{totalAgentShare(item.manifestId).toLocaleString()}}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </ng-template>
+                <ng-template let-i="rowIndex" pTemplate="rowexpansion" let-item>
+                    <tr class="transition-all	duration-300	">
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ item.merchantName}}</td>
+                        <td>{{ item.reciverName}}</td>
+                        <td>{{ item.phone}}</td>
+                        <td>{{ item.addr}}</td>
+                        <td>{{ item.deliverReceiptNumber}}</td>
+                        <td>{{ item.receiptUSD.toLocaleString()}}</td>
+                        <td>{{ item.receiptIqd.toLocaleString()}}</td>
+                        <td>{{ item.totalAgentShare.toLocaleString()}}</td>
+                        <td>{{ item.stat}}</td>
+                        <td>{{ item.lastAction}}</td>
+                        <td>
+                            <p-checkbox [(ngModel)]="item.check" (onChange)="checkRow($event,item)" [binary]="true" ></p-checkbox>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+
+        </div>
+        <div *ngIf="!loading" class="flex">
+            <div class="col-12 md:col-6 lg:col-3">
+                <div class="surface-card shadow-2 p-3 border-round h-full">
+                    <div class="flex justify-content-between mb-3">
+                        <div>
+                            <span class="block text-lg font-semibold mb-3">المبلغ الكلي للشحنات	</span>
+                            <div class="text-900 font-medium text-xl mb-2">{{totalAmountOfShipmentsIRQ.toLocaleString()}} <span> د.ع</span>
+                            </div>
+                            <div class="text-900 font-medium text-xl">{{totalAmountOfShipmentsUSD.toLocaleString()}}
+                                <span>$</span></div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-12 md:col-6 lg:col-3">
+                <div class="surface-card shadow-2 p-3 border-round  h-full">
+                    <div class="flex justify-content-between mb-3">
+                        <div>
+                            <span class="block text-lg font-semibold mb-3">حصة مندوب التوصيل	</span>
+                            <div class="text-900 font-medium text-xl mb-2">{{alltotalAgentShare.toLocaleString()}}
+                                <span> د.ع</span></div>
+                            <div class="text-900 font-medium text-xl">0 <span>$</span></div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-12 md:col-6 lg:col-3">
+                <div class="surface-card shadow-2 p-3 border-round  h-full">
+                    <div class="flex justify-content-between mb-3">
+                        <div>
+                            <span class="block text-lg font-semibold mb-3">صافي مبلغ الوصولات	</span>
+                            <div class="text-900 font-medium text-xl mb-2">{{netAmountOfReceipts.toLocaleString()}}
+                                <span> د.ع</span></div>
+                            <div class="text-900 font-medium text-xl">{{totalAmountOfShipmentsUSD.toLocaleString()}}
+                                <span>$</span></div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-12 md:col-6 lg:col-3">
+                <div class="surface-card shadow-2 p-3 border-round  h-full">
+                    <div class="flex justify-content-between mb-3">
+                        <div>
+                            <span class="block text-lg font-semibold mb-3">المطلوب إستلامه من المندوب	</span>
+                            <div class="text-900 font-medium text-xl mb-2">{{netAmountOfReceipts.toLocaleString()}}
+                                <span> د.ع</span></div>
+                            <div class="text-900 font-medium text-xl">{{totalAmountOfShipmentsUSD.toLocaleString()}}
+                                <span>$</span></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </p-tabPanel>
+    <p-tabPanel header="تسديدات المندوبين">
+        <div class="card">
+            <p-table  [loading]="loading" [value]="agentTransactions"
+                      [paginator]="true" [rows]="10"
+                      [showCurrentPageReport]="true"
+                      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10, 25, 50]"
+                      styleClass="p-datatable-gridlines"
+                      [tableStyle]="{ 'min-width': '50rem' }">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>#</th>
+                        <th class="tab-header">رقم العملية	</th>
+                        <th class="tab-header">مبلغ العملية د.ع	</th>
+                        <th class="tab-header">مبلغ العملية $	</th>
+                        <th class="tab-header">مستلم/مدفوع د.ع	</th>
+                        <th class="tab-header">مستلم/مدفوع $	</th>
+                        <th class="tab-header">مدين د.ع	</th>
+                        <th class="tab-header">دائن د.ع	</th>
+                        <th class="tab-header">مدين $	</th>
+                        <th class="tab-header">دائن $	</th>
+                        <th class="tab-header">نوع العملية	</th>
+                        <th class="tab-header">ملاحظات</th>
+                        <th class="tab-header">تمت من خلال	</th>
+                        <th class="tab-header">تاريخ التسديد	</th>
+
+                    </tr>
+                </ng-template>
+                <ng-template let-i="rowIndex" pTemplate="body" let-item>
+                    <tr>
+                        <td>{{ i + 1 }}</td>
+
+                        <td>{{item.transId}}</td>
+                        <td>{{item.transAmountIqd.toLocaleString()}}</td>
+                        <td>{{item.transAmountUsd.toLocaleString()}}</td>
+                        <td>{{item.transReceiptsAmtIqd.toLocaleString()}}</td>
+                        <td>{{item.transReceiptsAmtUsd.toLocaleString()}}</td>
+                        <td>{{item.transDebitIqd.toLocaleString()}}</td>
+                        <td>{{item.transCreditIqd.toLocaleString()}}</td>
+                        <td>{{item.transDebitUsd.toLocaleString()}}</td>
+                        <td>{{item.transCreditUsd.toLocaleString()}}</td>
+                        <td>{{item.transOperationCode}}</td>
+                        <td>{{item.transRmk}}</td>
+                        <td>{{item.transOperationEntity}}</td>
+                        <td>{{item.transCreatedDt | date:'short'}}</td>
+
+                    </tr>
+                </ng-template>
+            </p-table>
+
+        </div>
+    </p-tabPanel>
+</p-tabView>
+<p-dialog [(visible)]="showAgentDialog" header="محاسبة مندوب توصيل" [modal]="true" [style]="{width:'600px'}">
+    <div class="surface-card shadow-2 p-3 mb-4 border-round h-full">
+        <div class="flex justify-content-between mb-3">
+            <div>
+                <div class="block text-xl font-semibold mb-3">مندوب التوصيل: 	<span class="font-bold">{{agent?.userName}}</span></div>
+                <div class="text-900 font-medium text-xl mb-2"> حصة المندوب: <span class="font-bold">{{selectedalltotalAgentShare.toLocaleString()}}</span> <span class="font-bold"> د.ع</span>
+                </div>
+                <div class="text-900 font-medium text-xl mb-2"> المبلغ المطلوب أستلامه من مندوب التوصيل:  <span class="font-bold">{{selectednetAmountOfReceipts.toLocaleString()}}</span><span class="font-bold"> د.ع</span>
+                </div>
+                <div class="text-900 font-medium text-xl"> المبلغ المطلوب أستلامه من مندوب التوصيل : <span class="font-bold">{{selectedtotalAmountOfShipmentsUSD.toLocaleString()}}</span><span class="font-bold">$</span></div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="flex flex-column gap-2 mb-2">
+        <label>المبلغ المستلم الفعلي د.ع</label>
+        <p-inputNumber class="w-full" styleClass="w-full" [(ngModel)]="actualReceivedAmtIqd"> </p-inputNumber>
+
+    </div>
+
+    <div class="flex flex-column gap-2 mb-2">
+        <label>المبلغ المستلم الفعلي $</label>
+        <p-inputNumber class="w-full" styleClass="w-full"  [(ngModel)]="actualReceivedAmtUsd"> </p-inputNumber>
+    </div>
+
+    <div class="flex flex-column gap-2">
+        <label >ملاحظات</label>
+        <textarea rows="5" cols="30" pInputTextarea [(ngModel)]="note"></textarea>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-check" [loading]="loading" class="p-button-outlined" label="حفظ"
+                (click)="payAgent()"></button>
+        <button pButton pRipple icon="pi pi-times" [loading]="loading" class="p-button-outlined p-button-danger" label="الغاء"
+                (click)="close()"></button>
+
+    </ng-template>
+</p-dialog>

@@ -192,6 +192,17 @@ import { RoleGuard } from './shared/guard/role.guard';
                                 roles: ['ITBOSS'],
                             },
                         },
+                        {
+                            path: 'income-outcome',
+                            canActivate: [RoleGuard],
+                            data: {
+                                roles: ['ITBOSS'],
+                            },
+                            loadChildren: () =>
+                                import(
+                                    './modules/income-outcome/income-outcome.module'
+                                    ).then((m) => m.IncomeOutcomeModule),
+                        },
                         // { path: '**', redirectTo: '/' },
                     ],
                 },

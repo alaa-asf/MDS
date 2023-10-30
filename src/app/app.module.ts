@@ -8,15 +8,22 @@ import { AuthService } from './shared/services/auth.service';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TokenInterceptor } from './shared/interceptors/token.interceptor';
 import {MessageService} from "primeng/api";
+import { AgentAccountComponent } from './modules/income-outcome/agent-account/agent-account.component';
+import {PrimeNgModule} from "./shared/primeng.module";
+import {CurrencyPipe, DatePipe, NgIf} from "@angular/common";
 
 
 @NgModule({
     declarations: [
-        AppComponent, NotfoundComponent
+        AppComponent, NotfoundComponent, AgentAccountComponent
     ],
     imports: [
         AppRoutingModule,
-        AppLayoutModule
+        AppLayoutModule,
+        PrimeNgModule,
+        DatePipe,
+        CurrencyPipe,
+        NgIf
     ],
     providers: [
         JwtHelperService,
