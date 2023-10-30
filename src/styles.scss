@@ -51,3 +51,7 @@ button,
     src: url('./assets/fonts/DINNextLTArabic-Regular.ttf') format('ttf'),
          url('./assets/fonts/DINNextLTArabic-Medium.ttf') format('ttf');
 }
+
+:host ::ng-deep .p-paginator {
+    direction: ltr;
+}

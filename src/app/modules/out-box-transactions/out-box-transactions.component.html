@@ -45,8 +45,7 @@
                     <th class="tab-header bg-bluegray-500 text-white">قبل العملية $</th>
                     <th class="tab-header bg-bluegray-500 text-white">مبلغ العملية $</th>
                     <th class="tab-header bg-bluegray-500 text-white">بعد العملية $</th>
-
-                    <th class="tab-header"></th>
+                    <!-- <th class="tab-header bg-bluegray-500 text-white"></th> -->
                 </tr>
             </ng-template>
             <ng-template let-i="rowIndex" pTemplate="body" let-product>
@@ -60,9 +59,12 @@
                     <td>{{ product.balanceBeforeUSD }}</td>
                     <td [class]="product.paymentIQD >= 0 ? '':'bg-red-100' ">{{ product.paymentUSD }}</td>
                     <td>{{ product.balanceAfterUSD }}</td>
-
-
-                    <td></td>
+                    <!-- <td></td> -->
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="9" style="text-align: center;">لا يوجد معلومات</td>
                 </tr>
             </ng-template>
         </p-table>

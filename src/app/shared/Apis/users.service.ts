@@ -36,4 +36,7 @@ export class UsersService {
     delete(id:any){
         return this.httpClient.delete(environment.apiUrl+'/users/delete_user?userId='+id)
     }
+    getٌRoles() {
+        return this.httpClient.get(environment.apiUrl+'/users/get_roles')
+    }
 }

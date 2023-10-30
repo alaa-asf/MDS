@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { AnyPtrRecord } from 'dns';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { ReportsService } from 'src/app/shared/Apis/reports.service';
 import { ShippingService } from 'src/app/shared/Apis/shipping.service';
 import { StateService } from 'src/app/shared/services/state.service';
@@ -9,6 +10,7 @@ import { StateService } from 'src/app/shared/services/state.service';
     selector: 'app-newshipping',
     templateUrl: './newshipping.component.html',
     styleUrls: ['./newshipping.component.scss'],
+    providers: [ConfirmationService, MessageService],
 })
 export class NewshippingComponent implements OnInit {
     governorates: [] = [];
@@ -25,7 +27,9 @@ export class NewshippingComponent implements OnInit {
     constructor(
         public fb: FormBuilder,
         private _stateService: StateService,
-        private _shippingService: ShippingService
+        private _shippingService: ShippingService,
+        private confirmationService: ConfirmationService,
+        private messageService: MessageService,
     ) {
         this.changeName(this._stateService.states);
         this.governorates = this._stateService.states;
@@ -104,7 +108,6 @@ export class NewshippingComponent implements OnInit {
                     state.label = 'سليمانية';
                     break;
                 default:
-                    console.log('Invalid operator');
                     break;
             }
         });
@@ -128,23 +131,57 @@ export class NewshippingComponent implements OnInit {
             "notes": this.newShippingForm.value.notes,
             "branchId": 1
         }
+        this._shippingService.addShippingGovernorate(shipping).subscribe(res => {
+            // this.messageService.add({
+            //     severity: 'info',
+            //     summary: 'Confirmed',
+            //     detail: 'تمت عملية الاضافة',
+            // });
+        }, error => {
+            // this.messageService.add({
+            //     severity: 'error',
+            //     summary: 'Rejected',
+            //     detail: 'حدث خطأ ما',
+            // });
+        })
         this.totalShipping.push({ id: this.caseId, value: shipping });
         this.caseId++
-        this.totalCases.push(1);       // this._shippingService.addShippingGovernorate(shipping).subscribe(res => {
-        //     console.log(res);
-
-        // })
+        this.totalCases.push(1);       
     }
 
     sendAllCases() {
-        console.log(this.newShippingForm);
-
-        console.log(this.totalShipping);
-
+        let shipping = {
+            "state": this.newShippingForm.value.state.value,
+            "district": this.newShippingForm.value.district.id,
+            "merchantName": this.newShippingForm.value.merchantName.branchId,
+            "handPhone": this.newShippingForm.value.merchantName.phoneNumber,
+            "endCustomerPhone": this.newShippingForm.value.endCustomerPhone,
+            "receiptNumber": this.newShippingForm.value.receiptNumber,
+            "receiptAmount": this.newShippingForm.value.receiptAmount,
+            "receiptAmountUsd": this.newShippingForm.value.receiptAmountUsd,
+            "addressDetails": this.newShippingForm.value.addressDetails,
+            "notes": this.newShippingForm.value.notes,
+            "branchId": 1
+        }
+        this._shippingService.addShippingGovernorate(shipping).subscribe(res => {
+            this.messageService.add({
+                severity: 'info',
+                summary: 'Confirmed',
+                detail: 'تمت عملية الاضافة',
+            });
+        }, error => {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Rejected',
+                detail: 'حدث خطأ ما',
+            });
+        })
         // this._shippingService.addShippingGovernorate(shipping).subscribe(res => {
         //     console.log(res);
-
+            
         // })
+        this.totalShipping = [];
+        this.totalCases = [];
     }
 
     deleteAllCases() {
@@ -176,7 +213,6 @@ export class NewshippingComponent implements OnInit {
     }
 
     deleteCase(index: any) {
-        console.log(index);
         this.totalCases.splice(index, 1);
         this.totalShipping.splice(index, 1);
     }

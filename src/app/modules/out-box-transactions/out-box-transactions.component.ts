@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Safe } from 'src/app/shared/Apis/safe';
+import { SafeService } from 'src/app/shared/Apis/safe.service';
 import { FilterDate } from 'src/app/shared/pipe-service/filter-date.pipe';
 
 @Component({
@@ -17,7 +17,7 @@ export class OutBoxTransactionsComponent implements OnInit {
   progressSpinner: boolean = false
   persons: any = []
   products: any = []
-  constructor(private safe: Safe, private pipe: FilterDate) { }
+  constructor(private safe: SafeService, private pipe: FilterDate) { }
 
   ngOnInit() {
     this.safe.getAllacctbox().subscribe((res: any) => {
@@ -28,7 +28,7 @@ export class OutBoxTransactionsComponent implements OnInit {
   clickSearch() {
     this.progressSpinner = true
     this.safe.getaccountantBoxesBranch(this.safeBox, this.pipe.transform(this.fromDate), this.pipe.transform(this.toDate)).subscribe((res: any) => {
-      console.log(res);
+      // console.log(res);
       this.products = res
       this.progressSpinner = false
     })
@@ -40,7 +40,7 @@ export class OutBoxTransactionsComponent implements OnInit {
     }
   }
   onChange(event: any) {
-    console.log(event);
+    // console.log(event);
     this.safeBox = event.boxId
     this.nameSafeBox = event.accountant
   }

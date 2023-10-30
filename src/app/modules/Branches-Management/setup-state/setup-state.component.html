@@ -1,0 +1,117 @@
+<div class="card">
+  <div class="boxBalance text-primary">
+    إعدادت المحافظة
+  </div>
+  <p-table [value]="pathsCosts" [paginator]="true" [rows]="5" selectionMode="single" [showCurrentPageReport]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [rowsPerPageOptions]="[10, 25, 50, 100, 200]" [tableStyle]="{ 'min-width': '50rem' }">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>#</th>
+        <th class="tab-header">إسم المحافظة</th>
+        <th class="tab-header">state name</th>
+        <th class="tab-header">كود المحافظة</th>
+        <th class="tab-header">نشطة</th>
+        <th class="tab-header">ترتيب المحافظة</th>
+        <th class="tab-header">مبلغ الشحن</th>
+        <th class="tab-header">مبلغ الشحن للأقضيه</th>
+        <th class="tab-header">أجرة المندوب</th>
+        <th class="tab-header">أجرة المندوب للأقضيه</th>
+        <th class="tab-header"></th>
+      </tr>
+    </ng-template>
+    <ng-template let-i="rowIndex" pTemplate="body" let-path>
+      <tr>
+        <td>{{ i + 1 }}</td>
+        <td>{{ path.stateNameArabic }}</td>
+        <td>{{ path.stateNameEnglish }}</td>
+        <td>{{ path.stateCode }}</td>
+        <td>{{ path.stateActive }}</td>
+        <td>{{ path.stateOrder }}</td>
+        <td>{{ path.charges }}</td>
+        <td>{{ path.chargesRural }}</td>
+        <td>{{ path.agentShare }}</td>
+        <td>{{ path.agentShareRural }}</td>
+        <td>
+          <p-button (click)="editPath(path.stateId)" icon="pi pi-file-edit" styleClass="p-button-outlined"></p-button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog [(visible)]="showDialog" [style]="{width: '70vw'}" header="تعديل المسار" [modal]="true" class="p-fluid">
+  <ng-template pTemplate="content">
+    <div class="container-items">
+      <div>
+        <span>إسم المحافظة *</span>
+        <div class="pt-2">
+          <input type="text" pInputText [(ngModel)]="this.pathDetail.stateNameArabic" required />
+        </div>
+      </div>
+      <div>
+        <span>state name *</span>
+        <div class="pt-2">
+          <input type="text" pInputText [(ngModel)]="this.pathDetail.stateNameEnglish" required />
+        </div>
+      </div>
+      <div>
+        <span>كود المحافظة *</span>
+        <div class="pt-2">
+          <input type="text" pInputText [(ngModel)]="this.pathDetail.stateCode" required />
+        </div>
+      </div>
+      <div>
+        <span>نشطة *</span>
+        <div class="pt-2">
+          <p-dropdown [options]="cases" [(ngModel)]="this.case" optionLabel="name"
+            (onChange)='getStateActive(this.case)'></p-dropdown>
+        </div>
+      </div>
+      <div>
+        <span>ترتيب المحافظة</span>
+        <div class="pt-2">
+          <input type="text" pInputText [(ngModel)]="this.pathDetail.stateOrder" />
+        </div>
+      </div>
+      <div>
+        <span>مبلغ الشحن *</span>
+        <div class="pt-2">
+          <input type="number" pInputText [(ngModel)]="this.pathDetail.stateCharges" required />
+        </div>
+      </div>
+      <div>
+        <span>مبلغ الشحن للأقضيه *</span>
+        <div class="pt-2">
+          <input type="number" pInputText [(ngModel)]="this.pathDetail.stateChargesRural" required />
+        </div>
+      </div>
+      <div>
+        <span>أجرة المندوب *</span>
+        <div class="pt-2">
+          <input type="number" pInputText [(ngModel)]="this.pathDetail.agentShare" required />
+        </div>
+      </div>
+      <div>
+        <span>أجرة المندوب للأقضيه *</span>
+        <div class="pt-2">
+          <input type="number" pInputText [(ngModel)]="this.pathDetail.agentShareRural" required />
+        </div>
+      </div>
+
+    </div>
+  </ng-template>
+  <p-toast></p-toast>
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="حفظ" icon="pi pi-check" class="p-button-text" (click)="confirmEditPath()" [disabled]="
+    this.pathDetail.stateNameArabic == '' || 
+    this.pathDetail.stateNameEnglish == '' || 
+    this.pathDetail.stateCode == '' || 
+    this.pathDetail.isActive == '' || 
+    this.pathDetail.stateCharges == null || 
+    this.pathDetail.stateChargesRural == null || 
+    this.pathDetail.agentShare == null || 
+    this.pathDetail.agentShareRural == null
+    "></button>
+  </ng-template>
+</p-dialog>
