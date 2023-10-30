@@ -1,0 +1,10 @@
+.container-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    position: relative;
+}
+
+:host ::ng-deep .p-paginator {
+    direction: ltr;
+}

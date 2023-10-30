@@ -13,4 +13,14 @@ export class BrancheService {
     getBranchesByUserId() {
         return this.httpClient.get(environment.apiUrl + '/branches-management/getBranchForUser?userId=1')
     }
+
+    getBranchNameByLogIn(){
+        return this.httpClient.get(environment.apiUrl + '/branch/branch-name')
+    }
+
+    getUserNameByLogIn(){
+        return this.httpClient.get(environment.apiUrl + '/branch/user-name')
+    }
+
+
 }

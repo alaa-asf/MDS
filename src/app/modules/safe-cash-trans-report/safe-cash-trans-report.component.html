@@ -1,49 +1,88 @@
 <div class="card">
-  <div class="flex justify-content-around">
-      <div class="">
-          <span class="text-select">نوع المعاملة</span>
-          <div class="pt-2" style="direction: initial">
-              <p-dropdown [editable]="true" optionLabel="name"></p-dropdown>
-          </div>
-      </div>
-      <div class="">
-          <span class="text-select">من تاريخ</span>
-          <div class="pt-2" style="direction: initial">
-              <p-calendar
-                  [showIcon]="true"
-                  formControlName="date"
-              ></p-calendar>
-          </div>
-      </div>
-      <div class="">
-          <span class="text-select">الى تاريخ</span>
-          <div class="pt-2" style="direction: initial">
-              <p-calendar
-                  [showIcon]="true"
-                  formControlName="date"
-              ></p-calendar>
-          </div>
-      </div>
-      <div class="">
-        <span class="text-select">طرف  المعاملة</span>
-        <div class="pt-2" style="direction: initial">
-            <p-dropdown [editable]="true" optionLabel="name"></p-dropdown>
+    <div class="flex justify-content-around">
+        <div class="">
+            <span class="text-select">نوع المعاملة</span>
+            <div class="pt-2" style="direction: initial">
+                <p-dropdown [options]="transactionTypes" [(ngModel)]="transactionType" optionLabel="name"></p-dropdown>
+            </div>
+        </div>
+        <div class="">
+            <span class="text-select">من تاريخ</span>
+            <div class="pt-2" style="direction: initial">
+                <p-calendar aria-label="from" [showIcon]="true" [(ngModel)]="fromDate"></p-calendar>
+            </div>
+        </div>
+        <div class="">
+            <span class="text-select">الى تاريخ</span>
+            <div class="pt-2" style="direction: initial">
+                <p-calendar [showIcon]="true" [(ngModel)]="toDate"></p-calendar>
+            </div>
+        </div>
+        <div class="">
+            <span class="text-select">طرف المعاملة</span>
+            <div class="pt-2" style="direction: initial">
+                <p-dropdown [options]="transactionSides" [(ngModel)]="transactionSide"
+                    optionLabel="accountant"></p-dropdown>
+            </div>
         </div>
     </div>
-  </div>
-  <div class="flex pt-5 justify-content-end">
-      <p-button
-          icon="pi pi-search"
-          label="بحث"
-          class="p-button-success px-5 ms-5"
-      ></p-button>
-      <p-button
-          label="الغاء البحث"
-          icon="pi pi-times"
-          styleClass="p-button-outlined p-button-warning"
-      ></p-button>
-  </div>
+    <div class="flex pt-5 justify-content-end">
+        <p-button icon="pi pi-search" label="بحث" class="p-button-success px-5 ms-5"
+            (click)="getAllTransactions()"></p-button>
+        <p-button label="الغاء البحث" icon="pi pi-times" styleClass="p-button-outlined p-button-warning" (click)="cancleSearch()"></p-button>
+    </div>
 </div>
-<div class="card ">
-حركات الصندوق
+<div class="card">
+    <p>حركات الصندوق</p>
+    <br>
+    <p-table [value]="transactions" [paginator]="true" [rows]="5" selectionMode="single" [showCurrentPageReport]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [rowsPerPageOptions]="[10, 25, 50]" [tableStyle]="{ 'min-width': '50rem' }">
+        <ng-template pTemplate="header">
+            <tr>
+                <th class="tab-header">رقم الدفعة</th>
+                <th class="tab-header">الرصيد قبل د.ع</th>
+                <th class="tab-header">مبلغ المعاملة د.ع</th>
+                <th class="tab-header">الرصيد بعد د.ع</th>
+                <th class="tab-header">نوع المعاملة</th>
+                <th class="tab-header">أسم المعاملة</th>
+                <th class="tab-header">الرصيد قبل $</th>
+                <th class="tab-header">مبلغ المعاملة $</th>
+                <th class="tab-header">الرصيد بعد $</th>
+                <th class="tab-header">تاريخ المعاملة</th>
+                <th class="tab-header">تمت من خلال</th>
+                <th class="tab-header">ملاحظات</th>
+                <th class="tab-header"></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-transaction let-rowIndex="rowIndex">
+            <tr>
+                <td>{{ transaction.safeId }}</td>
+                <td>{{ transaction.safeBalanceBeforeTransactionIQD }}</td>
+                <td>{{ transaction.safeBalanceIQD }}</td>
+                <td>{{ transaction.safeBalanceAfterTransactionIQD }}</td>
+                <td>
+                    <span *ngIf="transaction.transactionType =='CR_SAFE'">إيداع</span>
+                    <span *ngIf="transaction.transactionType =='DB_SAFE'">سحب</span>
+                </td>
+                <td>{{ transaction.transactionName }}</td>
+                <td>{{ transaction.sfeBalanceBeforeRTransactionUSD }}</td>
+                <td>{{ transaction.safeBalanceUSD }}</td>
+                <td>{{ transaction.safeBalanceAfterTransactionUSD }}</td>
+                <td>{{ transaction.transactionDate | filterDate }}</td>
+                <td>{{ transaction.transactionEntity }}</td>
+                <td>{{ transaction?.rmk ? transaction.rmk : transaction.notes }}</td>
+                <td>
+                    <p-button *ngIf="rowIndex === transactions.length - 1"
+                        (click)="confirmDeleteTransaction(transaction.safeId)" icon="pi pi-trash"
+                        styleClass="p-button-outlined p-button-danger"></p-button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="12" style="text-align: center;">لا يوجد معلومات</td>
+            </tr>
+        </ng-template>
+    </p-table>
 </div>

@@ -212,7 +212,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
             ...otherData,
             "actionsMap": actionsMap
         }
-        console.log(base)
+        // console.log(base)
 
         this.loading = true
         this.dashboardService.updateCase(base).subscribe(res => {

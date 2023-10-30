@@ -8,7 +8,7 @@ export class AuthService {
     constructor(public jwtHelper: JwtHelperService) {}
     public setToken(token: string) {
         localStorage.setItem('token', token);
-        console.log(token);
+        // console.log(token);
     }
 
     public removeToken() {

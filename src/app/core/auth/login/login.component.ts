@@ -36,7 +36,7 @@ export class LoginComponent extends BaseComponent  {
     login(){
         this.loading = true
         this.UsersService.login(this.username,this.password).subscribe((el:any)=>{
-            console.log(el);
+            // console.log(el);
             
             this.loading = false
             this.authService.setToken(el.token)

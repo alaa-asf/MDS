@@ -21,7 +21,7 @@ export class PickupagentReturnComponent implements OnInit {
     ngOnInit() {
         this._returnablesService.getDeliveryAgents().subscribe((data) => {
             this.agents = data;
-            console.log(data);
+            // console.log(data);
         });
     }
     getAgent(agentId: any, id: any) {

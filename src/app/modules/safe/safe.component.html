@@ -1,103 +1,94 @@
 <div class="card flex justify-content-between">
-    <p-button label="جرد القاصة" styleClass="p-button-outlined p-button-warning"></p-button>
-    <div style="padding: 0.2rem 0.5rem; font-weight: 500; display: flex;   color: #FFFFFF;    color: #FFFFFF;background-color: skyblue;justify-content: center;
-    animation: auto;
-    align-items: center;
-    border-radius: 10px;">
+    <p-button label="جرد القاصة" styleClass="p-button-outlined p-button-warning" (click)="archiveSafe()"></p-button>
+    <div class="safe-balance-dq">
         {{safeBalanceIQD}} <span>دينار عراقي</span> </div>
-    <div style="padding: 0.2rem 0.5rem;    color: #FFFFFF; display: flex;   font-weight: 500;background-color: lightgreen;justify-content: center;
-    animation: auto;
-    align-items: center;
-    border-radius: 10px;">
+    <div class="safe-balance-us">
         {{safeBalanceUSD}} <span>دولار أمريكي</span></div>
     <button (click)="showDialog()" icon="pi pi-plus" pButton pRipple label="إضافة" class="p-button-success"></button>
 </div>
-<p-dialog header="اضافة قاصة" [(visible)]="visible" [breakpoints]="{ '960px': '75vw' }" [style]="{ width: '50vw' }"
+<p-dialog [modal]="true" header="اضافة قاصة" [(visible)]="visible" [breakpoints]="{ '1500px': '75vw' }" [style]="{ width: '60vw' }"
     [draggable]="true" [resizable]="true">
-    <div class="flex justify-content-between">
-        <div class="">
-            <span>نوع المعاملة</span>
-            <div class="pt-2">
-                <p-dropdown [options]="transactionTypes" [(ngModel)]="transactionType" optionLabel="name"
+    <div>
+        <div class="add-container">
+            <div>
+                <span>نوع المعاملة</span>
+                <div class="pt-2">
+                    <p-dropdown [options]="transactionTypes" [(ngModel)]="transactionType" optionLabel="name"
+                        (onChange)='getType(transactionType)'></p-dropdown>
 
-                (onChange)='getType(transactionType)'></p-dropdown>
+                </div>
+            </div>
+            <div>
+                <span>أسم المعاملة</span>
+                <div class="pt-2">
 
-            </div>
-        </div>
-        <div class="">
-            <span>أسم المعاملة</span>
-            <div class="pt-2">
+                    <p-dropdown [options]="transactionNames" (onChange)='getName(transactionName)'
+                        [(ngModel)]="transactionName" optionLabel="name"></p-dropdown>
 
-                <p-dropdown [options]="transactionNames" (onChange)='getName(transactionName)' [(ngModel)]="transactionName" optionLabel="name"></p-dropdown>
-
+                </div>
+            </div>
+            <div>
+                <span>طرف المعاملة</span>
+                <div class="pt-2">
+                    <p-dropdown [options]="transactionSides" [(ngModel)]="transactionSide"
+                        optionLabel="accountant"></p-dropdown>
+                </div>
+            </div>
+            <div>
+                <span>مبلغ المعاملة د.ع</span>
+                <div class="pt-2">
+                    <p-inputNumber [(ngModel)]="transactionID" mode="decimal" inputId="withoutgrouping"
+                        [useGrouping]="false">
+                    </p-inputNumber>
+                </div>
+            </div>
+            <div>
+                <span>مبلغ المعاملة $</span>
+                <div class="pt-2">
+                    <p-inputNumber [(ngModel)]="transactionUS" mode="decimal" inputId="withoutgrouping"
+                        [useGrouping]="false">
+                    </p-inputNumber>
+                </div>
+            </div>
+            <div>
+                <span>ملاحظات</span>
+                <div class="pt-2">
+                    <textarea rows="5" cols="30" pInputTextarea [(ngModel)]="transactionNote"></textarea>
+                </div>
+            </div>
+            <div>
+                <span>تمت من خلال</span>
+                <div class="pt-2">
+                    <input id="disabled-input" type="text" pInputText [disabled]="true" [(ngModel)]="userUsed" />
+                </div>
+            </div>
+            <div>
+                <span>الرصيد قبل د.ع</span>
+                <div class="pt-2">
+                    <input id="disabled-input" type="text" pInputText [disabled]="true" [(ngModel)]="safeBalanceIQD" />
+                </div>
+            </div>
+            <div>
+                <span>الرصيد قبل $</span>
+                <div class="pt-2">
+                    <input id="disabled-input" type="text" pInputText [disabled]="true" [(ngModel)]="safeBalanceUSD" />
+                </div>
+            </div>
+            <div>
+                <span>فرع</span>
+                <div class="pt-2">
+                    <input id="disabled-input" type="text" pInputText [disabled]="true" [(ngModel)]="branchUsed" />
+                </div>
             </div>
         </div>
-        <div class="">
-            <span>طرف المعاملة</span>
-            <div class="pt-2">
-                <p-dropdown [options]="transactionSides" [(ngModel)]="transactionSide" optionLabel="accountant"></p-dropdown>
-            </div>
+        <div class="flex justify-content-end pt-3">
+            <button (click)="addSafe()" icon="pi pi-thumbs-up" pButton pRipple label="حفظ"
+                class="p-button-success"></button>
         </div>
-    </div>
-    <div class="flex justify-content-between">
-        <div class="">
-            <span>مبلغ المعاملة د.ع</span>
-            <div class="pt-2">
-                <p-inputNumber mode="decimal" inputId="withoutgrouping" [useGrouping]="false">
-                </p-inputNumber>
-            </div>
-        </div>
-        <div class="">
-            <span>مبلغ المعاملة $</span>
-            <div class="pt-2">
-                <p-inputNumber mode="decimal" inputId="withoutgrouping" [useGrouping]="false">
-                </p-inputNumber>
-            </div>
-        </div>
-        <div class="">
-            <span>ملاحظات</span>
-            <form>
-                <textarea rows="5" cols="30" pInputTextarea formControlName="text"></textarea>
-            </form>
-        </div>
-    </div>
-    <div class="flex justify-content-between">
-        <div class="">
-            <span>تمت من خلال</span>
-            <div class="pt-2">
-                <p-dropdown [editable]="true" optionLabel="name"></p-dropdown>
-            </div>
-        </div>
-        <div class="">
-            <span>الرصيد قبل د.ع</span>
-            <div class="pt-2">
-                <p-inputNumber mode="decimal" inputId="withoutgrouping" [useGrouping]="false">
-                </p-inputNumber>
-            </div>
-        </div>
-        <div class="">
-            <span>الرصيد قبل $</span>
-            <div class="pt-2">
-                <p-inputNumber mode="decimal" inputId="withoutgrouping" [useGrouping]="false">
-                </p-inputNumber>
-            </div>
-        </div>
-    </div>
-    <div class="flex justify-content-between">
-        <div class="">
-            <span>فرع</span>
-            <div class="pt-2">
-                <p-dropdown [editable]="true" optionLabel="name"></p-dropdown>
-            </div>
-        </div>
-    </div>
-    <div class="flex justify-content-between pt-3">
-        <button (click)="addSafe()" icon="pi pi-thumbs-up" pButton pRipple label="حفظ"
-            class="p-button-success"></button>
     </div>
 </p-dialog>
 <div class="card">
-    <p-table [value]="products" [paginator]="true" [rows]="5" selectionMode="single" [showCurrentPageReport]="true"
+    <p-table [value]="transactions" [paginator]="true" [rows]="5" selectionMode="single" [showCurrentPageReport]="true"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
         [rowsPerPageOptions]="[10, 25, 50]" [tableStyle]="{ 'min-width': '50rem' }">
         <ng-template pTemplate="header">
@@ -117,29 +108,48 @@
                 <th class="tab-header"></th>
             </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-product>
+        <ng-template pTemplate="body" let-transaction let-rowIndex="rowIndex">
             <tr>
-                <td>{{ product.safeId }}</td>
-                <td>{{ product.safeBeforeTransactionIqDinar }}</td>
-                <td>{{ product.safeAmountIqDinar }}</td>
-                <td>{{ product.safeAfterTransactionIqDinar }}</td>
+                <td>{{ transaction.safeId }}</td>
+                <td>{{ transaction.safeBalanceBeforeTransactionIQD }}</td>
+                <td>{{ transaction.safeBalanceIQD }}</td>
+                <td>{{ transaction.safeBalanceAfterTransactionIQD }}</td>
                 <td>
-                    <span *ngIf="product.transactionType =='CR_SAFE'">إيداع</span>
-                    <span *ngIf="product.transactionType =='DB_SAFE'">سحب</span>
+                    <span *ngIf="transaction.transactionType =='CR_SAFE'">إيداع</span>
+                    <span *ngIf="transaction.transactionType =='DB_SAFE'">سحب</span>
                 </td>
-                <td>{{ product.transactionName }}</td>
-                <td>{{ product.safeBeforeTransactionUSD }}</td>
-                <td>{{ product.safeAmountUSD }}</td>
-                <td>{{ product.safeAfterTransactionUSD }}</td>
-                <td>{{ product.transactionDate | filterDate }}</td>
+                <td>{{ transaction.transactionName }}</td>
+                <td>{{ transaction.sfeBalanceBeforeRTransactionUSD }}</td>
+                <td>{{ transaction.safeBalanceUSD }}</td>
+                <td>{{ transaction.safeBalanceAfterTransactionUSD }}</td>
+                <td>{{ transaction.transactionDate | filterDate }}</td>
 
 
-                <td>{{ product.safeCreatedBy }}</td>
-                <td>{{ product.rmk }}</td>
+                <td>{{ transaction.createdBy }}</td>
+                <td>{{ transaction?.rmk ? transaction.rmk : transaction.notes }}</td>
                 <td>
-                    <p-button icon="pi pi-trash" styleClass="p-button-outlined p-button-danger"></p-button>
+                    <p-button *ngIf="rowIndex === 0" (click)="confirmDeleteTransaction(transaction.safeId)" icon="pi pi-trash"
+                        styleClass="p-button-outlined p-button-danger"></p-button>
                 </td>
             </tr>
         </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="12" style="text-align: center;">لا يوجد معلومات</td>
+            </tr>
+        </ng-template>
     </p-table>
+</div>
+
+<div class="card flex justify-content-center">
+    <p-toast></p-toast>
+    <p-confirmDialog #cd [style]="{ width: '50vw' }">
+        <ng-template pTemplate="header">
+            <h3>هل انت متأكد من عملية الحذف؟</h3>
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <button type="button" pButton icon="pi pi-times" label="الغاء" (click)="cd.reject()"></button>
+            <button type="button" pButton icon="pi pi-check" label="تأكيد" (click)="cd.accept()"></button>
+        </ng-template>
+    </p-confirmDialog>
 </div>

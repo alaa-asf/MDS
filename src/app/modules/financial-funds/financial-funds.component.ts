@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Safe } from 'src/app/shared/Apis/safe';
+import { SafeService } from 'src/app/shared/Apis/safe.service';
 
 @Component({
     selector: 'app-financial-funds',
@@ -8,12 +8,12 @@ import { Safe } from 'src/app/shared/Apis/safe';
 })
 export class FinancialFundsComponent implements OnInit {
     products = [];
-    constructor(private safe: Safe) {}
+    constructor(private safe: SafeService) {}
 
     ngOnInit() {
         this.safe.getAllacctbox().subscribe((res: any) => {          
             this.products = res;
-            console.log(res);
+            // console.log(res);
             
         });
     }
