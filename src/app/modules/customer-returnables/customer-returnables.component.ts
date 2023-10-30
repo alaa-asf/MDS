@@ -23,7 +23,7 @@ export class CustomerReturnablesComponent implements OnInit {
     }
 
     getUserId(value: any) {       
-        console.log(value);
+        // console.log(value);
          
         if (value) {
           this.agentId = value.customerId

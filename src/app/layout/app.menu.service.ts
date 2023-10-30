@@ -80,7 +80,6 @@ export class MenuService {
                 },
             ],
         },
-
         {
             label: 'النظام المصرفي',
             visible: false,
@@ -164,7 +163,69 @@ export class MenuService {
                     routerLink: ['/income-outcome/agent-account'],
                 },
             ]
-        }
+        },
+      {
+            label: 'اعدادات الفروع',
+            visible: false,
+            items: [
+                {
+                    label: 'تسعيرات النقل',
+                    roles: ['ITBOSS'],
+                    icon: 'pi pi-fw pi-shield',
+                    visible: false,
+                    routerLink: ['/setup_state'],
+                },
+                {
+                    label: 'توزيع المندوبين على المناطق',
+                    roles: ['ITBOSS'],
+                    icon: 'pi pi-fw pi-user-plus',
+                    visible: false,
+                    routerLink: ['/setup_district'],
+                },
+                {
+                    label: 'اسناد الوصولات الى المتاجر',
+                    roles: ['ITBOSS'],
+                    icon: 'pi pi-fw pi-user',
+                    visible: false,
+                    routerLink: ['/AssignReceiptsToCustomers'],
+                },
+                {
+                    label: 'موظفين الفرع',
+                    roles: ['ITBOSS'],
+                    icon: 'pi pi-fw pi-user',
+                    visible: false,
+                    routerLink: ['/setup_users'],
+                },
+                {
+                    label: 'متاجر الفرع',
+                    roles: ['ITBOSS'],
+                    icon: 'pi pi-fw pi-user',
+                    visible: false,
+                    routerLink: ['/setup_customers'],
+                },
+                {
+                    label: 'المندوبين',
+                    roles: ['ITBOSS'],
+                    icon: 'pi pi-fw pi-user',
+                    visible: false,
+                    routerLink: ['/setup_dlvagent'],
+                },
+                {
+                    label: 'مندوبين الاستلام',
+                    roles: ['ITBOSS'],
+                    icon: 'pi pi-fw pi-user',
+                    visible: false,
+                    routerLink: ['/pickupagentsteup'],
+                },
+                {
+                    label: 'اسناد وصولات قديمة',
+                    roles: ['ITBOSS'],
+                    icon: 'pi pi-fw pi-user',
+                    visible: false,
+                    routerLink: ['/ReceiptsBooksOldSystem'],
+                },
+            ],
+        },
     ];
 
     private menuSource = new Subject<MenuChangeEvent>();

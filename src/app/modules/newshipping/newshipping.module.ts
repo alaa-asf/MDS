@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NewshippingComponent } from './newshipping.component';
-import { NewshippingRoutingModule } from './merchants-routing.module';
+import { NewshippingRoutingModule } from './newshipping-routing.module';
 import { SharedModule } from 'src/app/shared/shared.module';
 
 @NgModule({

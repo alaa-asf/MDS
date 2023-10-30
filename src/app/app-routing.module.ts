@@ -193,15 +193,98 @@ import { RoleGuard } from './shared/guard/role.guard';
                             },
                         },
                         {
-                            path: 'income-outcome',
+                            path: 'setup_state',
+                            loadChildren: () =>
+                                import('./modules/Branches-Management/setup-state/setup-state.module').then(
+                                    (m) => m.SetupStateModule
+                                ),
                             canActivate: [RoleGuard],
                             data: {
                                 roles: ['ITBOSS'],
                             },
+                        },{
+                          path: 'income-outcome',
                             loadChildren: () =>
                                 import(
                                     './modules/income-outcome/income-outcome.module'
                                     ).then((m) => m.IncomeOutcomeModule),
+                        },
+                        {
+                            path: 'setup_district',
+                            loadChildren: () =>
+                                import('./modules/Branches-Management/setup-district/setup-district.module').then(
+                                    (m) => m.SetupDistrictModule
+                                ),
+                            canActivate: [RoleGuard],
+                            data: {
+                                roles: ['ITBOSS'],
+                            },
+                        },
+                        {
+                            path: 'AssignReceiptsToCustomers',
+                            loadChildren: () =>
+                                import('./modules/Branches-Management/assign-receipts-to-customers/assign-receipts-to-customers.module').then(
+                                    (m) => m.AssignReceiptsToCustomersModule
+                                ),
+                            canActivate: [RoleGuard],
+                            data: {
+                                roles: ['ITBOSS'],
+                            },
+                        },
+                        {
+                            path: 'setup_users',
+                            loadChildren: () =>
+                                import('./modules/Branches-Management/setup-users/setup-users.module').then(
+                                    (m) => m.SetupUsersModule
+                                ),
+                            canActivate: [RoleGuard],
+                            data: {
+                                roles: ['ITBOSS'],
+                            },
+                        },
+                        {
+                            path: 'setup_customers',
+                            loadChildren: () =>
+                                import('./modules/Branches-Management/setup-customers/setup-customers.module').then(
+                                    (m) => m.SetupCustomersModule
+                                ),
+                            canActivate: [RoleGuard],
+                            data: {
+                                roles: ['ITBOSS'],
+                            },
+                        },
+                        {
+                            path: 'setup_dlvagent',
+                            loadChildren: () =>
+                                import('./modules/Branches-Management/setup-dlvagent/setup-dlvagent.module').then(
+                                    (m) => m.SetupDlvagentModule
+                                ),
+                            canActivate: [RoleGuard],
+                            data: {
+                                roles: ['ITBOSS'],
+                            },
+                        },
+                        {
+                            path: 'pickupagentsteup',
+                            loadChildren: () =>
+                                import('./modules/Branches-Management/pickup-agent-steup/pickup-agent-steup.module').then(
+                                    (m) => m.PickupAgentSteupModule
+                                ),
+                            canActivate: [RoleGuard],
+                            data: {
+                                roles: ['ITBOSS'],
+                            },
+                        },
+                        {
+                            path: 'ReceiptsBooksOldSystem',
+                            loadChildren: () =>
+                                import('./modules/Branches-Management/receipts-books-old-system/receipts-books-old-system.module').then(
+                                    (m) => m.ReceiptsBooksOldSystemModule
+                                ),
+                            canActivate: [RoleGuard],
+                            data: {
+                                roles: ['ITBOSS'],
+                            },
                         },
                         // { path: '**', redirectTo: '/' },
                     ],

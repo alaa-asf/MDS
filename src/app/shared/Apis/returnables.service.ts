@@ -15,14 +15,10 @@ export class ReturnablesService {
         return this.httpClient.get(`${environment.apiUrl}/branch/pickupAgent`);
     }
     getDeliveryAgents() {
-        return this.httpClient.get(
-            `${environment.apiUrl}/branch/delivery-agents`
-        );
+        return this.httpClient.get(`${environment.apiUrl}/branch/delivery-agents`);
     }
     getBranchCustomers() {
-        return this.httpClient.get(
-            `${environment.apiUrl}/customers/branch-customers`
-        );
+        return this.httpClient.get(`${environment.apiUrl}/customers/branch-customers`);
     }
 
     returnToCustomer(agentId: any, id: any) {
@@ -117,19 +113,13 @@ export class ReturnablesService {
             array.splice(index, 1); // Remove ID if already present
         }
     }
-    // getSummaryData() {
-    //     return this.httpClient.get(environment.apiUrl + '/PCases/logistics?')
-    // }
-    // getCasesByStageAndStep(stage:any,step:any) {
-    //     return this.httpClient.get(environment.apiUrl + `/PCases/getCasesByStageAndStep?stage=${stage}&step=${step}`)
-    // }
-    // getCaseFilterd(filters:any) {
-    //     return this.httpClient.post(environment.apiUrl + `/PCases/get_case_filterd`,filters)
-    // }
-    // getDecisionsByStep(step:any) {
-    //     return this.httpClient.get(environment.apiUrl + `/PCases/getDecisionsByStep?stepId=${step}`)
-    // }
-    // addNewCase(shipment:any){
-    //     return this.httpClient.post(environment.apiUrl + `/PCases`,shipment)
-    // }
+
+    getAgentReturnedCases(agentId: any){
+        return this.httpClient.get(`${environment.apiUrl}/api/returns/getAgentReturnedCases?agentId=${agentId}`);
+    }
+    getAgentReturned(agentId: any){
+        return this.httpClient.get(`${environment.apiUrl}/api/returns/getAgentReturnables?agentId=${agentId}`);
+    }
+
+
 }
