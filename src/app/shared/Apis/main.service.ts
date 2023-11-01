@@ -56,6 +56,16 @@ export class MainService {
             this.StateService.branches = array
         })
     }
+    getCustomers() {
+        return this.httpClient.get(environment.apiUrl + '/customers/branch-customers').subscribe((el:any)=>{
+            const array = el.map((el:any) => ({
+                value: el.customerName,
+                label: el.customerName
+            }));
+            this.StateService.customers = array
+        })
+    }
+
     getAllStateCode() {
         return this.httpClient.get(environment.apiUrl + '/kbstate/get_all_stateCodes').subscribe((el:any)=>{
             const array = el.map((el:any) => ({
@@ -68,8 +78,8 @@ export class MainService {
     getAllDistritCodes(state:any) {
         return this.httpClient.get(environment.apiUrl + '/kbstate/get_all_distritCodes/'+state).subscribe((el:any)=>{
             const array = el.map((el:any) => ({
-                value: el,
-                label: codeToString[el]
+                value: el.id.toString(),
+                label: el.code
             }));
             this.StateService.distrits = array
         })

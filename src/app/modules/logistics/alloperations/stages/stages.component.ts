@@ -6,6 +6,7 @@ import { StateService } from "../../../../shared/services/state.service";
 import { stage, step, stepId } from "../../../../shared/constant/stage";
 import { MainService } from "../../../../shared/Apis/main.service";
 import * as moment from 'moment';
+import {combineLatest} from "rxjs";
 
 @Component({
     selector: 'app-stages',
@@ -29,7 +30,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
     filters: any = {
         c_dlvagent_manifestid: null,//منفيست مندوب التوصيل
         c_id: null,//كود الشحنه
-        cCustreceiptnoori: null,//رقم الوصلF
+        customerReceipt: null,//رقم الوصلF
         merchantName: null,//المتجر
         from: null,//بتاريخ
         to: null,//إلى تاريخ
@@ -37,7 +38,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
         agentName: null,//مندوب التوصيل
         c_rcv_hp1: null,//هاتف المستلم
         c_createddt: null,//تاريخ الشحنه
-        c_rcv_district: null,//المنطقة
+        cRcvDistrict: null,//المنطقة
         cc_liaisonagentid: null,//مندوب ألأرتباط
         qManifestId: null,//رقم المنفيست
         cc_tobranch: null,//قادمة من فرع
@@ -51,7 +52,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
     filterDisplay = {
         c_dlvagent_manifestid: true,
         c_id: true,
-        cCustreceiptnoori: true,
+        customerReceipt: true,
         merchantName: true,
         from: true,
         to: true,
@@ -59,7 +60,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
         agentName: true,
         c_rcv_hp1: true,
         c_createddt: true,
-        c_rcv_district: true,
+        cRcvDistrict: true,
         cc_liaisonagentid: true,
         qManifestId: true,
         cc_tobranch: true,
@@ -80,6 +81,16 @@ export class StagesComponent extends BaseComponent implements OnInit {
     changeState(ev: any) {
         this.mainService.getAllDistritCodes(ev.value)
     }
+
+    filterOperation(item:any){
+        if (true){
+            return this.operation.filter((el:any)=>el.value =='ASSGN_AGENT')
+
+        }
+        if (item.toLiaisonAgent){
+            return this.operation.filter((el:any)=>el.value =='ASSIGN_LIASIONAGT')
+        }
+    }
     ngOnInit() {
         this.dashboardService.getDecisionsByStep(stepId[this.step]).subscribe((des: any) => {
             this.operation = des.map((obj: any) => ({
@@ -93,6 +104,31 @@ export class StagesComponent extends BaseComponent implements OnInit {
                         key: 'rtnReasonMap',
                         options: this.state.returnReasones,
                         placeholder: 'سبب الراجع',
+                        selected: null
+                    }
+
+                ],
+                "ASSGN_AGENT":[
+                    {
+                        type: 'dropdown',
+                        options: this.state.deliveryAgents,
+                        placeholder: 'مندوب التوصيل',
+                        selected: null
+                    }
+                ],
+                "ASSIGN_LIASIONAGT":[
+                    {
+                        type: 'dropdown',
+                        options: this.state.deliveryAgents,
+                        placeholder: 'مندوب الإرتباط',
+                        selected: null
+                    }
+                ],
+                "CHNGE_AGENT": [
+                    {
+                        type: 'dropdown',
+                        options: this.state.deliveryAgents,
+                        placeholder: 'مندوب الإرتباط',
                         selected: null
                     }
 
@@ -176,50 +212,105 @@ export class StagesComponent extends BaseComponent implements OnInit {
         this.getData()
     }
     save() {
-        let updatedCases = this.data.filter(el => el.decision)
-        let casesIds = updatedCases.map(el => el.caseId)
-        let actionsMap: any = {}
+        if (this.stage == 'INIT' && this.step == "NEWINSTORE"){
+            let assignToAgent = this.data.filter(el => el.decision == 'assignToAgent')
+            let assignToLiaisonAgent = this.data.filter(el => el.decision == 'assignToLiaisonAgent')
+            let assignToAgentData:any = []
+            let assignToLiaisonAgentData:any = []
+            assignToAgent.forEach(el=>{
+                assignToAgentData.push({
+                    "deliveryAgent": el.optionForAction[0].selected,
+                    "cId": el.caseId,
+                    "note": el.note
+                })
+            })
+            assignToLiaisonAgent.forEach(el=>{
+                assignToLiaisonAgentData.push({
+                    "liaisonAgentId": el.optionForAction[0].selected,
+                    "cId": el.caseId,
+                    "note": el.note
+                })
+            })
+            this.loading = true
+            combineLatest(this.dashboardService.assignToAgent(assignToAgentData),this.dashboardService.assignToLiaisonAgent(assignToLiaisonAgentData)).subscribe(el=>{
+                this.loading = false
+                this.getData()
+            },()=>{
+                this.loading = false
+            })
+        }else if(this.stage == 'INIT' && this.step == "PRINTMANIFEST"){
+            let MoveToAgent = this.data.filter(el => el.decision == 'MOVETOAGENT')
+            let ChangeAgent = this.data.filter(el => el.decision == 'CHNGE_AGENT')
+            let MoveToAgentData:any = []
+            let ChangeAgentData:any = []
+            MoveToAgent.forEach(el=>{
+                MoveToAgentData.push({
+                    "deliveryAgentId": el.agentId,
+                    "comingFromBranch": el.comingFromBranch,
+                    "branchId": el.branchCode,
+                })
+            })
+            ChangeAgent.forEach(el=>{
+                ChangeAgentData.push({
+                    "deliveryAgentId": el.agentId,
+                    "deliveryAgentToChangeId":el.optionForAction[0].selected,
+                    "comingFromBranch": el.comingFromBranch,
+                    "branchId": el.branchCode,
+                })
+            })
+            this.loading = true
+            combineLatest(this.dashboardService.ChangeAgent(ChangeAgentData),this.dashboardService.MoveToAgent(MoveToAgentData)).subscribe(el=>{
+                this.loading = false
+                this.getData()
+            },()=>{
+                this.loading = false
+            })
+        } else{
+            let updatedCases = this.data.filter(el => el.decision)
+            let casesIds = updatedCases.map(el => el.caseId)
+            let actionsMap: any = {}
 
-        updatedCases.forEach((obj: any) => {
-            actionsMap[obj.caseId] = obj.decision;
-        });
-        let otherData: any = {
-            "newReceiptsAmtIqdMap": {},
-            "newReceiptsAmtUsdMap": {},
-            "rtnReasonMap": {},
-            "postponedOptionMap": {},
-            "postponedToMap": {},
-            "queueColsToUpdate": {},
-            "partialQtyReturnMap": {},
-            "casesToRmkMap": {},
-        }
-
-        updatedCases.forEach((obj: any) => {
-            if (obj.optionForAction) {
-                obj.optionForAction.forEach((opt: any) => {
-                    if (opt.key == 'postponedToMap') {
-                        otherData[opt.key][obj.caseId] = moment(opt.selected).format('yyyy-MM-DD')
-                    } else {
-                        otherData[opt.key][obj.caseId] = opt.selected
-                    }
-                });
+            updatedCases.forEach((obj: any) => {
+                actionsMap[obj.caseId] = obj.decision;
+            });
+            let otherData: any = {
+                "newReceiptsAmtIqdMap": {},
+                "newReceiptsAmtUsdMap": {},
+                "rtnReasonMap": {},
+                "postponedOptionMap": {},
+                "postponedToMap": {},
+                "queueColsToUpdate": {},
+                "partialQtyReturnMap": {},
+                "casesToRmkMap": {},
             }
-        });
 
-        let base = {
-            "stepCode": this.step,
-            "stage":this.stage,
-            "casesIds": casesIds,
-            ...otherData,
-            "actionsMap": actionsMap
+            updatedCases.forEach((obj: any) => {
+                if (obj.optionForAction) {
+                    obj.optionForAction.forEach((opt: any) => {
+                        if (opt.key == 'postponedToMap') {
+                            otherData[opt.key][obj.caseId] = moment(opt.selected).format('yyyy-MM-DD')
+                        } else {
+                            otherData[opt.key][obj.caseId] = opt.selected
+                        }
+                    });
+                }
+            });
+
+            let base = {
+                "stepCode": this.step,
+                "stage":this.stage,
+                "casesIds": casesIds,
+                ...otherData,
+                "actionsMap": actionsMap
+            }
+            this.loading = true
+            this.dashboardService.updateCase(base).subscribe(res => {
+                this.loading = false
+                this.getData()
+            }, () => {
+                this.loading = false
+            })
         }
-        this.loading = true
-        this.dashboardService.updateCase(base).subscribe(res => {
-            this.loading = false
-            this.getData()
-        }, () => {
-            this.loading = false
-        })
     }
     changeDecision(data: any, ev: any) {
         if (this.optionForAction[ev.value]) {
@@ -227,6 +318,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
         } else {
             data.optionForAction = null
         }
+        console.log(data)
     }
     resetFilter() {
         this.setFilters()
@@ -236,29 +328,42 @@ export class StagesComponent extends BaseComponent implements OnInit {
     getData() {
         this.loading = true
         const filter = Object.keys(this.filters)
-            .filter((key) => ['step', 'stage', 'cCustreceiptnoori','c_createddt','qManifestId', 'merchantName', 'from', 'to', 'stateNameArabic', 'agentName', 'c_rcv_hp1', 'branchCode'].includes(key))
+            .filter((key) => ['step', 'stage','cRcvDistrict', 'customerReceipt','c_createddt','qManifestId', 'merchantName', 'from', 'to', 'stateNameArabic', 'agentName', 'c_rcv_hp1', 'branchCode'].includes(key))
             .reduce((obj: any, key: any) => {
                 return Object.assign(obj, {
                     [key]: this.filters[key]
                 });
             }, {});
-        this.dashboardService.getCaseFilterd(filter).subscribe((res: any) => {
-            this.data = res
-            this.loading = false
-        },()=>{
-            this.loading = false
-        })
-        // this.dashboardService.getCasesByStageAndStep(this.stage, this.step).subscribe((res: any) => {
-        //     this.data = res
-        //     this.loading = false
-        // })
+        if (this.stage == "INIT" && this.step == "NEWINSTORE"){
+            this.dashboardService.INIT_NEWINSTORE(filter).subscribe((res: any) => {
+                this.data = res
+                this.loading = false
+            },()=>{
+                this.loading = false
+            })
+        }else if(this.stage == "INIT" && this.step == "PRINTMANIFEST"){
+            this.dashboardService.INIT_PRINTMANIFEST().subscribe((res: any) => {
+                this.data = res
+                this.loading = false
+            },()=>{
+                this.loading = false
+            })
+        }else{
+            this.dashboardService.getCaseFilterd(filter).subscribe((res: any) => {
+                this.data = res
+                this.loading = false
+            },()=>{
+                this.loading = false
+            })
+        }
+
     }
 
     setFilters() {
         this.filters = {
             c_dlvagent_manifestid: null,//منفيست مندوب التوصيل
             c_id: null,//كود الشحنه
-            cCustreceiptnoori: null,//رقم الوصل
+            customerReceipt: null,//رقم الوصل
             merchantName: null,//المتجر
             from: null,//بتاريخ
             to: null,//إلى تاريخ
@@ -266,7 +371,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
             agentName: null,//مندوب التوصيل
             c_rcv_hp1: null,//هاتف المستلم
             c_createddt: null,//تاريخ الشحنه
-            c_rcv_district: null,//المنطقة
+            cRcvDistrict: null,//المنطقة
             cc_liaisonagentid: null,//مندوب ألأرتباط
             qManifestId: null,//رقم المنفيست
             cc_tobranch: null,//قادمة من فرع
@@ -328,7 +433,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
         this.filterDisplay = {
             c_dlvagent_manifestid: false,
             c_id: false,
-            cCustreceiptnoori: false,
+            customerReceipt: false,
             merchantName: false,
             from: false,
             to: false,
@@ -336,7 +441,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
             agentName: false,
             c_rcv_hp1: false,
             c_createddt: false,
-            c_rcv_district: false,
+            cRcvDistrict: false,
             cc_liaisonagentid: false,
             qManifestId: false,
             cc_tobranch: false,
@@ -394,7 +499,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
         this.filterDisplay = {
             c_dlvagent_manifestid: false,
             c_id: false,
-            cCustreceiptnoori: false,
+            customerReceipt: true,
             merchantName: true,
             from: false,
             to: false,
@@ -402,9 +507,9 @@ export class StagesComponent extends BaseComponent implements OnInit {
             agentName: false,
             c_rcv_hp1: false,
             c_createddt: true,
-            c_rcv_district: true,
+            cRcvDistrict: true,
             cc_liaisonagentid: false,
-            qManifestId: true,
+            qManifestId: false,
             cc_tobranch: false,
             cc_rtnmanifestid: false,
             cc_frombranch: false,
@@ -416,6 +521,11 @@ export class StagesComponent extends BaseComponent implements OnInit {
                 name: 'رقم الوصل',
                 type: 'string',
                 key: 'cCustreceiptnoori'
+            },
+            {
+                name: 'مبلغ الوصل د.ع',
+                type: 'string',
+                key: 'cReceiptamt'
             },
             {
                 name: 'مبلغ الوصل $',
@@ -433,6 +543,11 @@ export class StagesComponent extends BaseComponent implements OnInit {
                 key: 'name'
             },
             {
+                name: 'العنوان',
+                type: 'string',
+                key: 'address'
+            },
+            {
                 name: 'ملاحظات',
                 type: 'note',
                 key: 'note'
@@ -440,23 +555,8 @@ export class StagesComponent extends BaseComponent implements OnInit {
             {
                 name: 'العمليه',
                 option: this.operation,
-                type: 'string',
+                type: 'FilteredDropdown',
                 key: ''
-            },
-            {
-                name: 'مندوب الإرتباط',
-                type: 'string',
-                key: ''
-            },
-            {
-                name: 'مبلغ الوصل د.ع',
-                type: 'string',
-                key: 'cReceiptamt'
-            },
-            {
-                name: 'العنوان',
-                type: 'string',
-                key: 'address'
             },
             {
                 name: 'تاريخ الشحنه',
@@ -471,7 +571,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
         this.filterDisplay = {
             c_dlvagent_manifestid: false,
             c_id: false,
-            cCustreceiptnoori: false,
+            customerReceipt: false,
             merchantName: false,
             from: false,
             to: false,
@@ -479,7 +579,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
             agentName: false,
             c_rcv_hp1: false,
             c_createddt: false,
-            c_rcv_district: false,
+            cRcvDistrict: false,
             cc_liaisonagentid: false,
             qManifestId: false,
             cc_tobranch: false,
@@ -492,13 +592,13 @@ export class StagesComponent extends BaseComponent implements OnInit {
             {
                 name: 'المندوب',
                 type: 'string',
-                key: ''
+                key: 'agentName'
             },
             {
                 name: 'عدد الشحنات',
                 type: 'button',
                 title: 'عرض جميع الشحنات - العدد 6',
-                key: 'totcases'
+                key: ''
             },
             {
                 name: 'طباعة الكشف',
@@ -532,7 +632,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
         this.filterDisplay = {
             c_dlvagent_manifestid: true,
             c_id: true,
-            cCustreceiptnoori: true,
+            customerReceipt: true,
             merchantName: true,
             from: true,
             to: true,
@@ -540,7 +640,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
             agentName: true,
             c_rcv_hp1: true,
             c_createddt: false,
-            c_rcv_district: false,
+            cRcvDistrict: false,
             cc_liaisonagentid: false,
             qManifestId: false,
             cc_tobranch: false,
@@ -619,7 +719,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
         this.filterDisplay = {
             c_dlvagent_manifestid: true,
             c_id: true,
-            cCustreceiptnoori: true,
+            customerReceipt: true,
             merchantName: true,
             from: true,
             to: true,
@@ -627,7 +727,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
             agentName: true,
             c_rcv_hp1: true,
             c_createddt: false,
-            c_rcv_district: false,
+            cRcvDistrict: false,
             cc_liaisonagentid: false,
             qManifestId: false,
             cc_tobranch: false,
@@ -706,7 +806,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
         this.filterDisplay = {
             c_dlvagent_manifestid: true,
             c_id: true,
-            cCustreceiptnoori: true,
+            customerReceipt: true,
             merchantName: true,
             from: true,
             to: true,
@@ -714,7 +814,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
             agentName: true,
             c_rcv_hp1: true,
             c_createddt: false,
-            c_rcv_district: false,
+            cRcvDistrict: false,
             cc_liaisonagentid: false,
             qManifestId: false,
             cc_tobranch: false,
@@ -798,7 +898,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
         this.filterDisplay = {
             c_dlvagent_manifestid: true,
             c_id: true,
-            cCustreceiptnoori: true,
+            customerReceipt: true,
             merchantName: true,
             from: true,
             to: true,
@@ -806,7 +906,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
             agentName: true,
             c_rcv_hp1: true,
             c_createddt: false,
-            c_rcv_district: false,
+            cRcvDistrict: false,
             cc_liaisonagentid: false,
             qManifestId: false,
             cc_tobranch: false,
@@ -824,7 +924,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
         this.filterDisplay = {
             c_dlvagent_manifestid: false,
             c_id: false,
-            cCustreceiptnoori: true,
+            customerReceipt: true,
             merchantName: true,
             from: false,
             to: false,
@@ -832,7 +932,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
             agentName: false,
             c_rcv_hp1: false,
             c_createddt: true,
-            c_rcv_district: false,
+            cRcvDistrict: false,
             cc_liaisonagentid: false,
             qManifestId: false,
             cc_tobranch: false,
@@ -892,7 +992,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
         this.filterDisplay = {
             c_dlvagent_manifestid: false,
             c_id: false,
-            cCustreceiptnoori: true,
+            customerReceipt: true,
             merchantName: true,
             from: false,
             to: false,
@@ -900,7 +1000,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
             agentName: false,
             c_rcv_hp1: false,
             c_createddt: true,
-            c_rcv_district: false,
+            cRcvDistrict: false,
             cc_liaisonagentid: false,
             qManifestId: false,
             cc_tobranch: false,
@@ -960,7 +1060,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
         this.filterDisplay = {
             c_dlvagent_manifestid: false,
             c_id: false,
-            cCustreceiptnoori: true,
+            customerReceipt: true,
             merchantName: true,
             from: false,
             to: false,
@@ -968,7 +1068,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
             agentName: false,
             c_rcv_hp1: false,
             c_createddt: true,
-            c_rcv_district: false,
+            cRcvDistrict: false,
             cc_liaisonagentid: false,
             qManifestId: false,
             cc_tobranch: false,
@@ -1028,7 +1128,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
         this.filterDisplay = {
             c_dlvagent_manifestid: false,
             c_id: false,
-            cCustreceiptnoori: true,
+            customerReceipt: true,
             merchantName: true,
             from: false,
             to: false,
@@ -1036,7 +1136,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
             agentName: false,
             c_rcv_hp1: false,
             c_createddt: true,
-            c_rcv_district: false,
+            cRcvDistrict: false,
             cc_liaisonagentid: false,
             qManifestId: false,
             cc_tobranch: false,
@@ -1096,7 +1196,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
         this.filterDisplay = {
             c_dlvagent_manifestid: false,
             c_id: false,
-            cCustreceiptnoori: true,
+            customerReceipt: true,
             merchantName: true,
             from: false,
             to: false,
@@ -1104,7 +1204,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
             agentName: false,
             c_rcv_hp1: false,
             c_createddt: true,
-            c_rcv_district: false,
+            cRcvDistrict: false,
             cc_liaisonagentid: false,
             qManifestId: false,
             cc_tobranch: false,
@@ -1164,7 +1264,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
         this.filterDisplay = {
             c_dlvagent_manifestid: false,
             c_id: false,
-            cCustreceiptnoori: false,
+            customerReceipt: false,
             merchantName: false,
             from: false,
             to: false,
@@ -1172,7 +1272,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
             agentName: false,
             c_rcv_hp1: false,
             c_createddt: false,
-            c_rcv_district: false,
+            cRcvDistrict: false,
             cc_liaisonagentid: false,
             qManifestId: false,
             cc_tobranch: false,
@@ -1227,7 +1327,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
         this.filterDisplay = {
             c_dlvagent_manifestid: false,
             c_id: false,
-            cCustreceiptnoori: false,
+            customerReceipt: false,
             merchantName: true,
             from: false,
             to: false,
@@ -1235,7 +1335,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
             agentName: false,
             c_rcv_hp1: false,
             c_createddt: false,
-            c_rcv_district: true,
+            cRcvDistrict: true,
             cc_liaisonagentid: true,
             qManifestId: true,
             cc_tobranch: false,
@@ -1306,7 +1406,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
         this.filterDisplay = {
             c_dlvagent_manifestid: false,
             c_id: false,
-            cCustreceiptnoori: false,
+            customerReceipt: false,
             merchantName: false,
             from: false,
             to: false,
@@ -1314,7 +1414,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
             agentName: false,
             c_rcv_hp1: false,
             c_createddt: false,
-            c_rcv_district: false,
+            cRcvDistrict: false,
             cc_liaisonagentid: true,
             qManifestId: false,
             cc_tobranch: true,
@@ -1348,7 +1448,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
         this.filterDisplay = {
             c_dlvagent_manifestid: false,
             c_id: false,
-            cCustreceiptnoori: true,
+            customerReceipt: true,
             merchantName: false,
             from: false,
             to: false,
@@ -1356,7 +1456,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
             agentName: false,
             c_rcv_hp1: false,
             c_createddt: false,
-            c_rcv_district: false,
+            cRcvDistrict: false,
             cc_liaisonagentid: false,
             qManifestId: false,
             cc_tobranch: false,
@@ -1406,7 +1506,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
         this.filterDisplay = {
             c_dlvagent_manifestid: false,
             c_id: false,
-            cCustreceiptnoori: false,
+            customerReceipt: false,
             merchantName: false,
             from: false,
             to: false,
@@ -1414,7 +1514,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
             agentName: false,
             c_rcv_hp1: false,
             c_createddt: false,
-            c_rcv_district: false,
+            cRcvDistrict: false,
             cc_liaisonagentid: false,
             qManifestId: false,
             cc_tobranch: false,
@@ -1469,7 +1569,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
         this.filterDisplay = {
             c_dlvagent_manifestid: false,
             c_id: false,
-            cCustreceiptnoori: true,
+            customerReceipt: true,
             merchantName: true,
             from: false,
             to: false,
@@ -1477,7 +1577,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
             agentName: false,
             c_rcv_hp1: false,
             c_createddt: true,
-            c_rcv_district: false,
+            cRcvDistrict: false,
             cc_liaisonagentid: false,
             qManifestId: false,
             cc_tobranch: false,
@@ -1537,7 +1637,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
         this.filterDisplay = {
             c_dlvagent_manifestid: false,
             c_id: false,
-            cCustreceiptnoori: true,
+            customerReceipt: true,
             merchantName: true,
             from: false,
             to: false,
@@ -1545,7 +1645,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
             agentName: false,
             c_rcv_hp1: false,
             c_createddt: true,
-            c_rcv_district: false,
+            cRcvDistrict: false,
             cc_liaisonagentid: false,
             qManifestId: false,
             cc_tobranch: false,
