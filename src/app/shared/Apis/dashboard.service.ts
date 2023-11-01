@@ -19,6 +19,19 @@ export class DashboardService {
     getCaseFilterd(filters:any) {
         return this.httpClient.post(environment.apiUrl + `/PCases/get_case_filterd`,filters)
     }
+    INIT_NEWINSTORE(filters:any) {
+        return this.httpClient.post(environment.apiUrl + `/Flow/getCasesINI_INSTORE`,filters)
+    }
+    INIT_PRINTMANIFEST() {
+        return this.httpClient.get(environment.apiUrl + `/Flow/getCasesINI_PRINTMINIFIST?branchId=1`)
+    }
+    getDataToPrintDlvAgManifest(filters:any){
+        return this.httpClient.post(environment.apiUrl + `/Flow/getDataToPrintDlvAgManifest`,filters)
+
+    }
+    returnToSore(filters:any){
+        return this.httpClient.put(environment.apiUrl + `/Flow/returnToSore`,filters)
+    }
     getDecisionsByStep(step:any) {
         return this.httpClient.get(environment.apiUrl + `/PCases/getDecisionsByStep?stepId=${step}`)
     }
@@ -27,5 +40,18 @@ export class DashboardService {
     }
     updateCase(data:any){
         return this.httpClient.post(environment.apiUrl + `/Flow/AgentOperations`,data)
+    }
+    assignToAgent(data:any){
+        return this.httpClient.put(environment.apiUrl + `/Flow/assignToAgent`,data)
+    }
+    assignToLiaisonAgent(data:any){
+        return this.httpClient.put(environment.apiUrl + `/Flow/assignToLiaisonAgent`,data)
+    }
+
+    MoveToAgent(data:any){
+        return this.httpClient.post(environment.apiUrl + `/Flow/MoveToAgent`,data)
+    }
+    ChangeAgent(data:any){
+        return this.httpClient.post(environment.apiUrl + `/Flow/ChangeAgent`,data)
     }
 }

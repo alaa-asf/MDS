@@ -1,0 +1,122 @@
+<p-card [header]="stageEnum[stage] + ' - ' + stepEnum[step]">
+    <p-table  [scrollable]="true" [value]="data" [tableStyle]="{ 'min-width': '75rem' }" styleClass="p-datatable-gridlines"
+              [showCurrentPageReport]="true" [lazy]=false [totalRecords]='totalRecords'
+              currentPageReportTemplate="عرض {first} إلى {last} من {totalRecords} إدخالات ."
+              [loading]="loading"
+              [paginator]="true" [rows]="10">
+        <ng-template pTemplate="caption">
+
+            <div class="flex justify-content-between">
+                <div class="flex gap-2 justify-content-end">
+                </div>
+                <div>
+                    <div class="flex justify-content-center align-items-center">
+                        <button type="button" pButton pRipple icon="pi pi-save" (click)="save()"
+                                class="p-button-success mr-2 hidden md:flex" pTooltip="save"
+                                tooltipPosition="bottom"></button>
+                        <button type="button" pButton pRipple icon="pi pi-save" (click)="save()"
+                                class="p-button-success w-full flex md:hidden " pTooltip="save"
+                                tooltipPosition="bottom"></button>
+
+                    </div>
+                </div>
+            </div>
+
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th>#</th>
+                <th *ngFor="let col of columns" [ngClass]="col.type == 'dropdown'?'min-w-[200px]':'min-w-[150px]'">
+                    {{col.name}}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-data let-rowIndex="rowIndex">
+            <tr>
+                <td>{{rowIndex + 1}}</td>
+                <td *ngFor="let col of columns">
+                    <div *ngIf="col.type == 'string'">
+                        {{data[col.key]}}
+                    </div>
+                    <div *ngIf="col.type == 'date'">
+                        {{data[col.key] | date:'short'}}
+                    </div>
+                    <div *ngIf="col.type == 'dropdown'" class="h-[44px]">
+                        <p-dropdown [appendTo]="'body'"  [options]="operation" [showClear]="true" [(ngModel)]="data.decision"  class="w-full h-full" [placeholder]="' '" (onChange)="changeDecision(data,$event)" [filter]='true'
+                                    styleClass="w-full h-full"></p-dropdown>
+
+                    </div>
+                    <div *ngIf="col.type == 'FilteredDropdown'" class="h-[44px]">
+                        <p-dropdown [appendTo]="'body'"  [options]="filterOperation(data)" [showClear]="true" [(ngModel)]="data.decision"  class="w-full h-full" [placeholder]="' '" (onChange)="changeDecision(data,$event)" [filter]='true'
+                                    styleClass="w-full h-full"></p-dropdown>
+
+                    </div>
+                    <div *ngIf="col.type == 'note'">
+                        <input pInputText type="text"  [ngModel]="data.note"
+                               class="w-full"/>
+                    </div>
+                    <div *ngIf="col.type == 'totcases'">
+                        <p-button [label]="'عرض جميع الشحنات - العدد '+data.count" (onClick)="openCases(data)"></p-button>
+                    </div>
+                    <div *ngIf="col.type == 'button'">
+                        <p-button [label]="col.title"></p-button>
+                    </div>
+                    <div *ngIf="col.type == 'print'">
+                        <p-button [loading]="casesLoading" [label]="col.title" (onClick)="exportPdf(data)"></p-button>
+                    </div>
+                    <div *ngIf="(col.type == 'dropdown' || col.type =='FilteredDropdown') && data.optionForAction" >
+                        <div *ngFor="let option of data.optionForAction " class="mt-2" >
+                            <div *ngIf=" option.type == 'date'" class="h-[44px]">
+                                <p-calendar [dir]="'ltr'" [inputStyleClass]="'w-full'" styleClass="w-full" [showIcon]="true"
+                                            [showButtonBar]="true" [(ngModel)]="option.selected"
+                                            [readonlyInput]="true"></p-calendar>
+                            </div>
+                            <div *ngIf=" option.type == 'dropdown'" class="h-[44px]">
+                                <p-dropdown [appendTo]="'body'" [(ngModel)]="option.selected" [options]="option.options" class="w-full h-full" [placeholder]="option.placeholder"  [filter]='true'
+                                            styleClass="w-full h-full"></p-dropdown>
+                            </div>
+                            <div *ngIf=" option.type == 'input'" class="h-[44px]">
+                                <p-inputNumber pKeyFilter="num" styleClass="w-full"  [(ngModel)]="option.selected"  [placeholder]="option.placeholder"
+                                               class="!w-full"/>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-card>
+<p-dialog  [header]="'شحنات المندوب : '+selectedAgent?.agentName " [(visible)]="visible" [modal]="true" [style]="{ width: '80vw' }" [draggable]="false" [resizable]="false">
+    <p-table [loading]="casesLoading" [value]="cases" [tableStyle]="{ 'min-width': '50rem' }">
+        <ng-template pTemplate="caption">
+            <div class="flex">
+                <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf()" class="p-button-warning mr-2" pTooltip="PDF" tooltipPosition="bottom"></button>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th> العنوان</th>
+                <th>رقم الوصل</th>
+                <th> هاتف المستلم</th>
+                <th>إسم المتجر</th>
+                <th>هاتف المتجر</th>
+                <th>المبلغ المطلوب د.ع</th>
+                <th>المبلغ المطلوب $</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item>
+            <tr>
+                <td>{{ item.address }}</td>
+                <td>{{ item.custReceiptNoOri }}</td>
+                <td>{{ item.receiverHp1 }}</td>
+                <td>{{ item.senderName }}</td>
+                <td>{{ item.senderHp }}</td>
+                <td>{{ item.receiptAmtIqd }}</td>
+                <td>{{ item.receiptAmtUsd }}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>

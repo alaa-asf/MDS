@@ -7,12 +7,14 @@ import {SharedModule} from "../../../shared/shared.module";
 import {PanelModule} from "primeng/panel";
 import { StagesComponent } from './stages/stages.component';
 import {BreadcrumbModule} from "primeng/breadcrumb";
+import { PrintManifestComponent } from './print-manifest/print-manifest.component';
 
 
 @NgModule({
   declarations: [
     AlloperationsComponent,
-    StagesComponent
+    StagesComponent,
+    PrintManifestComponent
   ],
     imports: [
         CommonModule,

@@ -35,15 +35,15 @@
                     <p-dropdown class="w-full h-full" [filter]='true' styleClass="w-full h-full" [placeholder]="' '" [options]="state.deliveryAgents"
                                 [showClear]=true [(ngModel)]="filters.agentName"></p-dropdown>
                 </div>
-                <div *ngIf="filterDisplay.qManifestId" class="flex flex-col min-w-[200px]">
+                <div *ngIf="filterDisplay.merchantName" class="flex flex-col min-w-[200px]">
                     <label>المتجر</label>
-                    <p-dropdown class="w-full h-full" [filter]='true' styleClass="w-full h-full"  [placeholder]="' '"  [options]="districts"
-                                [showClear]=true [(ngModel)]="filters.qManifestId"></p-dropdown>
+                    <p-dropdown class="w-full h-full" [filter]='true' styleClass="w-full h-full"  [placeholder]="' '"  [options]="state.customers"
+                                [showClear]=true [(ngModel)]="filters.merchantName"></p-dropdown>
                 </div>
-                <div *ngIf="filterDisplay.c_rcv_district" class="flex flex-col min-w-[200px]">
+                <div *ngIf="filterDisplay.cRcvDistrict" class="flex flex-col min-w-[200px]">
                     <label>المنطقة</label>
                     <p-dropdown class="w-full h-full" [filter]='true' styleClass="w-full h-full"  [placeholder]="' '"  [options]="state.distrits"
-                                [showClear]=true [(ngModel)]="filters.c_rcv_district"></p-dropdown>
+                                [showClear]=true [(ngModel)]="filters.cRcvDistrict"></p-dropdown>
                 </div>
                 <div *ngIf="filterDisplay.cc_tobranch" class="flex flex-col min-w-[200px]">
                     <label>قادمة من فرع</label>
@@ -80,9 +80,9 @@
                 </div>
 
 
-                <div *ngIf="filterDisplay.cCustreceiptnoori" class="flex flex-col  ">
+                <div *ngIf="filterDisplay.customerReceipt" class="flex flex-col  ">
                     <label>رقم الوصل</label>
-                    <input pInputText type="text" [(ngModel)]="filters.cCustreceiptnoori"
+                    <input pInputText type="text" [(ngModel)]="filters.customerReceipt"
                            class="w-full"/>
                 </div>
                 <div *ngIf="filterDisplay.c_dlvagent_manifestid" class="flex flex-col  ">
@@ -101,21 +101,21 @@
             </div>
             <div class="flex justify-content-between">
                 <div class="flex gap-2 justify-content-end">
-                    <div class="flex justify-content-center">
+                    <div  *ngIf='step !="PRINTMANIFEST" ' class="flex justify-content-center">
                         <p-button label="بحث" (click)="getData()" icon="pi pi-search" [loading]="loading"
                                   styleClass="p-button-success hidden md:flex"></p-button>
                         <p-button label="Search" class="block md:hidden w-full" [loading]="loading" styleClass="w-full"
                                   (click)="getData()"></p-button>
-    
+
                     </div>
-                    <div class="flex justify-content-center align-items-center">
+                    <div  *ngIf='step !="PRINTMANIFEST" ' class="flex justify-content-center align-items-center">
                         <button type="button" pButton pRipple icon="pi pi-filter-slash" (click)="resetFilter()"
                                 class="p-button-secondary mr-2 hidden md:flex" pTooltip="Reset Filters"
                                 tooltipPosition="bottom"></button>
                         <button type="button" pButton pRipple icon="pi pi-filter-slash" (click)="resetFilter()"
                                 class="p-button-secondary w-full flex md:hidden " pTooltip="Reset Filters"
                                 tooltipPosition="bottom"></button>
-    
+
                     </div>
                 </div>
                 <div>
@@ -126,7 +126,7 @@
                         <button type="button" pButton pRipple icon="pi pi-save" (click)="save()"
                                 class="p-button-success w-full flex md:hidden " pTooltip="save"
                                 tooltipPosition="bottom"></button>
-    
+
                     </div>
                 </div>
             </div>
@@ -155,14 +155,19 @@
                                     styleClass="w-full h-full"></p-dropdown>
 
                     </div>
+                    <div *ngIf="col.type == 'FilteredDropdown'" class="h-[44px]">
+                        <p-dropdown [appendTo]="'body'"  [options]="filterOperation(data)" [showClear]="true" [(ngModel)]="data.decision"  class="w-full h-full" [placeholder]="' '" (onChange)="changeDecision(data,$event)" [filter]='true'
+                                    styleClass="w-full h-full"></p-dropdown>
+
+                    </div>
                     <div *ngIf="col.type == 'note'">
-                        <input pInputText type="text"  [ngModel]="data.note" 
+                        <input pInputText type="text"  [ngModel]="data.note"
                                class="w-full"/>
                     </div>
                     <div *ngIf="col.type == 'button'">
                         <p-button [label]="col.title"></p-button>
                     </div>
-                    <div *ngIf="col.type == 'dropdown' && data.optionForAction" >
+                    <div *ngIf="(col.type == 'dropdown' || col.type =='FilteredDropdown') && data.optionForAction" >
                         <div *ngFor="let option of data.optionForAction " class="mt-2" >
                             <div *ngIf=" option.type == 'date'" class="h-[44px]">
                                 <p-calendar [dir]="'ltr'" [inputStyleClass]="'w-full'" styleClass="w-full" [showIcon]="true"
@@ -174,13 +179,13 @@
                                 styleClass="w-full h-full"></p-dropdown>
                             </div>
                             <div *ngIf=" option.type == 'input'" class="h-[44px]">
-                                <p-inputNumber pKeyFilter="num" styleClass="w-full"  [(ngModel)]="option.selected"  [placeholder]="option.placeholder"  
+                                <p-inputNumber pKeyFilter="num" styleClass="w-full"  [(ngModel)]="option.selected"  [placeholder]="option.placeholder"
                                 class="!w-full"/>
                             </div>
                         </div>
-         
-                     
-                                    
+
+
+
                     </div>
                 </td>
             </tr>
