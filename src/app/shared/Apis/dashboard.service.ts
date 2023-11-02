@@ -16,6 +16,9 @@ export class DashboardService {
     getCasesByStageAndStep(stage:any,step:any) {
         return this.httpClient.get(environment.apiUrl + `/PCases/getCasesByStageAndStep?stage=${stage}&step=${step}`)
     }
+    getLiaisonAgentFilter(comingFromBranch:any,cRcvState:any) {
+        return this.httpClient.get(environment.apiUrl + `/users/getLiaisonAgent?comingFromBranch=${comingFromBranch}&cRcvState=${cRcvState}`)
+    }
     getCaseFilterd(filters:any) {
         return this.httpClient.post(environment.apiUrl + `/PCases/get_case_filterd`,filters)
     }
@@ -53,5 +56,21 @@ export class DashboardService {
     }
     ChangeAgent(data:any){
         return this.httpClient.post(environment.apiUrl + `/Flow/ChangeAgent`,data)
+    }
+
+
+    /// branch
+    getPcasesChain() {
+        return this.httpClient.get(environment.apiUrl + `/BranchesFlow/getCasesChain?branchId=31`)
+    }
+    NEWINWAYOP(base:any) {
+        return this.httpClient.post(environment.apiUrl + `/BranchesFlow/Between/TwoBranchesOp`,base)
+    }
+
+    getReturnedCases() {
+        return this.httpClient.get(environment.apiUrl + `/BranchesFlow/cases/Returned/WithLiaison?branchId=31`)
+    }
+    ReceiveReturnedWithLiaisonAgent(base:any) {
+        return this.httpClient.post(environment.apiUrl + `/BranchesFlow/Receive/Returned/WithLiaison`,base)
     }
 }

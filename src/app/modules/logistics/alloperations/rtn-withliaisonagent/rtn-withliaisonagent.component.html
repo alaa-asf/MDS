@@ -1,9 +1,9 @@
 <p-card [header]="stageEnum[stage] + ' - ' + stepEnum[step]">
     <p-table  [scrollable]="true" [value]="data" [tableStyle]="{ 'min-width': '75rem' }" styleClass="p-datatable-gridlines"
-             [showCurrentPageReport]="true" [lazy]=false [totalRecords]='totalRecords'
-             currentPageReportTemplate="عرض {first} إلى {last} من {totalRecords} إدخالات ."
-             [loading]="loading"
-             [paginator]="true" [rows]="10">
+              [showCurrentPageReport]="true" [lazy]=false [totalRecords]='totalRecords'
+              currentPageReportTemplate="عرض {first} إلى {last} من {totalRecords} إدخالات ."
+              [loading]="loading"
+              [paginator]="true" [rows]="10">
         <ng-template pTemplate="caption">
 
             <div class="flex flex-column-reverse md:flex-row md:justify-content-start flex-wrap gap-4 mb-4">
@@ -30,11 +30,6 @@
                     <p-dropdown class="w-full h-full"  [filter]='true' styleClass="w-full h-full"  [placeholder]="' '"  (onChange)="changeState($event)" [options]="state.states"
                                 [showClear]=true [(ngModel)]="filters.stateNameArabic"></p-dropdown>
                 </div>
-                <div *ngIf="filterDisplay.cRcvDistrict" class="flex flex-col min-w-[200px]">
-                    <label>المنطقة</label>
-                    <p-dropdown class="w-full h-full" [filter]='true' styleClass="w-full h-full"  [placeholder]="' '"  [options]="state.distrits"
-                                [showClear]=true [(ngModel)]="filters.cRcvDistrict"></p-dropdown>
-                </div>
                 <div *ngIf="filterDisplay.agentName" class="flex flex-col min-w-[200px]">
                     <label>مندوب التوصيل</label>
                     <p-dropdown class="w-full h-full" [filter]='true' styleClass="w-full h-full" [placeholder]="' '" [options]="state.deliveryAgents"
@@ -45,7 +40,11 @@
                     <p-dropdown class="w-full h-full" [filter]='true' styleClass="w-full h-full"  [placeholder]="' '"  [options]="state.customers"
                                 [showClear]=true [(ngModel)]="filters.merchantName"></p-dropdown>
                 </div>
-
+                <div *ngIf="filterDisplay.cRcvDistrict" class="flex flex-col min-w-[200px]">
+                    <label>المنطقة</label>
+                    <p-dropdown class="w-full h-full" [filter]='true' styleClass="w-full h-full"  [placeholder]="' '"  [options]="state.distrits"
+                                [showClear]=true [(ngModel)]="filters.cRcvDistrict"></p-dropdown>
+                </div>
                 <div *ngIf="filterDisplay.cc_tobranch" class="flex flex-col min-w-[200px]">
                     <label>قادمة من فرع</label>
                     <p-dropdown class="w-full h-full" [filter]='true' styleClass="w-full h-full"  [placeholder]="' '"  [options]="state.branches"
@@ -156,33 +155,28 @@
                                     styleClass="w-full h-full"></p-dropdown>
 
                     </div>
-                    <div *ngIf="col.type == 'FilteredDropdown'" class="h-[44px]">
-                        <p-dropdown [appendTo]="'body'"  [options]="filterOperation(data)" [showClear]="true" [(ngModel)]="data.decision"  class="w-full h-full" [placeholder]="' '" (onChange)="changeDecision(data,$event)" [filter]='true'
-                                    styleClass="w-full h-full"></p-dropdown>
-
-                    </div>
                     <div *ngIf="col.type == 'note'">
                         <input pInputText type="text"  [ngModel]="data.note"
                                class="w-full"/>
                     </div>
                     <div *ngIf="col.type == 'button'">
-                        <p-button [label]="col.title"></p-button>
+                        <p-button  [label]="'استلام الشحنات باركود - عدد الشحنات :'+data.count" (onClick)="openCases(data)"></p-button>
                     </div>
                     <div *ngIf="(col.type == 'dropdown' || col.type =='FilteredDropdown') && data.optionForAction" >
                         <div *ngFor="let option of data.optionForAction " class="mt-2" >
                             <div *ngIf=" option.type == 'date'" class="h-[44px]">
                                 <p-calendar [dir]="'ltr'" [inputStyleClass]="'w-full'" styleClass="w-full" [showIcon]="true"
-                                [showButtonBar]="true" [(ngModel)]="option.selected"
-                                [readonlyInput]="true"></p-calendar>
+                                            [showButtonBar]="true" [(ngModel)]="option.selected"
+                                            [readonlyInput]="true"></p-calendar>
                             </div>
                             <div *ngIf=" option.type == 'dropdown'" class="h-[44px]">
                                 <p-dropdown [appendTo]="'body'" [(ngModel)]="option.selected" [options]="option.options" class="w-full h-full" [placeholder]="option.placeholder"  [filter]='true'
-                                styleClass="w-full h-full"></p-dropdown>
+                                            styleClass="w-full h-full"></p-dropdown>
                             </div>
 
                             <div *ngIf=" option.type == 'input'" class="h-[44px]">
                                 <p-inputNumber pKeyFilter="num" styleClass="w-full"  [(ngModel)]="option.selected"  [placeholder]="option.placeholder"
-                                class="!w-full"/>
+                                               class="!w-full"/>
                             </div>
                         </div>
 
@@ -194,3 +188,29 @@
         </ng-template>
     </p-table>
 </p-card>
+<p-dialog  [header]="'شحنات المندوب : '+selectedAgent?.agentName " [(visible)]="visible" [modal]="true" [style]="{ width: '80vw' }" [draggable]="false" [resizable]="false">
+    <p-table [loading]="casesLoading" [value]="cases" [tableStyle]="{ 'min-width': '50rem' }">
+        <ng-template pTemplate="header">
+            <tr>
+                <th> العنوان</th>
+                <th>رقم الوصل</th>
+                <th> هاتف المستلم</th>
+                <th>إسم المتجر</th>
+                <th>هاتف المتجر</th>
+                <th>المبلغ المطلوب د.ع</th>
+                <th>المبلغ المطلوب $</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item>
+            <tr>
+                <td>{{ item.address }}</td>
+                <td>{{ item.custReceiptNoOri }}</td>
+                <td>{{ item.receiverHp1 }}</td>
+                <td>{{ item.senderName }}</td>
+                <td>{{ item.senderHp }}</td>
+                <td>{{ item.receiptAmtIqd }}</td>
+                <td>{{ item.receiptAmtUsd }}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>

@@ -231,6 +231,7 @@ export class PrintManifestComponent extends BaseComponent implements OnInit {
                     headStyles: {font: "DINNEXTLTARABIC-LIGHT", fillColor: '#B4B3B3'},
                     bodyStyles: {font: "DINNEXTLTARABIC-LIGHT", textColor: '#000'},
                     styles: {
+                        fontSize:8,
                         halign: 'right',
                         textColor: '#000'
                     },
@@ -238,8 +239,8 @@ export class PrintManifestComponent extends BaseComponent implements OnInit {
 
                     didDrawPage: function (data: any) {
                         //header
+                        doc.setFontSize(8);
                         doc.addImage("assets/layout/images/logo-white.png", 10, 10, 30, 30);
-                        doc.setFontSize(10);
                         doc.text(new Date().toLocaleString("en-US", {
                             weekday: "short",
                             month: "short",
@@ -248,7 +249,9 @@ export class PrintManifestComponent extends BaseComponent implements OnInit {
                             minute: "2-digit",
                             second: "2-digit",
                             year: 'numeric'
-                        }), doc.internal.pageSize.width - 120, 30);
+                        }),  doc.internal.pageSize.width - 18, 30,{
+                            align:'right'
+                        });
                         // Footer
                         // @ts-ignore
                         var str = 'Page ' + doc.internal.getNumberOfPages()
@@ -259,7 +262,7 @@ export class PrintManifestComponent extends BaseComponent implements OnInit {
                         var pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight()
                         doc.text(str, data.settings.margin.left, pageHeight - 10)
                     },
-                    margin: {top: 160},
+                    margin: {top: 160,left:10,right:10},
                 });
 
                 doc.save('products.pdf');
@@ -324,11 +327,31 @@ export class PrintManifestComponent extends BaseComponent implements OnInit {
                 this.loading = false
             })
         }
+        if (this.stage == "BRANCHES" && this.step == "MANIFEST_BRANCHES") {
+            this.dashboardService.INIT_PRINTMANIFEST().subscribe((res: any) => {
+                this.data = this.removeDuplicatesAndCountEntries(res)
+                this.loading = false
+            }, () => {
+                this.loading = false
+            })
+        }
+        if (this.stage == "BRANCHES" && this.step == "RTN_MANIFEST_LIAISON") {
+            this.dashboardService.INIT_PRINTMANIFEST().subscribe((res: any) => {
+                this.data = this.removeDuplicatesAndCountEntries(res)
+                this.loading = false
+            }, () => {
+                this.loading = false
+            })
+        }
     }
 
     setData() {
         switch (this.step) {
             case 'PRINTMANIFEST':
+                return this.PRINTMANIFEST();
+            case 'MANIFEST_BRANCHES':
+                return this.PRINTMANIFEST();
+            case 'RTN_MANIFEST_LIAISON':
                 return this.PRINTMANIFEST();
         }
     }

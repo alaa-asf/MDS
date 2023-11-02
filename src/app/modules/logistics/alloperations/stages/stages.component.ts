@@ -6,7 +6,7 @@ import { StateService } from "../../../../shared/services/state.service";
 import { stage, step, stepId } from "../../../../shared/constant/stage";
 import { MainService } from "../../../../shared/Apis/main.service";
 import * as moment from 'moment';
-import {combineLatest} from "rxjs";
+import {combineLatest, finalize, forkJoin} from "rxjs";
 
 @Component({
     selector: 'app-stages',
@@ -72,7 +72,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
     constructor(injector: Injector, private route: ActivatedRoute,
         public state: StateService,
         private mainService: MainService,
-        private dashboardService: DashboardService) {
+        public  dashboardService: DashboardService) {
         super(injector)
         this.stage = this.route.snapshot.paramMap.get('stage');
         this.step = this.route.snapshot.paramMap.get('step');
@@ -83,13 +83,14 @@ export class StagesComponent extends BaseComponent implements OnInit {
     }
 
     filterOperation(item:any){
-        if (true){
+        if (item.toAgent){
             return this.operation.filter((el:any)=>el.value =='ASSGN_AGENT')
 
         }
         if (item.toLiaisonAgent){
             return this.operation.filter((el:any)=>el.value =='ASSIGN_LIASIONAGT')
         }
+
     }
     ngOnInit() {
         this.dashboardService.getDecisionsByStep(stepId[this.step]).subscribe((des: any) => {
@@ -119,7 +120,7 @@ export class StagesComponent extends BaseComponent implements OnInit {
                 "ASSIGN_LIASIONAGT":[
                     {
                         type: 'dropdown',
-                        options: this.state.deliveryAgents,
+                        options: [],
                         placeholder: 'مندوب الإرتباط',
                         selected: null
                     }
@@ -213,8 +214,8 @@ export class StagesComponent extends BaseComponent implements OnInit {
     }
     save() {
         if (this.stage == 'INIT' && this.step == "NEWINSTORE"){
-            let assignToAgent = this.data.filter(el => el.decision == 'assignToAgent')
-            let assignToLiaisonAgent = this.data.filter(el => el.decision == 'assignToLiaisonAgent')
+            let assignToAgent = this.data.filter(el => el.decision == 'ASSGN_AGENT')
+            let assignToLiaisonAgent = this.data.filter(el => el.decision == 'ASSIGN_LIASIONAGT')
             let assignToAgentData:any = []
             let assignToLiaisonAgentData:any = []
             assignToAgent.forEach(el=>{
@@ -231,41 +232,23 @@ export class StagesComponent extends BaseComponent implements OnInit {
                     "note": el.note
                 })
             })
+            let completionObservables = [];
+            if (assignToAgent.length>0){
+                completionObservables.push(this.dashboardService.assignToAgent(assignToAgentData).pipe(finalize(() => console.log('Subscription 1 completed.'))))
+            }
+            if (assignToLiaisonAgent.length>0){
+                completionObservables.push(this.dashboardService.assignToLiaisonAgent(assignToLiaisonAgentData).pipe(finalize(() => console.log('Subscription 2 completed.'))))
+            }
+
             this.loading = true
-            combineLatest(this.dashboardService.assignToAgent(assignToAgentData),this.dashboardService.assignToLiaisonAgent(assignToLiaisonAgentData)).subscribe(el=>{
+            const allCompleted$ = forkJoin(completionObservables);
+            allCompleted$.subscribe(el=>{
                 this.loading = false
                 this.getData()
             },()=>{
                 this.loading = false
             })
-        }else if(this.stage == 'INIT' && this.step == "PRINTMANIFEST"){
-            let MoveToAgent = this.data.filter(el => el.decision == 'MOVETOAGENT')
-            let ChangeAgent = this.data.filter(el => el.decision == 'CHNGE_AGENT')
-            let MoveToAgentData:any = []
-            let ChangeAgentData:any = []
-            MoveToAgent.forEach(el=>{
-                MoveToAgentData.push({
-                    "deliveryAgentId": el.agentId,
-                    "comingFromBranch": el.comingFromBranch,
-                    "branchId": el.branchCode,
-                })
-            })
-            ChangeAgent.forEach(el=>{
-                ChangeAgentData.push({
-                    "deliveryAgentId": el.agentId,
-                    "deliveryAgentToChangeId":el.optionForAction[0].selected,
-                    "comingFromBranch": el.comingFromBranch,
-                    "branchId": el.branchCode,
-                })
-            })
-            this.loading = true
-            combineLatest(this.dashboardService.ChangeAgent(ChangeAgentData),this.dashboardService.MoveToAgent(MoveToAgentData)).subscribe(el=>{
-                this.loading = false
-                this.getData()
-            },()=>{
-                this.loading = false
-            })
-        } else{
+        }else{
             let updatedCases = this.data.filter(el => el.decision)
             let casesIds = updatedCases.map(el => el.caseId)
             let actionsMap: any = {}
@@ -313,12 +296,27 @@ export class StagesComponent extends BaseComponent implements OnInit {
         }
     }
     changeDecision(data: any, ev: any) {
-        if (this.optionForAction[ev.value]) {
-            data.optionForAction = JSON.parse(JSON.stringify(this.optionForAction[ev.value]));
-        } else {
-            data.optionForAction = null
+        if (ev.value =='ASSIGN_LIASIONAGT'){
+            this.loading = true
+            this.dashboardService.getLiaisonAgentFilter(data.comingFromBranch,data.rcvState).subscribe(el=>{
+                this.loading = false
+                data.optionForAction = JSON.parse(JSON.stringify(this.optionForAction[ev.value]));
+                const array = Object.entries(el).map(([key, value]) => ({
+                    value: value,
+                    label: key
+                }));
+                data.optionForAction[0].options = array
+            })
+
+        }else{
+            if (this.optionForAction[ev.value]) {
+                data.optionForAction = JSON.parse(JSON.stringify(this.optionForAction[ev.value]));
+            } else {
+                data.optionForAction = null
+            }
         }
-        console.log(data)
+
+
     }
     resetFilter() {
         this.setFilters()
@@ -336,13 +334,6 @@ export class StagesComponent extends BaseComponent implements OnInit {
             }, {});
         if (this.stage == "INIT" && this.step == "NEWINSTORE"){
             this.dashboardService.INIT_NEWINSTORE(filter).subscribe((res: any) => {
-                this.data = res
-                this.loading = false
-            },()=>{
-                this.loading = false
-            })
-        }else if(this.stage == "INIT" && this.step == "PRINTMANIFEST"){
-            this.dashboardService.INIT_PRINTMANIFEST().subscribe((res: any) => {
                 this.data = res
                 this.loading = false
             },()=>{

@@ -38,11 +38,12 @@ export class MainService {
             this.StateService.postponedResonse = array
         })
     }
+
     getLiaisonAgent() {
-        return this.httpClient.get(environment.apiUrl + '/users/getLiaisonAgent').subscribe(el=>{
-            const array = Object.entries(el).map(([key, value]) => ({
-                value: value,
-                label: key
+        return this.httpClient.get(environment.apiUrl + `/users/geALLtLiaisonAgent`).subscribe((el:any)=>{
+            const array = el.map((x:any) => ({
+                value: x.id,
+                label: x.name
             }));
             this.StateService.liaisonAgent = array
         })
@@ -83,5 +84,8 @@ export class MainService {
             }));
             this.StateService.distrits = array
         })
+    }
+    getAllDistritCodesrequest(state:any) {
+        return this.httpClient.get(environment.apiUrl + '/kbstate/get_all_distritCodes/'+state)
     }
 }
