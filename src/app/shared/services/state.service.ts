@@ -41,6 +41,7 @@ export class StateService {
     private _postponedResonse:any
     public states:any
     public distrits:any
+    public alldistrits:any
     public customers:any
 
 
