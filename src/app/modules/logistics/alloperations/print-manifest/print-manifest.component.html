@@ -89,7 +89,7 @@
         </ng-template>
     </p-table>
 </p-card>
-<p-dialog  [header]="'شحنات المندوب : '+selectedAgent?.agentName " [(visible)]="visible" [modal]="true" [style]="{ width: '80vw' }" [draggable]="false" [resizable]="false">
+<p-dialog  [header]="title" [(visible)]="visible" [modal]="true" [style]="{ width: '80vw' }" [draggable]="false" [resizable]="false">
     <p-table [loading]="casesLoading" [value]="cases" [tableStyle]="{ 'min-width': '50rem' }">
         <ng-template pTemplate="caption">
             <div class="flex">
@@ -97,25 +97,13 @@
             </div>
         </ng-template>
         <ng-template pTemplate="header">
-            <tr>
-                <th> العنوان</th>
-                <th>رقم الوصل</th>
-                <th> هاتف المستلم</th>
-                <th>إسم المتجر</th>
-                <th>هاتف المتجر</th>
-                <th>المبلغ المطلوب د.ع</th>
-                <th>المبلغ المطلوب $</th>
+            <tr >
+                <th *ngFor="let col of col"> {{col.title}}</th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-item>
             <tr>
-                <td>{{ item.address }}</td>
-                <td>{{ item.custReceiptNoOri }}</td>
-                <td>{{ item.receiverHp1 }}</td>
-                <td>{{ item.senderName }}</td>
-                <td>{{ item.senderHp }}</td>
-                <td>{{ item.receiptAmtIqd }}</td>
-                <td>{{ item.receiptAmtUsd }}</td>
+                <td *ngFor="let col of col">{{ item[col.dataKey] }}</td>
             </tr>
         </ng-template>
     </p-table>

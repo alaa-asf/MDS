@@ -119,15 +119,7 @@
                     </div>
                 </div>
                 <div>
-                    <div class="flex justify-content-center align-items-center">
-                        <button type="button" pButton pRipple icon="pi pi-save" (click)="save()"
-                                class="p-button-success mr-2 hidden md:flex" pTooltip="save"
-                                tooltipPosition="bottom"></button>
-                        <button type="button" pButton pRipple icon="pi pi-save" (click)="save()"
-                                class="p-button-success w-full flex md:hidden " pTooltip="save"
-                                tooltipPosition="bottom"></button>
 
-                    </div>
                 </div>
             </div>
 
@@ -188,29 +180,39 @@
         </ng-template>
     </p-table>
 </p-card>
-<p-dialog  [header]="'شحنات المندوب : '+selectedAgent?.agentName " [(visible)]="visible" [modal]="true" [style]="{ width: '80vw' }" [draggable]="false" [resizable]="false">
+<p-dialog  [header]="title" [(visible)]="visible" [modal]="true" [style]="{ width: '90vw' }" [draggable]="false" [resizable]="false">
     <p-table [loading]="casesLoading" [value]="cases" [tableStyle]="{ 'min-width': '50rem' }">
         <ng-template pTemplate="header">
             <tr>
-                <th> العنوان</th>
-                <th>رقم الوصل</th>
-                <th> هاتف المستلم</th>
-                <th>إسم المتجر</th>
-                <th>هاتف المتجر</th>
-                <th>المبلغ المطلوب د.ع</th>
-                <th>المبلغ المطلوب $</th>
+                <th> المتجر</th>
+                <th>رقم الوصل	</th>
+                <th> أنشأ في فرع	</th>
+                <th>مندوب ألأرتباط	</th>
+                <th>مبلغ الوصل د.ع	</th>
+                <th>العنوان	</th>
+                <th>المستلم	</th>
+                <th>عدد القطع	</th>
+                <th>تاريخ الشحنه	</th>
+                <th>العمليه	</th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-item>
             <tr>
-                <td>{{ item.address }}</td>
+                <td>{{ item.customerName }}</td>
                 <td>{{ item.custReceiptNoOri }}</td>
-                <td>{{ item.receiverHp1 }}</td>
-                <td>{{ item.senderName }}</td>
-                <td>{{ item.senderHp }}</td>
-                <td>{{ item.receiptAmtIqd }}</td>
-                <td>{{ item.receiptAmtUsd }}</td>
+                <td>{{ item.branchName }}</td>
+                <td>{{ item.liaisonAgentName }}</td>
+                <td>{{ item.receiptamt }}</td>
+                <td>{{ item.address }}</td>
+                <td>{{ item.rcvName }}</td>
+                <td>{{ item.qty }}</td>
+                <td>{{ item.createdDate }}</td>
+                <td>
+                    <p-button  [label]="'تم إستلام الراجع من مندوب الإرتباط'" (onClick)="RTN_RCVDFROMLIAISON(item)"></p-button>
+
+                </td>
             </tr>
+
         </ng-template>
     </p-table>
 </p-dialog>

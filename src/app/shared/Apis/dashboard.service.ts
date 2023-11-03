@@ -60,8 +60,8 @@ export class DashboardService {
 
 
     /// branch
-    getPcasesChain() {
-        return this.httpClient.get(environment.apiUrl + `/BranchesFlow/getCasesChain?branchId=31`)
+    getPcasesChain(filter:any) {
+        return this.httpClient.post(environment.apiUrl + `/BranchesFlow/getCasesChain`,filter)
     }
     NEWINWAYOP(base:any) {
         return this.httpClient.post(environment.apiUrl + `/BranchesFlow/Between/TwoBranchesOp`,base)
@@ -73,4 +73,25 @@ export class DashboardService {
     ReceiveReturnedWithLiaisonAgent(base:any) {
         return this.httpClient.post(environment.apiUrl + `/BranchesFlow/Receive/Returned/WithLiaison`,base)
     }
+
+    RTN_RCVDFROMLIAISON(base:any) {
+        return this.httpClient.post(environment.apiUrl + `/BranchesFlow/Receive/Returned/WithLiaison`,base)
+    }
+    getReturnedInStoreWithLiaisonAgent(){
+        return this.httpClient.get(environment.apiUrl + `/BranchesFlow/cases/ReturnedInStore?toBranch=31`)
+
+    }
+    getManifestBranches(){
+        return this.httpClient.get(environment.apiUrl + `/BranchesFlow/getManifestBranches?branchId=31`)
+
+    }
+    getDataManifestBranchesOp(filter:any){
+        return this.httpClient.post(environment.apiUrl + `/BranchesFlow/getDataManifestBranchesOp`,filter)
+
+    }
+    getReturnedManifestBranches(){
+        return this.httpClient.get(environment.apiUrl + `/BranchesFlow/getReturnedManifestBranches?branchId=31`)
+
+    }
+
 }

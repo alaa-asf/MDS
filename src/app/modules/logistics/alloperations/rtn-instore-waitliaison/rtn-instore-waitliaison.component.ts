@@ -1,11 +1,10 @@
-
-import { Component, Injector, OnInit } from '@angular/core';
-import { BaseComponent } from "../../../../shared/base.component";
-import { ActivatedRoute } from "@angular/router";
-import { DashboardService } from "../../../../shared/Apis/dashboard.service";
-import { StateService } from "../../../../shared/services/state.service";
-import { stage, step, stepId } from "../../../../shared/constant/stage";
-import { MainService } from "../../../../shared/Apis/main.service";
+import {Component, Injector, OnInit} from '@angular/core';
+import {BaseComponent} from "../../../../shared/base.component";
+import {ActivatedRoute} from "@angular/router";
+import {DashboardService} from "../../../../shared/Apis/dashboard.service";
+import {StateService} from "../../../../shared/services/state.service";
+import {stage, step, stepId} from "../../../../shared/constant/stage";
+import {MainService} from "../../../../shared/Apis/main.service";
 import * as moment from 'moment';
 
 @Component({
@@ -69,14 +68,16 @@ export class RTNINSTOREWAITLIAISONComponent extends BaseComponent implements OnI
         barcode_checker: false
     }
     operation: any = []
+
     constructor(injector: Injector, private route: ActivatedRoute,
                 public state: StateService,
                 private mainService: MainService,
-                public  dashboardService: DashboardService) {
+                public dashboardService: DashboardService) {
         super(injector)
         this.stage = this.route.snapshot.url[0].path;
         this.step = this.route.snapshot.url[1].path;
     }
+
     changeState(ev: any) {
         this.mainService.getAllDistritCodes(ev.value)
     }
@@ -88,25 +89,7 @@ export class RTNINSTOREWAITLIAISONComponent extends BaseComponent implements OnI
                 label: obj.description
             }));
             this.optionForAction = {
-                'RTN_WTIHAGENT': [
-                    {
-                        type: 'dropdown',
-                        key: 'rtnReasonMap',
-                        options: this.state.returnReasones,
-                        placeholder: 'سبب الراجع',
-                        selected: null
-                    }
-
-                ],
-                "ASSGN_AGENT":[
-                    {
-                        type: 'dropdown',
-                        options: this.state.deliveryAgents,
-                        placeholder: 'مندوب التوصيل',
-                        selected: null
-                    }
-                ],
-                "ASSIGN_LIASIONAGT":[
+                "RTN_TOLIAISONAGENT": [
                     {
                         type: 'dropdown',
                         options: [],
@@ -114,85 +97,29 @@ export class RTNINSTOREWAITLIAISONComponent extends BaseComponent implements OnI
                         selected: null
                     }
                 ],
-                "CHNGE_AGENT": [
+                "GOBACKRTNAGENT": [
                     {
                         type: 'dropdown',
-                        options: this.state.deliveryAgents,
+                        options: [],
                         placeholder: 'مندوب الإرتباط',
                         selected: null
                     }
-
                 ],
-                "RTN_TO_AGENT": [
+                "RTN_READY_LIAISON": [
                     {
                         type: 'dropdown',
-                        key: 'rtnReasonMap',
-                        options: this.state.returnReasones,
-                        placeholder: 'سبب الراجع',
+                        options: [],
+                        placeholder: 'مندوب الإرتباط',
                         selected: null
                     }
-
                 ],
-                "POSTPONED": [
+                "GO_BACK_TOSTORE_RESEND": [
                     {
-                        type: 'date',
-                        key: 'postponedToMap',
+                        type: 'dropdown',
+                        options: [],
+                        placeholder: 'مندوب الإرتباط',
                         selected: null
-                    },
-                    {
-                        type: 'dropdown',
-                        key: 'postponedOptionMap',
-                        options: this.state.postponedResonse,
-                        selected: null,
-                        placeholder: 'سبب التأجيل',
-
-                    },
-
-                ],
-                'RTN_TOSTORE': [
-                    {
-                        type: 'dropdown',
-                        key: 'rtnReasonMap',
-                        options: this.state.returnReasones,
-                        selected: null,
-                        placeholder: 'سبب الراجع',
                     }
-
-                ],
-                'PART_SUCC': [
-                    {
-                        type: 'input',
-                        key: 'newReceiptsAmtIqdMap',
-                        selected: null,
-                        placeholder: 'مبلغ الوصل د.ع',
-                    },
-                    {
-                        type: 'input',
-                        key: 'newReceiptsAmtUsdMap',
-                        selected: null,
-                        placeholder: 'مبلغ الوصل$',
-                    },
-                    {
-                        type: 'input',
-                        key: 'partialQtyReturnMap',
-                        selected: null,
-                        placeholder: 'القطع الراجعة',
-                    }
-                ],
-                'SUCS_DLV_CHANGEAMT': [
-                    {
-                        type: 'input',
-                        key: 'newReceiptsAmtIqdMap',
-                        selected: null,
-                        placeholder: 'مبلغ الوصل د.ع',
-                    },
-                    {
-                        type: 'input',
-                        key: 'newReceiptsAmtUsdMap',
-                        selected: null,
-                        placeholder: 'مبلغ الوصل$',
-                    },
-
                 ]
             }
         })
@@ -201,6 +128,7 @@ export class RTNINSTOREWAITLIAISONComponent extends BaseComponent implements OnI
         this.setData()
         this.getData()
     }
+
     save() {
         let updatedCases = this.data.filter(el => el.decision)
         let casesIds = updatedCases.map(el => el.caseId)
@@ -210,14 +138,8 @@ export class RTNINSTOREWAITLIAISONComponent extends BaseComponent implements OnI
             actionsMap[obj.caseId] = obj.decision;
         });
         let otherData: any = {
-            "newReceiptsAmtIqdMap": {},
-            "newReceiptsAmtUsdMap": {},
-            "rtnReasonMap": {},
-            "postponedOptionMap": {},
-            "postponedToMap": {},
-            "queueColsToUpdate": {},
-            "partialQtyReturnMap": {},
-            "casesToRmkMap": {},
+            "qrmk": {},
+
         }
 
         updatedCases.forEach((obj: any) => {
@@ -233,11 +155,10 @@ export class RTNINSTOREWAITLIAISONComponent extends BaseComponent implements OnI
         });
 
         let base = {
-            "stepCode": this.step,
-            "stage":this.stage,
+            "branchId": "31",
             "casesIds": casesIds,
             ...otherData,
-            "actionsMap": actionsMap
+            "actionCase": actionsMap
         }
         this.loading = true
         this.dashboardService.updateCase(base).subscribe(res => {
@@ -250,11 +171,21 @@ export class RTNINSTOREWAITLIAISONComponent extends BaseComponent implements OnI
 
     changeDecision(data: any, ev: any) {
         if (this.optionForAction[ev.value]) {
-            data.optionForAction = JSON.parse(JSON.stringify(this.optionForAction[ev.value]));
+            this.loading = true
+            this.dashboardService.getLiaisonAgentFilter(data.fromBranch, data.rcvState).subscribe((el: any) => {
+                this.loading = false
+                data.optionForAction = JSON.parse(JSON.stringify(this.optionForAction[ev.value]));
+                const array = el.map((el: any) => ({
+                    value: el.id,
+                    label: el.name,
+                }));
+                data.optionForAction[0].options = array
+            })
         } else {
             data.optionForAction = null
         }
     }
+
     resetFilter() {
         this.setFilters()
         this.getData()
@@ -263,16 +194,16 @@ export class RTNINSTOREWAITLIAISONComponent extends BaseComponent implements OnI
     getData() {
         this.loading = true
         const filter = Object.keys(this.filters)
-            .filter((key) => ['step', 'stage','cRcvDistrict', 'customerReceipt','c_createddt','qManifestId', 'merchantName', 'from', 'to', 'stateNameArabic', 'agentName', 'c_rcv_hp1', 'branchCode'].includes(key))
+            .filter((key) => ['step', 'stage', 'cRcvDistrict', 'customerReceipt', 'c_createddt', 'qManifestId', 'merchantName', 'from', 'to', 'stateNameArabic', 'agentName', 'c_rcv_hp1', 'branchCode'].includes(key))
             .reduce((obj: any, key: any) => {
                 return Object.assign(obj, {
                     [key]: this.filters[key]
                 });
             }, {});
-        this.dashboardService.INIT_NEWINSTORE(filter).subscribe((res: any) => {
+        this.dashboardService.getReturnedInStoreWithLiaisonAgent().subscribe((res: any) => {
             this.data = res
             this.loading = false
-        },()=>{
+        }, () => {
             this.loading = false
         })
 
@@ -305,6 +236,7 @@ export class RTNINSTOREWAITLIAISONComponent extends BaseComponent implements OnI
     setData() {
         return this.RTN_INSTORE_WAITLIAISON();
     }
+
     RTN_INSTORE_WAITLIAISON() {
         this.filterDisplay = {
             c_dlvagent_manifestid: false,
@@ -331,38 +263,30 @@ export class RTNINSTOREWAITLIAISONComponent extends BaseComponent implements OnI
             {
                 name: 'إلى فرع',
                 type: 'string',
-                key: ''
+                key: 'toBranch'
             },
             {
                 name: 'رقم الوصل',
                 type: 'string',
-                key: 'cCustreceiptnoori'
+                key: 'custReceiptNoOri'
             },
             {
                 name: 'المتجر',
                 type: 'string',
-                key: 'name'
+                key: 'custName'
             },
             {
                 name: 'مبلغ الوصل د.ع',
                 type: 'string',
-                key: 'cReceiptamt'
+                key: 'receiptAmt'
             },
             {
                 name: 'العمليه',
                 option: this.operation,
-                type: 'string',
+                type: 'dropdown',
                 key: ''
             },
-            {
-                name: 'q_assigned_to',
-                type: 'string',
-                key: ''
-            }
         ]
 
     }
-
-
-
 }
