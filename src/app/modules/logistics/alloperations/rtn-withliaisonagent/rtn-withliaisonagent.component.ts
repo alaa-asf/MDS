@@ -1,11 +1,10 @@
-import { Component, Injector, OnInit } from '@angular/core';
-import { BaseComponent } from "../../../../shared/base.component";
-import { ActivatedRoute } from "@angular/router";
-import { DashboardService } from "../../../../shared/Apis/dashboard.service";
-import { StateService } from "../../../../shared/services/state.service";
-import { stage, step, stepId } from "../../../../shared/constant/stage";
-import { MainService } from "../../../../shared/Apis/main.service";
-import * as moment from 'moment';
+import {Component, Injector, OnInit} from '@angular/core';
+import {BaseComponent} from "../../../../shared/base.component";
+import {ActivatedRoute} from "@angular/router";
+import {DashboardService} from "../../../../shared/Apis/dashboard.service";
+import {StateService} from "../../../../shared/services/state.service";
+import {stage, step, stepId} from "../../../../shared/constant/stage";
+import {MainService} from "../../../../shared/Apis/main.service";
 
 @Component({
     selector: 'app-rtn-withliaisonagent',
@@ -68,14 +67,16 @@ export class RTNWITHLIAISONAGENTComponent extends BaseComponent implements OnIni
         barcode_checker: false
     }
     operation: any = []
+
     constructor(injector: Injector, private route: ActivatedRoute,
                 public state: StateService,
                 private mainService: MainService,
-                public  dashboardService: DashboardService) {
+                public dashboardService: DashboardService) {
         super(injector)
         this.stage = this.route.snapshot.url[0].path;
         this.step = this.route.snapshot.url[1].path;
     }
+
     changeState(ev: any) {
         this.mainService.getAllDistritCodes(ev.value)
     }
@@ -97,7 +98,7 @@ export class RTNWITHLIAISONAGENTComponent extends BaseComponent implements OnIni
                     }
 
                 ],
-                "ASSGN_AGENT":[
+                "ASSGN_AGENT": [
                     {
                         type: 'dropdown',
                         options: this.state.deliveryAgents,
@@ -105,7 +106,7 @@ export class RTNWITHLIAISONAGENTComponent extends BaseComponent implements OnIni
                         selected: null
                     }
                 ],
-                "ASSIGN_LIASIONAGT":[
+                "ASSIGN_LIASIONAGT": [
                     {
                         type: 'dropdown',
                         options: [],
@@ -200,39 +201,7 @@ export class RTNWITHLIAISONAGENTComponent extends BaseComponent implements OnIni
         this.setData()
         this.getData()
     }
-    save() {
-        let updatedCases = this.data.filter(el => el.decision)
-        let casesIds = updatedCases.map(el => el.id)
-        let actionsMap: any = {}
 
-        updatedCases.forEach((obj: any) => {
-            actionsMap[obj.id] = obj.decision;
-        });
-        let otherData: any = {
-            "qrmk": {}
-        }
-
-        updatedCases.forEach((obj: any) => {
-            if (obj.optionForAction) {
-                obj.optionForAction.forEach((opt: any) => {
-                        otherData[opt.key][obj.id] = opt.selected
-                });
-            }
-        });
-
-        let base = {
-            "casesIds": casesIds,
-            ...otherData,
-            "branchId":"31"
-        }
-        this.loading = true
-        this.dashboardService.ReceiveReturnedWithLiaisonAgent(base).subscribe(res => {
-            this.loading = false
-            this.getData()
-        }, () => {
-            this.loading = false
-        })
-    }
 
     changeDecision(data: any, ev: any) {
         if (this.optionForAction[ev.value]) {
@@ -241,6 +210,7 @@ export class RTNWITHLIAISONAGENTComponent extends BaseComponent implements OnIni
             data.optionForAction = null
         }
     }
+
     resetFilter() {
         this.setFilters()
         this.getData()
@@ -249,7 +219,7 @@ export class RTNWITHLIAISONAGENTComponent extends BaseComponent implements OnIni
     getData() {
         this.loading = true
         const filter = Object.keys(this.filters)
-            .filter((key) => ['step', 'stage','cRcvDistrict', 'customerReceipt','c_createddt','qManifestId', 'merchantName', 'from', 'to', 'stateNameArabic', 'agentName', 'c_rcv_hp1', 'branchCode'].includes(key))
+            .filter((key) => ['step', 'stage', 'cRcvDistrict', 'customerReceipt', 'c_createddt', 'qManifestId', 'merchantName', 'from', 'to', 'stateNameArabic', 'agentName', 'c_rcv_hp1', 'branchCode'].includes(key))
             .reduce((obj: any, key: any) => {
                 return Object.assign(obj, {
                     [key]: this.filters[key]
@@ -259,34 +229,56 @@ export class RTNWITHLIAISONAGENTComponent extends BaseComponent implements OnIni
             this.data = this.removeDuplicatesAndCountEntries(res)
 
             this.loading = false
-        },()=>{
+        }, () => {
             this.loading = false
         })
 
     }
-    selectedAgent:any
-    casesLoading:any
-    visible:any
-    cases:any
+
+    selectedAgent: any
+    casesLoading: any
+    visible: any
+    cases: any
+    title=''
     openCases(data: any) {
         this.selectedAgent = data
+        this.title = `راجع من فرع : السنبلة - النجف - منفيست الارجاع : 887`
         this.casesLoading = true
         let filter = {
-            "deliveryAgentId": data.agentId,
-            "comingFromBranch": data.comingFromBranch,
-            "branchId": data.branchCode,
+            "step": this.step,
+            "branchId":31,
+            "liaisonAgentId": data.agentId,
         }
-
-        this.dashboardService.getDataToPrintDlvAgManifest(filter).subscribe(el => {
+        this.cases=[]
+        this.visible = true
+        this.dashboardService.getPcasesChain(filter).subscribe(el => {
             this.cases = el
+            if (this.cases.length == 0){
+                this.visible = false
+            }
             this.casesLoading = false
         })
     }
+    RTN_RCVDFROMLIAISON(data:any){
+        let ccid = data.id
+        let base:any = {
+            "casesIds": [ccid],
+            "qrmk":{},
+            "branchId":"31"
+        }
+        base.qrmk[ccid] = data.rmk
+        this.casesLoading = true
+        this.dashboardService.RTN_RCVDFROMLIAISON(base).subscribe(el=>{
+            this.casesLoading = false
+            this.openCases(this.selectedAgent)
+            this.getData()
+        })
+    }
     removeDuplicatesAndCountEntries(array: any) {
-        const agents:any = {};
+        const agents: any = {};
 
         // Loop through the array and process each object
-        array.forEach((obj:any) => {
+        array.forEach((obj: any) => {
             const liaisonAgentId = obj.liaisonAgentId;
 
             if (liaisonAgentId in agents) {
@@ -348,6 +340,7 @@ export class RTNWITHLIAISONAGENTComponent extends BaseComponent implements OnIni
     setData() {
         return this.RTN_WITHLIAISONAGENT();
     }
+
     RTN_WITHLIAISONAGENT() {
         this.filterDisplay = {
             c_dlvagent_manifestid: false,
@@ -394,7 +387,6 @@ export class RTNWITHLIAISONAGENTComponent extends BaseComponent implements OnIni
         ]
 
     }
-
 
 
 }

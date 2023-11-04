@@ -185,14 +185,16 @@ export class LIAISONAGTNEWONWAYComponent extends BaseComponent implements OnInit
 
     getData() {
         this.loading = true
-        const filter = Object.keys(this.filters)
-            .filter((key) => ['step', 'stage','cRcvDistrict', 'customerReceipt','c_createddt','qManifestId', 'merchantName', 'from', 'to', 'stateNameArabic', 'agentName', 'c_rcv_hp1', 'branchCode'].includes(key))
+        let filter = Object.keys(this.filters)
+            .filter((key) => ['step', 'stage','liaisonAgentId','cCustreceiptnoori','cRcvDistrict', 'customerReceipt','c_createddt','qManifestId', 'merchantName', 'from', 'to', 'stateNameArabic', 'agentName', 'c_rcv_hp1', 'branchCode'].includes(key))
             .reduce((obj: any, key: any) => {
                 return Object.assign(obj, {
                     [key]: this.filters[key]
                 });
             }, {});
-            this.dashboardService.getPcasesChain().subscribe((res: any) => {
+        filter['branchId'] = 31
+        filter['step'] = this.step
+            this.dashboardService.getPcasesChain(filter).subscribe((res: any) => {
                 this.data = res
                 this.loading = false
             },()=>{
