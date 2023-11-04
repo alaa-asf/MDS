@@ -3,7 +3,12 @@
         <div class="">
             <span class="text-select">نوع المعاملة</span>
             <div class="pt-2" style="direction: initial">
-                <p-dropdown [options]="transactionTypes" [(ngModel)]="transactionType" optionLabel="name"></p-dropdown>
+                <p-dropdown class="w-full h-full" [filter]='true' styleClass="w-full h-full" [placeholder]="اختر نوع المعاملة"
+                    (onChange)="onSelectTransactionTypes($event.value)" [options]="transactionTypes" [showClear]=true
+                    [(ngModel)]="transactionType" optionLabel="name"></p-dropdown>
+                <!-- <p-dropdown [required]="false" placeholder="اختر نوع المعاملة" [options]="transactionTypes"
+                    optionLabel="name" (onChange)='onSelectTransactionTypes($event.value)'></p-dropdown> -->
+                <!-- <p-dropdown [options]="transactionTypes" [(ngModel)]="transactionType" optionLabel="name"></p-dropdown> -->
             </div>
         </div>
         <div class="">
@@ -29,7 +34,8 @@
     <div class="flex pt-5 justify-content-end">
         <p-button icon="pi pi-search" label="بحث" class="p-button-success px-5 ms-5"
             (click)="getAllTransactions()"></p-button>
-        <p-button label="الغاء البحث" icon="pi pi-times" styleClass="p-button-outlined p-button-warning" (click)="cancleSearch()"></p-button>
+        <p-button label="الغاء البحث" icon="pi pi-times" styleClass="p-button-outlined p-button-warning"
+            (click)="cancleSearch()"></p-button>
     </div>
 </div>
 <div class="card">

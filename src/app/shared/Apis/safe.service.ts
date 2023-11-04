@@ -11,8 +11,8 @@ export class SafeService {
     getAllSafe(filter:any = {}) {
         return this.httpClient.post(environment.apiUrl + '/safe/index', filter)
     }
-    getSafeBalance() {
-        return this.httpClient.get(environment.apiUrl + '/safe/safe-balance')
+    getSafeBalance(branchId: number = 1) {
+        return this.httpClient.get(environment.apiUrl + `/safe/safe-balance?branchId=${branchId}`)
     }
     getAllacctbox() {
         return this.httpClient.get(environment.apiUrl + '/accountantboxes/accountant-boxes-by-branch')
