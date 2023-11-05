@@ -1,10 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
-import { AnyPtrRecord } from 'dns';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { ReportsService } from 'src/app/shared/Apis/reports.service';
-import { ShippingService } from 'src/app/shared/Apis/shipping.service';
-import { StateService } from 'src/app/shared/services/state.service';
+import {Component, OnInit} from '@angular/core';
+import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {AnyPtrRecord} from 'dns';
+import {ConfirmationService, MessageService} from 'primeng/api';
+import {ShippingService} from 'src/app/shared/Apis/shipping.service';
+import {StateService} from 'src/app/shared/services/state.service';
 
 @Component({
     selector: 'app-newshipping',
@@ -13,207 +12,132 @@ import { StateService } from 'src/app/shared/services/state.service';
     providers: [ConfirmationService, MessageService],
 })
 export class NewshippingComponent implements OnInit {
-    governorates: [] = [];
-    governorate: any;
     stores: [] = [];
-    regions: [] = [];
     loading = false;
-    totalCases: any = ['1'];
-    newShippingForm: any;
     districts: [] = [];
     district: any;
-    totalShipping: any = [];
-    caseId = 0;
+    state:any
+    casesForm: FormGroup;
+    visible = false
+    duplicateCases=[]
+    col = [
+        {title: 'العنوان', dataKey: 'address'},
+        {title: 'رقم الوصل', dataKey: 'custReceiptNoOri'},
+        {title: 'هاتف المستلم', dataKey: 'receiverHp1'},
+        {title: 'إسم المتجر', dataKey: 'senderName'},
+        {title: 'هاتف المتجر', dataKey: 'senderHp'},
+        {title: 'المبلغ المطلوب د.ع', dataKey: 'receiptAmtIqd'},
+        {title: 'المبلغ المطلوب $', dataKey: 'receiptAmtUsd'},
+        {title: 'ملاحظات', dataKey: 'qrmk',},
+        {title: 'انشئ بتاريخ', dataKey: 'createddt',},
+
+    ]
+
     constructor(
         public fb: FormBuilder,
-        private _stateService: StateService,
+        public _stateService: StateService,
         private _shippingService: ShippingService,
         private confirmationService: ConfirmationService,
         private messageService: MessageService,
     ) {
-        this.changeName(this._stateService.states);
-        this.governorates = this._stateService.states;
-        this.newShippingForm = this.fb.group({
-            state: ['', [Validators.required]], //المحافظة
-            merchantName: [''], //المتجر id
-            district: [''], //المنطقة الي جبتا حسب المحافظة
-            handPhone: [''], //هاتف المتجر
-            receiptNumber: "", //رقم الوصل
-            receiptAmount: [''], //مبلغ الوصل دينار عراقي
-            receiptAmountUsd: [''], //مبلغ الوصل دولار
-            endCustomerPhone: "", //هاتف المستلم
-            addressDetails: [''], //العنوان
-            notes: [''], //ملاحظات
-            branchId: ['']
+        this.casesForm = this.fb.group({
+            shippingForm: new FormArray([]) ,
         });
     }
+    get cases() : FormArray {
+        return this.casesForm?.get('shippingForm') as FormArray
+    }
+    newSkill(): FormGroup {
+        return this.fb.group({
+            merchantName: ['',[Validators.required]], //المتجر id
+            district: ['',[Validators.required]], //المنطقة الي جبتا حسب المحافظة
+            handPhone: [{value: '', disabled: true}], //هاتف المتجر
+            receiptNumber: ["",[Validators.required]], //رقم الوصل
+            receiptAmount: [0,[Validators.required]], //مبلغ الوصل دينار عراقي
+            receiptAmountUsd: [0,[Validators.required]], //مبلغ الوصل دولار
+            endCustomerPhone: ["",[Validators.required]], //هاتف المستلم
+            addressDetails: [''], //العنوان
+            notes: [''], //ملاحظات
+            branchId: [1]
+        })
+    }
 
-    ngOnInit() { }
-
-    changeName(states: any) {
-        states?.forEach((state: any) => {
-            switch (state.label) {
-                case 'Maysan':
-                    state.label = 'ميسن';
-                    break;
-                case 'Al-Anbar':
-                    state.label = 'الانبار';
-                    break;
-                case 'Erbil':
-                    state.label = 'اربيل';
-                    break;
-                case 'Basra':
-                    state.label = 'بصرى';
-                    break;
-                case 'Babil':
-                    state.label = 'بابيل';
-                    break;
-                case 'Baghdad':
-                    state.label = 'بغداد';
-                    break;
-                case 'Duhok':
-                    state.label = 'دهوك';
-                    break;
-                case 'Al-Qādisiyyah':
-                    state.label = 'القادسية';
-                    break;
-                case 'Diyala':
-                    state.label = 'ديالا';
-                    break;
-                case 'Wasit':
-                    state.label = 'واسط';
-                    break;
-                case 'Karbala':
-                    state.label = 'كربلاء';
-                    break;
-                case 'Kirkuk':
-                    state.label = 'كركوك';
-                    break;
-                case 'Ninawa':
-                    state.label = 'نينوى';
-                    break;
-                case 'Dhi Qar':
-                    state.label = 'ذي قار';
-                    break;
-                case 'Najaf':
-                    state.label = 'النجف';
-                    break;
-                case 'Salah Al-Din':
-                    state.label = 'صلاح الدين';
-                    break;
-                case 'Muthanna':
-                    state.label = 'مثنى';
-                    break;
-                case 'Sulaymaniyah':
-                    state.label = 'سليمانية';
-                    break;
-                default:
-                    break;
-            }
-        });
+    ngOnInit() {
     }
 
     selectGovernorates(governorate: any) {
         this.getAllDistritCodes(governorate.value);
+        this.getStores(governorate.value);
+        this.cases.clear()
+        this.cases?.push(this.newSkill())
+
     }
 
     addCase() {
-        let shipping = {
-            "state": this.newShippingForm.value.state.value,
-            "district": this.newShippingForm.value.district.id,
-            "merchantName": this.newShippingForm.value.merchantName.branchId,
-            "handPhone": this.newShippingForm.value.merchantName.phoneNumber,
-            "endCustomerPhone": this.newShippingForm.value.endCustomerPhone,
-            "receiptNumber": this.newShippingForm.value.receiptNumber,
-            "receiptAmount": this.newShippingForm.value.receiptAmount,
-            "receiptAmountUsd": this.newShippingForm.value.receiptAmountUsd,
-            "addressDetails": this.newShippingForm.value.addressDetails,
-            "notes": this.newShippingForm.value.notes,
-            "branchId": 1
-        }
-        this._shippingService.addShippingGovernorate(shipping).subscribe(res => {
-            // this.messageService.add({
-            //     severity: 'info',
-            //     summary: 'Confirmed',
-            //     detail: 'تمت عملية الاضافة',
-            // });
-        }, error => {
-            // this.messageService.add({
-            //     severity: 'error',
-            //     summary: 'Rejected',
-            //     detail: 'حدث خطأ ما',
-            // });
-        })
-        this.totalShipping.push({ id: this.caseId, value: shipping });
-        this.caseId++
-        this.totalCases.push(1);       
+        this.cases?.push(this.newSkill())
     }
 
-    sendAllCases() {
+    sendAllCases(ignore = 0) {
+        this.loading = true
+        let orders = [...this.cases.getRawValue()]
+        orders = orders.map((el:any)=>{return {...el,'state':this.state.value}})
         let shipping = {
-            "state": this.newShippingForm.value.state.value,
-            "district": this.newShippingForm.value.district.id,
-            "merchantName": this.newShippingForm.value.merchantName.branchId,
-            "handPhone": this.newShippingForm.value.merchantName.phoneNumber,
-            "endCustomerPhone": this.newShippingForm.value.endCustomerPhone,
-            "receiptNumber": this.newShippingForm.value.receiptNumber,
-            "receiptAmount": this.newShippingForm.value.receiptAmount,
-            "receiptAmountUsd": this.newShippingForm.value.receiptAmountUsd,
-            "addressDetails": this.newShippingForm.value.addressDetails,
-            "notes": this.newShippingForm.value.notes,
-            "branchId": 1
+            "ignore":ignore,
+            "orders":orders
         }
-        this._shippingService.addShippingGovernorate(shipping).subscribe(res => {
-            this.messageService.add({
-                severity: 'info',
-                summary: 'Confirmed',
-                detail: 'تمت عملية الاضافة',
-            });
+        this._shippingService.addShippingGovernorate(shipping).subscribe((res:any) => {
+            this.loading = false
+            this.visible = false
+            if(res.length==0){
+                this.cases.clear()
+                this.cases?.push(this.newSkill())
+                this.messageService.add({
+                    severity: 'info',
+                    summary: 'Confirmed',
+                    detail: 'تمت عملية الاضافة',
+                });
+            }else{
+                this.duplicateCases = res
+                this.visible = true
+            }
         }, error => {
+            this.loading = false
             this.messageService.add({
                 severity: 'error',
                 summary: 'Rejected',
                 detail: 'حدث خطأ ما',
             });
         })
-        // this._shippingService.addShippingGovernorate(shipping).subscribe(res => {
-        //     console.log(res);
-            
-        // })
-        this.totalShipping = [];
-        this.totalCases = [];
     }
-
+    replace(){
+        this.sendAllCases(1)
+    }
     deleteAllCases() {
-        this.totalShipping = [];
-        this.totalCases = [];
+        this.cases.clear()
+        this.cases?.push(this.newSkill())
     }
 
     getAllDistritCodes(stateCode: any) {
+        this.districts = []
         this._shippingService.get_all_distritCodes(stateCode.value).subscribe((data: any) => {
             this.districts = data;
         })
     }
 
-    selectDistrict(event: any) {
-        let stateCode = this.newShippingForm.value.state.value;
-        this.getStores(stateCode);
-    }
 
     getStores(stateCode: AnyPtrRecord) {
-        this._shippingService.getStoresByStatuscode(stateCode).subscribe(((res: any) => {
+        this.stores = []
+        this._shippingService.getStoresByStatuscode(stateCode.value).subscribe(((res: any) => {
             this.stores = res;
         }))
     }
 
-    selectStore(event: any) {
-        this.newShippingForm.get('handPhone').disable();
-        this.newShippingForm.get('handPhone').setValue(this.newShippingForm.value.merchantName.phoneNumber);
-
+    selectStore(event: any,index:any) {
+        this.cases.at(index)?.get('merchantName')?.setValue(event.value.branchId);
+        this.cases.at(index)?.get('handPhone')?.setValue(event.value.phoneNumber);
     }
 
     deleteCase(index: any) {
-        this.totalCases.splice(index, 1);
-        this.totalShipping.splice(index, 1);
+        this.cases?.removeAt(index)
     }
 }
