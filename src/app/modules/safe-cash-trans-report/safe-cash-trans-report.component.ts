@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ConfirmEventType, ConfirmationService, MessageService } from 'primeng/api';
 import { SafeService } from 'src/app/shared/Apis/safe.service';
-import { FilterDate, FilterDate2 } from 'src/app/shared/pipe-service/filter-date.pipe';
+import { FilterDate2 } from 'src/app/shared/pipe-service/filter-date.pipe';
 
 @Component({
   selector: 'app-safe-cash-trans-report',
@@ -15,7 +15,7 @@ export class SafeCashTransReportComponent implements OnInit {
     { name: 'ايداع', value: 'CR_SAFE' },
     { name: 'سحب', value: 'DB_SAFE' },
   ];
-  transactionType: any = { name: 'ايداع', value: 'CR_SAFE' };
+  transactionType: any;
   transactionSides: any;
   transactionSide: any;
   fromDate: any;
@@ -90,5 +90,9 @@ export class SafeCashTransReportComponent implements OnInit {
 
   cancleSearch() {
     this.transactionType = {}, this.fromDate = '', this.toDate = '', this.transactionSide = {}
+  }
+  
+  onSelectTransactionTypes(value: any) {
+    console.log(value);
   }
 }

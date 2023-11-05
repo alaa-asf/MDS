@@ -115,6 +115,7 @@ export class SafeComponent implements OnInit {
                     detail: 'تمت عملية الاضافة',
                 });
                 this.getAllTransactions();
+                this.getSafeBalance();
                 this.visible = false;
             }, error => {
                 this.messageService.add({
