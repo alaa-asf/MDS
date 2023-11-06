@@ -1,23 +1,23 @@
 <p-toast></p-toast>
 <p-card header="خلق شحنه جديدة - محافظة">
-  <form [formGroup]="newShippingForm">
+  <form [formGroup]="casesForm">
     <div class="item w-100">
       <label>المحافظة</label>
-      <p-dropdown placeholder="اختر محافظة" class="w-100" id="governorates" formControlName="state"
-        [options]="governorates" optionLabel="label" (onChange)="selectGovernorates($event)"></p-dropdown>
+      <p-dropdown placeholder="اختر محافظة" class="w-100" id="governorates" [(ngModel)]="state" [ngModelOptions]="{standalone: true}"
+        [options]="_stateService.states" [emptyMessage]="'يتم تحميل المحافظات...'" optionLabel="label" (onChange)="selectGovernorates($event)"></p-dropdown>
     </div>
-    <br><br><br>
-    <p-card *ngFor="let case of totalCases; let i = index;">
-      <div class="container-items">
+      <div formArrayName="shippingForm">
+      <p-card *ngFor="let case of cases.controls; let i = index;">
+      <div class="container-items" [formGroupName]="i">
         <div class="item">
           <label>المنطقة</label>
           <p-dropdown placeholder="اختر محافظة أولاً" id="regions" formControlName="district" [options]="districts"
-            optionLabel="code" (onChange)="selectDistrict($event)"></p-dropdown>
+            optionLabel="code" optionValue="id" [emptyMessage]="state?'يتم تحميل المناطق...':''" ></p-dropdown>
         </div>
         <div class="item">
           <label>المتجر</label>
-          <p-dropdown placeholder="اختر منطقة أولاً" id="stores" formControlName="merchantName" [options]="stores"
-            optionLabel="customerName" (onChange)="selectStore($event)"></p-dropdown>
+          <p-dropdown placeholder="اختر منطقة أولاً" id="stores" [options]="stores"
+            optionLabel="customerName" [emptyMessage]="state?'يتم تحميل المتاجر...':''" (onChange)="selectStore($event,i)"></p-dropdown>
         </div>
         <div class="item">
           <label>هاتف المتجر</label>
@@ -48,18 +48,39 @@
           <label>ملاحظات</label>
           <textarea rows="5" cols="30" pInputTextarea formControlName="notes"></textarea>
         </div>
-        <i class="pi pi-trash" style="font-size: 1.5rem; color: red;     position: absolute;
+        <i  class="pi pi-trash" style="font-size: 1.5rem; color: red;     position: absolute;
         top: 0;
         left: 0;
         margin: 10px;" (click)="deleteCase(i)"></i>
 
       </div>
     </p-card>
+      </div>
     <br>
-    <p-button label="إضافة وصل اخر" (click)="addCase()"></p-button>
+    <p-button [loading]="loading" [disabled]="!state || casesForm.invalid"  label="إضافة وصل اخر" (onClick)="addCase()"></p-button>
   </form>
   <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 25px;">
-    <p-button label="حفظ" (click)="sendAllCases()" icon="pi pi-check"></p-button>
-    <p-button label="الغاء" (click)="deleteAllCases()" icon="pi pi-times" styleClass="p-button-secondary"></p-button>
+    <p-button [loading]="loading" [disabled]="!state || casesForm.invalid" label="حفظ" (onClick)="sendAllCases()" icon="pi pi-check"></p-button>
+    <p-button [loading]="loading"   label="الغاء" (onClick)="deleteAllCases()" icon="pi pi-times" styleClass="p-button-secondary"></p-button>
   </div>
 </p-card>
+<p-dialog  [header]="'لديك وصولات سابقة بنفس رقم احد الوصولات المدخلة'" [(visible)]="visible" [modal]="true" [style]="{ width: '80vw' }" [draggable]="false" [resizable]="false">
+    <p-table  [value]="duplicateCases" [tableStyle]="{ 'min-width': '50rem' }">
+        <ng-template pTemplate="header">
+            <tr >
+                <th *ngFor="let col of col"> {{col.title}}</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item>
+            <tr>
+                <td *ngFor="let col of col">{{ item[col.dataKey] }}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="الغاء العملية" icon="pi pi-times" class="p-button-text"
+                (click)="visible = false"  [loading]='loading' ></button>
+        <button pButton pRipple label="تجاهل" icon="pi pi-sync" class="p-button-outlined p-button-danger"
+                (click)="replace()"  [loading]='loading'  ></button>
+    </ng-template>
+</p-dialog>

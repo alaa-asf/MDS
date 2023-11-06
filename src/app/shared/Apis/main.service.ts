@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
 import {StateService} from "../services/state.service";
-import {codeToString} from "../constant/states";
+import {codeToString, codeToStringAr} from "../constant/states";
 
 @Injectable({
   providedIn: 'root'
@@ -71,7 +71,7 @@ export class MainService {
         return this.httpClient.get(environment.apiUrl + '/kbstate/get_all_stateCodes').subscribe((el:any)=>{
             const array = el.map((el:any) => ({
                 value: el,
-                label: codeToString[el]
+                label: codeToStringAr[el]
             }));
             this.StateService.states = array
         })

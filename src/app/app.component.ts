@@ -17,7 +17,6 @@ export class AppComponent extends BaseComponent implements OnInit {
         this.MainService.getReturnReasones()
         this.MainService.getPostponedResonse()
         this.MainService.getLiaisonAgent()
-        this.MainService.getBranchs()
         this.MainService.getAllStateCode()
         this.MainService.getCustomers()
         this.primengConfig.ripple = true;

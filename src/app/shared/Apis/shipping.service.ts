@@ -16,22 +16,13 @@ export class ShippingService {
     }
 
     getStoresByStatuscode(stateCode: any) {
-        return this.httpClient.get(environment.apiUrl + `/customers/branch-customers-by-state?stateCode=${stateCode}`)
-        // return this.httpClient.get(environment.apiUrl + `/customers/branch-customers-by-state?branchId=${branchId}&stateCode=${stateCode}`)
+        // return this.httpClient.get(environment.apiUrl + `/customers/branch-customers-by-state?stateCode=${stateCode}`)
+       return this.httpClient.get(environment.apiUrl + `/customers/branch-customers-by-state?branchId=1&stateCode=${stateCode}`)
     }
 
     addShippingGovernorate(shipping: any){
         return this.httpClient.post(environment.apiUrl + `/PCases/createCase` , shipping)
     }
 
-    addManyShipping(shippingList: any){
-        let shippingListRequest;
-        shippingList.forEach((element: any) => {
-            shippingListRequest.push(this.httpClient.post(environment.apiUrl + `/PCases/createCase` , element))
-        });
-        forkJoin(shippingListRequest).subscribe(res => {
-            // console.log(res);
-            
-        })
-    }
+
 }
