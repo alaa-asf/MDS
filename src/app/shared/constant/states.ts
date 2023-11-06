@@ -38,6 +38,26 @@ export const codeToString:any  = {
     'DOH':'Duhok',
     'MOS':'Ninawa'
 }
+export const codeToStringAr:any  = {
+    'NJF':'النجف',
+    'KRB':'كربلاء',
+    'BAS':'بصرى',
+    'SAM':'مثنى',
+    'DWN':'القادسية',
+    'NAS':'ذي قار',
+    'AMA':'ميسن',
+    'KOT':'واسط',
+    'SAH':'صلاح الدين',
+    'SMH':'سليمانية',
+    'DYL':'ديالا',
+    'BBL':'بابيل',
+    'BGD':'بغداد',
+    'ANB':'الانبار',
+    'ARB':'اربيل',
+    'KRK':'كركوك',
+    'DOH':'دهوك',
+    'MOS':'نينوى'
+}
 export const stringToCode:any  = {
     'Najaf': 'NJF',
     'Karbala': 'KRB',
