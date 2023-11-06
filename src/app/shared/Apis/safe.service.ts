@@ -44,4 +44,7 @@ export class SafeService {
     deleteTransaction(id: any) {
         return this.httpClient.delete(environment.apiUrl + `/safe/delete-safe-transaction?transactionId=${id}`)
     }
+    getIndexAfterArchive(branchId: any , transactionId: any) {
+        return this.httpClient.get(environment.apiUrl + `/safe/archived-transactions?branchId=${branchId}&transactionId=${transactionId}`)
+    }
 }

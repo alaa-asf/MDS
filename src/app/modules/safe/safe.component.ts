@@ -82,13 +82,7 @@ export class SafeComponent implements OnInit {
 
     gettransactionSides() {
         this.safe.getAllEntities().subscribe((data: any) => {
-            const newArray = data.map((value: any, index: any) => {
-                return {
-                    id: index,
-                    accountant: value
-                };
-            });
-            this.transactionSides = newArray;
+            this.transactionSides = data;
             this.transactionSide = this.transactionSides[0];
         });
     }
@@ -108,7 +102,7 @@ export class SafeComponent implements OnInit {
                 detail: 'لا يمكن اجراء هذه العملية لانه لا يوجد رصيد كافي في القاصة !',
             });
         } else {
-            this.safe.addSafe(transaction, this.transactionName.id, this.transactionSide.id).subscribe((res) => {
+            this.safe.addSafe(transaction, this.transactionName.id, this.transactionSide.transactionEntityId).subscribe((res) => {
                 this.messageService.add({
                     severity: 'info',
                     summary: 'Confirmed',
@@ -129,7 +123,7 @@ export class SafeComponent implements OnInit {
 
     archiveSafe() {
         this.safe.archiveSafe().subscribe((res: any) => {
-            this.getAllTransactions();
+            this.getIndexAfterArchive();
             this.messageService.add({
                 severity: 'info',
                 summary: 'Confirmed',
@@ -199,6 +193,13 @@ export class SafeComponent implements OnInit {
         this.branchService.getUserNameByLogIn().subscribe((res: any) => {
             this.userUsed = res.name;
         })
+    }
 
+    getIndexAfterArchive() {
+        this.safe.getIndexAfterArchive(1, this.transactionID).subscribe((res: any) => {
+            this.transactions = res.sort((a: any, b: any) => {
+                return b.safeId - a.safeId;
+            });
+        })
     }
 }
