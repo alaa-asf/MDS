@@ -32,6 +32,7 @@ export class PrintManifestComponent extends BaseComponent implements OnInit {
     optionForAction: any = {}
     columns: any = []
     operation: any = []
+    singleCases:any = []
     visible: any = false
     title =''
     constructor(injector: Injector, private route: ActivatedRoute,
@@ -46,16 +47,30 @@ export class PrintManifestComponent extends BaseComponent implements OnInit {
 
     canPrintNow = new BehaviorSubject<boolean>(false)
 
-    filterOperation(item: any) {
-        if (true) {
-            return this.operation.filter((el: any) => el.value == 'ASSGN_AGENT')
-
-        }
-        if (item.toLiaisonAgent) {
-            return this.operation.filter((el: any) => el.value == 'ASSIGN_LIASIONAGT')
-        }
+    get filterOperation() {
+        return this.operation.filter((el: any) => el.value == 'TOINSTORE')
     }
-
+    changeDecisionSingle(data:any,event:any){
+        this.singleCases=this.singleCases.filter((el:any)=>el != data.caseId)
+        if (event.value){
+            this.singleCases.push(data.caseId)
+        }
+        console.log(this.singleCases)
+    }
+    savecases(){
+        let cases = {
+            "cases": [...this.singleCases],
+            "branchId": 31
+        }
+        this.casesLoading = true
+        this.dashboardService.manifestReturnToStoreSingleCases(cases).subscribe(res => {
+            this.casesLoading = false
+            this.singleCases = []
+            this.openCases(this.selectedAgent)
+        }, () => {
+            this.casesLoading = false
+        })
+    }
     ngOnInit() {
         if (this.step == "PRINTMANIFEST") {
             this.col = [
@@ -71,14 +86,15 @@ export class PrintManifestComponent extends BaseComponent implements OnInit {
         }
         if (this.step == "MANIFEST_BRANCHES") {
             this.col = [
-                {title: 'إسم صاحب المحل', dataKey: 'assignedAgentName'},
-                {title: 'رقم الوصل', dataKey: 'manifestNumber'},
-                {title: 'مبلغ الوصل د.ع', dataKey: 'receiptAmtIqd'},
+                {title: 'إسم صاحب المحل', dataKey: 'custName'},
+                {title: 'رقم الوصل', dataKey: 'custReceiptNoOri'},
+                {title: 'مبلغ الوصل د.ع', dataKey: 'receiptAmt'},
                 {title: 'مبلغ الوصل $', dataKey: 'receiptAmtUsd'},
                 {title: 'العنوان', dataKey: 'address'},
-                {title: 'هاتف المستلم', dataKey: 'receiverHp1'},
-                {title: 'ملاحظات', dataKey: 'qrmk',},
-                {title: 'تاريخ الشحنه', dataKey: 'createddt',},
+                {title: 'هاتف المستلم', dataKey: 'rcvHp1'},
+                {title: 'ملاحظات', dataKey: 'rmk',},
+                {title: 'تاريخ الشحنه', dataKey: 'createdDate',},
+                {title: 'العملية', dataKey: 'op',},
             ]
         }
 
@@ -159,43 +175,42 @@ export class PrintManifestComponent extends BaseComponent implements OnInit {
         }
         if (this.step == "MANIFEST_BRANCHES") {
             let updatedCases = this.data.filter(el => el.decision)
-            let casesIds = updatedCases.map(el => el.caseId)
             let actionsMap: any = {}
+            let keyAgentMap :any ={}
+            let keyToBranchMap :any ={}
 
             updatedCases.forEach((obj: any) => {
-                actionsMap[obj.caseId] = obj.decision;
+                actionsMap[obj.specialkey] = obj.decision;
+                keyAgentMap[obj.specialkey] = obj.liaisonAgentId;
+                keyToBranchMap[obj.specialkey] = obj.agentId;
+
             });
             let otherData: any = {
-                "newReceiptsAmtIqdMap": {},
-                "newReceiptsAmtUsdMap": {},
-                "rtnReasonMap": {},
-                "postponedOptionMap": {},
-                "postponedToMap": {},
-                "queueColsToUpdate": {},
-                "partialQtyReturnMap": {},
-                "casesToRmkMap": {},
+                "toBranchliaisonagentActionsMap": actionsMap,
+                "keyAgentMap": keyAgentMap,
+                "keyToBranchMap": keyToBranchMap,
+                "newDriversMap": {},
             }
 
             updatedCases.forEach((obj: any) => {
                 if (obj.optionForAction) {
                     obj.optionForAction.forEach((opt: any) => {
-                        if (opt.key == 'postponedToMap') {
-                            otherData[opt.key][obj.caseId] = moment(opt.selected).format('yyyy-MM-DD')
-                        } else {
                             otherData[opt.key][obj.caseId] = opt.selected
-                        }
                     });
                 }
             });
 
             let base = {
-                "stepCode": this.step,
-                "stage":this.stage,
-                "casesIds": casesIds,
+                "branchId": 31,
                 ...otherData,
-                "actionsMap": actionsMap
             }
-
+            this.loading = true
+            this.dashboardService.ManifestBranchesOp(base).subscribe(res => {
+                this.loading = false
+                this.getData()
+            }, () => {
+                this.loading = false
+            })
         }
     }
 
@@ -203,6 +218,7 @@ export class PrintManifestComponent extends BaseComponent implements OnInit {
 
     openCases(data: any, out = false) {
         this.selectedAgent = data
+        this.singleCases = []
         this.casesLoading = true
         if (!out) {
             this.visible = true
@@ -227,23 +243,10 @@ export class PrintManifestComponent extends BaseComponent implements OnInit {
         if (this.step == "MANIFEST_BRANCHES"){
             this.title = `شحنات مندوب الأرتباط :`+this.selectedAgent?.liaisonAgentName
 
-            let specialkey = data.specialkey
-              let filter:any = {
-                "keyAgentMap" : {
-                },
-                "keyToBranchMap" : {
-                },
-                "newDriversMap" : {
-                },
-
-                "branchId":data.fromBranch
-            }
-            filter.keyAgentMap[specialkey]=data.liaisonAgentId
-            filter.keyToBranchMap[specialkey]=data.agentId
 
             this.cases=[]
 
-            this.dashboardService.getDataManifestBranchesOp(filter).subscribe(el => {
+            this.dashboardService.getLiaisonAgentShipmentsBranches(data.agentId,data.fromBranch,data.liaisonAgentId).subscribe(el => {
                 this.cases = el
                 this.casesLoading = false
                 if (out) {
@@ -270,7 +273,7 @@ export class PrintManifestComponent extends BaseComponent implements OnInit {
         if (sub) {
             sub.unsubscribe()
         }
-
+        let printCol = [...this.col].reverse().filter(el=>el.dataKey != 'op')
         import('jspdf').then((jsPDF) => {
             import('jspdf-autotable').then((x) => {
                 const doc = new jsPDF.default('p', 'px', 'a4');
@@ -305,18 +308,21 @@ export class PrintManifestComponent extends BaseComponent implements OnInit {
                     doc.text("طباعة المنفيست لمندوبين التوصيل", doc.internal.pageSize.width / 2, 110, {
                         align: 'center'
                     });
+                    doc.text("رقم المنفيست " + this.cases[0].manifestNumber, doc.internal.pageSize.width / 2, 125, {
+                        align: 'center'
+                    });
                 }
                 if (this.step == "MANIFEST_BRANCHES"){
                     footerCases.push(
                         [
                             {content: '', colSpan: 4, styles: {fillColor: '#B4B3B3'}},
                             {
-                                content: footerCases.reduce((accumulator, currentValue) => accumulator + currentValue.receiptAmtUsd, 0),
+                                content: footerCases.reduce((accumulator, currentValue) => accumulator + Number(currentValue.receiptAmtUsd), 0),
                                 colSpan: 1,
                                 styles: {fillColor: '#B4B3B3'}
                             },
                             {
-                                content: footerCases.reduce((accumulator, currentValue) => accumulator + currentValue.receiptAmtIqd, 0),
+                                content: footerCases.reduce((accumulator, currentValue) => accumulator + currentValue.receiptAmt, 0),
                                 colSpan: 1,
                                 styles: {fillColor: '#B4B3B3'}
                             },
@@ -333,15 +339,17 @@ export class PrintManifestComponent extends BaseComponent implements OnInit {
                     doc.text("قائمه بالتسليمات المطلوبه", doc.internal.pageSize.width / 2, 110, {
                         align: 'center'
                     });
-
+                    doc.text("رقم المنفيست " + this.cases[0].manifestId, doc.internal.pageSize.width / 2, 125, {
+                        align: 'center'
+                    });
                 }
                 doc.text('بتاريخ : ' + moment(new Date()).locale('ar').format('dddd') + ' , ' + moment(new Date()).format('DD-MM-YYYY'), doc.internal.pageSize.width - 18, 85, {
                     align: 'right',
                 });
-                doc.text("رقم المنفيست " + this.cases[0].manifestNumber, doc.internal.pageSize.width / 2, 125, {
-                    align: 'center'
-                });
-                (doc as any).autoTable(this.col.reverse(), footerCases, {
+
+
+
+                (doc as any).autoTable(printCol, footerCases, {
                     headStyles: {font: "DINNEXTLTARABIC-LIGHT", fillColor: '#B4B3B3'},
                     bodyStyles: {font: "DINNEXTLTARABIC-LIGHT", textColor: '#000'},
                     styles: {
@@ -475,7 +483,7 @@ export class PrintManifestComponent extends BaseComponent implements OnInit {
             {
                 name: 'الى فرع',
                 type: 'string',
-                key: 'toBranch'
+                key: 'tobBranchName'
             },
             {
                 name: 'المندوب',

@@ -85,13 +85,24 @@ export class DashboardService {
         return this.httpClient.get(environment.apiUrl + `/BranchesFlow/getManifestBranches?branchId=31`)
 
     }
-    getDataManifestBranchesOp(filter:any){
-        return this.httpClient.post(environment.apiUrl + `/BranchesFlow/getDataManifestBranchesOp`,filter)
+    ManifestBranchesOp(filter:any){
+        return this.httpClient.post(environment.apiUrl + `/BranchesFlow/ManifestBranchesOp`,filter)
 
     }
     getReturnedManifestBranches(){
         return this.httpClient.get(environment.apiUrl + `/BranchesFlow/getReturnedManifestBranches?branchId=31`)
 
     }
+    getLiaisonAgentShipmentsBranches(toBranch:any,fromBranchId:any,liaisonAgetnId:any){
+        return this.httpClient.get(environment.apiUrl + `/BranchesFlow/getLiaisonAgentShipmentsBranches?toBranch=${toBranch}&fromBranchId=${fromBranchId}&liaisonAgetnId=${liaisonAgetnId}`)
 
+    }
+    manifestReturnToStoreSingleCases(cases:any){
+        return this.httpClient.post(environment.apiUrl + `/BranchesFlow/manifestReturnToStoreSingleCases`,cases)
+
+    }
+    getReturnedWithliasionPopUp(returnManifestId:any){
+        return this.httpClient.get(environment.apiUrl + `/BranchesFlow/cases/Returned/WithLiaisonPopUp?branchId=31&returnManifestId=${returnManifestId}`)
+
+    }
 }
