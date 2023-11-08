@@ -242,7 +242,7 @@ export class RTNWITHLIAISONAGENTComponent extends BaseComponent implements OnIni
     title=''
     openCases(data: any) {
         this.selectedAgent = data
-        this.title = `راجع من فرع : السنبلة - النجف - منفيست الارجاع : 887`
+        this.title = `راجع من فرع : السنبلة - النجف - منفيست الارجاع : `+data.agentId
         this.casesLoading = true
         let filter = {
             "step": this.step,
@@ -251,7 +251,7 @@ export class RTNWITHLIAISONAGENTComponent extends BaseComponent implements OnIni
         }
         this.cases=[]
         this.visible = true
-        this.dashboardService.getPcasesChain(filter).subscribe(el => {
+        this.dashboardService.getReturnedWithliasionPopUp(data.agentId).subscribe(el => {
             this.cases = el
             if (this.cases.length == 0){
                 this.visible = false
@@ -260,7 +260,7 @@ export class RTNWITHLIAISONAGENTComponent extends BaseComponent implements OnIni
         })
     }
     RTN_RCVDFROMLIAISON(data:any){
-        let ccid = data.id
+        let ccid = data.caseId
         let base:any = {
             "casesIds": [ccid],
             "qrmk":{},
@@ -279,7 +279,7 @@ export class RTNWITHLIAISONAGENTComponent extends BaseComponent implements OnIni
 
         // Loop through the array and process each object
         array.forEach((obj: any) => {
-            const liaisonAgentId = obj.liaisonAgentId;
+            const liaisonAgentId = obj.rtnManifestId;
 
             if (liaisonAgentId in agents) {
                 // If agentId already exists, increment the count and add caseId to the array
@@ -296,7 +296,7 @@ export class RTNWITHLIAISONAGENTComponent extends BaseComponent implements OnIni
 
             // Copy all other data except agentId to the agentData object
             for (const key in obj) {
-                if (key !== "liaisonAgentId") {
+                if (key !== "rtnManifestId") {
                     agents[liaisonAgentId].agentData[key] = obj[key];
                 }
             }
@@ -377,7 +377,7 @@ export class RTNWITHLIAISONAGENTComponent extends BaseComponent implements OnIni
             {
                 name: 'رقم المنفيست الارجاع',
                 type: 'string',
-                key: 'rtnManifestId'
+                key: 'agentId'
             },
             {
                 name: '',
