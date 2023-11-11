@@ -3,8 +3,8 @@
         <div class="">
             <span class="text-select">صندوق</span>
             <div class="pt-2" style="direction: initial">
-                <p-dropdown [(ngModel)]="safeName"  [options]="persons" [editable]="true"  optionLabel="accountant"
-                    (onChange)="onChange(safeName)"></p-dropdown>
+                <p-dropdown  class="w-full h-full" styleClass="w-full h-full"  [(ngModel)]="safeName"  [options]="persons" [placeholder]="'اختر صندوق '"  [optionValue]="'transactionEntityId'" optionLabel="transactionEntityName"
+                    ></p-dropdown>
             </div>
         </div>
         <div class="">
@@ -21,7 +21,7 @@
         </div>
     </div>
     <div class="flex pt-5 justify-content-end">
-        <p-button (click)="clickSearch()" [disabled]="disabledButton" icon="pi pi-search" label="بحث"
+        <p-button (onClick)="clickSearch()"  icon="pi pi-search" label="بحث"
             class="p-button-success px-5 ms-5"></p-button>
         <p-button (click)="cancleSearch()" label="الغاء البحث" icon="pi pi-times" styleClass="p-button-outlined p-button-warning"></p-button>
     </div>
