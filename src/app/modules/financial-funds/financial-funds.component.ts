@@ -8,13 +8,15 @@ import { SafeService } from 'src/app/shared/Apis/safe.service';
 })
 export class FinancialFundsComponent implements OnInit {
     products = [];
+    loading=true
     constructor(private safe: SafeService) {}
 
     ngOnInit() {
-        this.safe.getAllacctbox().subscribe((res: any) => {          
-            this.products = res;
-            // console.log(res);
-            
+        this.safe.getAllEntities().subscribe((data: any) => {
+            this.products = data;
+            this.loading = false
+        },()=>{
+            this.loading = false
         });
     }
 }

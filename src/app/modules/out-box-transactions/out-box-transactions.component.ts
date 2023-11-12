@@ -20,22 +20,23 @@ export class OutBoxTransactionsComponent implements OnInit {
   constructor(private safe: SafeService, private pipe: FilterDate) { }
 
   ngOnInit() {
-    this.safe.getAllacctbox().subscribe((res: any) => {
-      this.persons = res
-
-    })
+      this.safe.getAllEntities().subscribe((data: any) => {
+          this.persons = data;
+      });
   }
   clickSearch() {
     this.progressSpinner = true
-    this.safe.getaccountantBoxesBranch(this.safeBox, this.pipe.transform(this.fromDate), this.pipe.transform(this.toDate)).subscribe((res: any) => {
+    this.safe.getaccountantBoxesBranch(this.safeName||null, this.fromDate?this.pipe.transform(this.fromDate):null, this.toDate?this.pipe.transform(this.toDate):null).subscribe((res: any) => {
       // console.log(res);
       this.products = res
       this.progressSpinner = false
+    },()=>{
+        this.progressSpinner = false
     })
 
   }
   ngDoCheck() {
-    if (this.toDate && this.fromDate && this.safeBox) {
+    if (this.toDate && this.fromDate && this.safeName) {
       this.disabledButton = false
     }
   }
