@@ -32,10 +32,10 @@ export class SafeCashTransReportComponent implements OnInit {
 
   getAllTransactions() {
     let filter = {
-      "transactionType": this.transactionType.value,
-      "fromDate": this.pipe.transform(this.fromDate),
-      "toDate": this.pipe.transform(this.toDate),
-      "transactionEntityId": this.transactionSide.id
+      "transactionType": this.transactionType?.value,
+      "fromDate": this.fromDate?this.pipe.transform(this.fromDate):null,
+      "toDate": this.toDate?this.pipe.transform(this.toDate):null,
+      "transactionEntityId": this.transactionSide
     }
     this.safe.getAllSafe(filter).subscribe((res: any) => {
       // console.log(res);
@@ -78,20 +78,14 @@ export class SafeCashTransReportComponent implements OnInit {
 
   gettransactionSides() {
     this.safe.getAllEntities().subscribe((data: any) => {
-      const newArray = data.map((value: any, index: any) => {
-        return {
-          id: index,
-          accountant: value
-        };
-      });
-      this.transactionSides = newArray;
+      this.transactionSides = data;
     });
   }
 
   cancleSearch() {
     this.transactionType = {}, this.fromDate = '', this.toDate = '', this.transactionSide = {}
   }
-  
+
   onSelectTransactionTypes(value: any) {
     console.log(value);
   }

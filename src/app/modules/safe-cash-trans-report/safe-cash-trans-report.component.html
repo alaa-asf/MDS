@@ -23,16 +23,15 @@
                 <p-calendar [showIcon]="true" [(ngModel)]="toDate"></p-calendar>
             </div>
         </div>
-        <div class="">
+        <div class="w-1/4">
             <span class="text-select">طرف المعاملة</span>
             <div class="pt-2" style="direction: initial">
-                <p-dropdown [options]="transactionSides" [(ngModel)]="transactionSide"
-                    optionLabel="accountant"></p-dropdown>
+                <p-dropdown class="w-full h-full" styleClass="w-full h-full"  [options]="transactionSides" [placeholder]="'اختر طرف المعاملة'" [(ngModel)]="transactionSide" [optionValue]="'transactionEntityId'" optionLabel="transactionEntityName"></p-dropdown>
             </div>
         </div>
     </div>
     <div class="flex pt-5 justify-content-end">
-        <p-button icon="pi pi-search" label="بحث" class="p-button-success px-5 ms-5"
+        <p-button  icon="pi pi-search" label="بحث" class="p-button-success px-5 ms-5"
             (click)="getAllTransactions()"></p-button>
         <p-button label="الغاء البحث" icon="pi pi-times" styleClass="p-button-outlined p-button-warning"
             (click)="cancleSearch()"></p-button>
