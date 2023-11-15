@@ -159,6 +159,26 @@ export class AgentAccountComponent extends BaseComponent  implements OnInit{
                     this.loading = false
                 });
         }
+    delete(item:any){
+        this.loading = true
+        this._IncomeOutcomeService.delete(item.transId).subscribe(el=>{
+            this.getTransactions()
+            this.loading = false
+            this.messageService.add({
+                severity: 'success',
+                summary: 'Successful',
+                life: 3000
+            });
+        },(error)=>{
+            this.loading = false
+            console.log(error.error)
+            this.messageService.add({
+                severity: 'error',
+                summary: error.error,
+                life: 6000
+            });
+        })
+    }
     payAgent(){
         let data = {
             'casesIds':this.selectedItems.map((el:any)=>el.caseId),

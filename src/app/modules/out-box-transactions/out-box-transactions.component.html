@@ -21,17 +21,15 @@
         </div>
     </div>
     <div class="flex pt-5 justify-content-end">
-        <p-button (onClick)="clickSearch()"  icon="pi pi-search" label="بحث"
+        <p-button (onClick)="clickSearch()" [loading]="progressSpinner" icon="pi pi-search" label="بحث"
             class="p-button-success px-5 ms-5"></p-button>
         <p-button (click)="cancleSearch()" label="الغاء البحث" icon="pi pi-times" styleClass="p-button-outlined p-button-warning"></p-button>
     </div>
 </div>
 <div class="card ">
     <div class="boxBalance">حركات الصندوق</div>
-    <p-progressSpinner *ngIf="progressSpinner" styleClass="w-4rem h-4rem" strokeWidth="8" fill="var(--surface-ground)"
-        animationDuration=".5s"></p-progressSpinner>
-    <div *ngIf="!progressSpinner">
-        <p-table [value]="products" [paginator]="true" [rows]="5" selectionMode="single" [showCurrentPageReport]="true"
+    <div>
+        <p-table [value]="products" [loading]="progressSpinner"  [paginator]="true" [rows]="5" selectionMode="single" [showCurrentPageReport]="true"
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
             [rowsPerPageOptions]="[10, 25, 50]" [tableStyle]="{ 'min-width': '50rem' }">
             <ng-template pTemplate="header">

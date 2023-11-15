@@ -43,6 +43,7 @@ export class StateService {
     public distrits:any
     public alldistrits:any
     public customers:any
+    public customersFull:any
 
 
   constructor() { }

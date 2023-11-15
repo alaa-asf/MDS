@@ -64,6 +64,7 @@ export class MainService {
                 label: el.customerName
             }));
             this.StateService.customers = array
+            this.StateService.customersFull = el.splice(0,10)
         })
     }
 
