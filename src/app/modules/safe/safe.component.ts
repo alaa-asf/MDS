@@ -16,6 +16,8 @@ import { BrancheService } from 'src/app/shared/Apis/branche.service';
 export class SafeComponent implements OnInit {
     visible: boolean = false;
     confirmDelete: boolean = false;
+    loading= false
+    tableLoading = false
     safeBalanceIQD: string = '';
     safeBalanceUSD: string = '';
     transactions: any = [];
@@ -82,7 +84,13 @@ export class SafeComponent implements OnInit {
 
     gettransactionSides() {
         this.safe.getAllEntities().subscribe((data: any) => {
-            this.transactionSides = data;
+            const newArray = data.map((value: any, index: any) => {
+                return {
+                    id: value.transactionEntityId,
+                    accountant: value.transactionEntityName
+                };
+            });
+            this.transactionSides = newArray;
             this.transactionSide = this.transactionSides[0];
         });
     }
@@ -94,7 +102,7 @@ export class SafeComponent implements OnInit {
             "transactionAmountUSD": this.transactionUS,
             "notes": this.transactionNote
         }
-
+        this.loading = true
         if (this.transactionType.value == 'DB_SAFE' && (this.transactionID >= this.safeBalanceIQD || this.transactionUS >= this.safeBalanceUSD)) {
             this.messageService.add({
                 severity: 'error',
@@ -108,10 +116,16 @@ export class SafeComponent implements OnInit {
                     summary: 'Confirmed',
                     detail: 'تمت عملية الاضافة',
                 });
+                this.transactionID = 0
+                this.transactionUS = 0
+                this.transactionNote = ''
+                this.transactionSide = this.transactionSides[0];
                 this.getAllTransactions();
                 this.getSafeBalance();
                 this.visible = false;
+                this.loading = false
             }, error => {
+                this.loading = false
                 this.messageService.add({
                     severity: 'error',
                     summary: 'Rejected',
@@ -171,11 +185,15 @@ export class SafeComponent implements OnInit {
     }
 
     getAllTransactions() {
+        this.tableLoading = true
         this.safe.getAllSafe().subscribe((res: any) => {
             // this.transactions = res;
             this.transactions = res.sort((a: any, b: any) => {
                 return b.safeId - a.safeId;
             });
+            this.tableLoading = false
+        },()=>{
+            this.tableLoading = false
         });
     }
 

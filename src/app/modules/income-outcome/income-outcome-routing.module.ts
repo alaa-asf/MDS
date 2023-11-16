@@ -12,7 +12,18 @@ const routes: Routes = [
         data: {
             roles: ['ITBOSS'],
         }
+    },
+    {
+        path: 'customer-account',
+        loadChildren:()=>import(
+            './customer-account/customer-account.module'
+            ).then((m) => m.CustomerAccountModule),
+        canActivate: [RoleGuard],
+        data: {
+            roles: ['ITBOSS'],
+        }
     }
+
 ];
 
 @NgModule({
