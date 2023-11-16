@@ -162,6 +162,13 @@ export class MenuService {
                     visible: false,
                     routerLink: ['/income-outcome/agent-account'],
                 },
+                {
+                    label: 'حسابات العميل',
+                    roles: ['ITBOSS'],
+                    visible: false,
+                    routerLink: ['/income-outcome/customer-account'],
+                },
+
             ]
         },
       {

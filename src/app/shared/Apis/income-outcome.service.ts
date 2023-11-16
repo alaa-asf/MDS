@@ -22,4 +22,7 @@ export class IncomeOutcomeService {
     payment(data:any) {
         return this.httpClient.post(environment.apiUrl + '/financials/agent/payment',data)
     }
+    delete(id:any) {
+        return this.httpClient.delete(environment.apiUrl + `/financials/agent/DeletePayment?transactionId=${id}`)
+    }
 }
