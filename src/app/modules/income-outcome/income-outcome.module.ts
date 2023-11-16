@@ -5,7 +5,8 @@ import { IncomeOutcomeRoutingModule } from './income-outcome-routing.module';
 
 
 @NgModule({
-  declarations: [],
+  declarations: [
+  ],
   imports: [
     CommonModule,
     IncomeOutcomeRoutingModule

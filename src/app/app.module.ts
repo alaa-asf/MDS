@@ -11,6 +11,7 @@ import {MessageService} from "primeng/api";
 import { AgentAccountComponent } from './modules/income-outcome/agent-account/agent-account.component';
 import {PrimeNgModule} from "./shared/primeng.module";
 import {CurrencyPipe, DatePipe, NgIf} from "@angular/common";
+import {ConfirmPopupModule} from "primeng/confirmpopup";
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import {CurrencyPipe, DatePipe, NgIf} from "@angular/common";
         PrimeNgModule,
         DatePipe,
         CurrencyPipe,
-        NgIf
+        NgIf,
+        ConfirmPopupModule
     ],
     providers: [
         JwtHelperService,
