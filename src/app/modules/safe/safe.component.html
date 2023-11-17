@@ -23,15 +23,15 @@
                 <div class="pt-2">
 
                     <p-dropdown [options]="transactionNames" (onChange)='getName(transactionName)'
-                        [(ngModel)]="transactionName" optionLabel="name"></p-dropdown>
+                        [(ngModel)]="transactionName" optionLabel="accountant"></p-dropdown>
 
                 </div>
             </div>
             <div>
                 <span>طرف المعاملة</span>
                 <div class="pt-2">
-                    <p-dropdown [options]="transactionSides" [(ngModel)]="transactionSide"
-                        optionLabel="transactionEntityName"></p-dropdown>
+                    <p-dropdown [appendTo]="'body'" [options]="transactionSides" [(ngModel)]="transactionSide"
+                        optionLabel="accountant"></p-dropdown>
                 </div>
             </div>
             <div>

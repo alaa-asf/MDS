@@ -163,12 +163,23 @@ export class MenuService {
                     routerLink: ['/income-outcome/agent-account'],
                 },
                 {
+                    label: 'حسابات مندوب الإستلام',
+                    roles: ['ITBOSS'],
+                    visible: false,
+                    routerLink: ['/income-outcome/pick-up-agent'],
+                },
+                {
                     label: 'حسابات العميل',
                     roles: ['ITBOSS'],
                     visible: false,
                     routerLink: ['/income-outcome/customer-account'],
                 },
-
+                {
+                    label: 'محاسبة الفروع',
+                    roles: ['ITBOSS'],
+                    visible: false,
+                    routerLink: ['/income-outcome/branches'],
+                }
             ]
         },
       {
