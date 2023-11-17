@@ -22,6 +22,9 @@ export class IncomeOutcomeService {
     payment(data:any) {
         return this.httpClient.post(environment.apiUrl + '/financials/agent/payment',data)
     }
+    changePrice(body:any){
+        return this.httpClient.post(environment.apiUrl + '/financials/agent/modifyReceiptAmount',body)
+    }
     delete(id:any) {
         return this.httpClient.delete(environment.apiUrl + `/financials/agent/DeletePayment?transactionId=${id}`)
     }

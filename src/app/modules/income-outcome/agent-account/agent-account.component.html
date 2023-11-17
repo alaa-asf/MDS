@@ -15,10 +15,10 @@
 <p-tabView (onChange)="changeTab($event)">
     <p-tabPanel header="محاسبة المندوب">
         <div class="card">
-            <p-table  #table [loading]="loading" [value]="agentOrders"
-                      styleClass="p-datatable-gridlines"
-                      rowGroupMode="subheader" groupRowsBy="manifestId" [dataKey]="'manifestId'"
-                      [tableStyle]="{ 'min-width': '50rem' }">
+            <p-table #table [loading]="loading" [value]="agentOrders"
+                     styleClass="p-datatable-gridlines"
+                     rowGroupMode="subheader" groupRowsBy="manifestId" [dataKey]="'manifestId'"
+                     [tableStyle]="{ 'min-width': '50rem' }">
                 <ng-template pTemplate="caption">
                     <div class="flex justify-between">
 
@@ -28,7 +28,8 @@
                                    placeholder="بحث عن وصل"/>
                         </div>
                         <div>
-                            <p-button [loading]="loading" [disabled]="selectedItems.length<1" (onClick)="showAgentDialog = true"
+                            <p-button [loading]="loading" [disabled]="selectedItems.length<1"
+                                      (onClick)="showAgentDialog = true"
                                       label="محاسبة المندوب" class="p-button-success px-5 ms-5"></p-button>
                         </div>
                     </div>
@@ -47,7 +48,8 @@
                         <th class="tab-header">الحاله</th>
                         <th class="tab-header">أخر من حدث الحالة</th>
                         <th style="width: 4rem">
-                            <p-checkbox [(ngModel)]="checkedAll" (onChange)="checkRow($event,{},true)" [binary]="true" ></p-checkbox>
+                            <p-checkbox [(ngModel)]="checkedAll" (onChange)="checkRow($event,{},true)"
+                                        [binary]="true"></p-checkbox>
                         </th>
 
                     </tr>
@@ -90,13 +92,24 @@
                         <td>{{ item.phone}}</td>
                         <td>{{ item.addr}}</td>
                         <td>{{ item.deliverReceiptNumber}}</td>
-                        <td>{{ item.receiptUSD.toLocaleString()}}</td>
-                        <td>{{ item.receiptIqd.toLocaleString()}}</td>
+                        <td>
+                            <div class="flex gap-2">
+                                {{ item.receiptUSD.toLocaleString()}}
+                                <i class="pi pi-pencil text-primary cursor-pointer" (click)="changePriceDialog(item,'USD')"></i>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="flex gap-2">
+                                {{ item.receiptIqd.toLocaleString()}}
+                                <i class="pi pi-pencil text-primary cursor-pointer" (click)="changePriceDialog(item,'IQD')"></i>
+                            </div>
+                        </td>
                         <td>{{ item.totalAgentShare.toLocaleString()}}</td>
                         <td>{{ item.stat}}</td>
                         <td>{{ item.lastAction}}</td>
                         <td>
-                            <p-checkbox [(ngModel)]="item.check" (onChange)="checkRow($event,item)" [binary]="true" ></p-checkbox>
+                            <p-checkbox [(ngModel)]="item.check" (onChange)="checkRow($event,item)"
+                                        [binary]="true"></p-checkbox>
                         </td>
                     </tr>
                 </ng-template>
@@ -109,7 +122,9 @@
                     <div class="flex justify-content-between mb-3">
                         <div>
                             <span class="block text-lg font-semibold mb-3">المبلغ الكلي للشحنات	</span>
-                            <div class="text-900 font-medium text-xl mb-2">{{totalAmountOfShipmentsIRQ.toLocaleString()}} <span> د.ع</span>
+                            <div
+                                class="text-900 font-medium text-xl mb-2">{{totalAmountOfShipmentsIRQ.toLocaleString()}}
+                                <span> د.ع</span>
                             </div>
                             <div class="text-900 font-medium text-xl">{{totalAmountOfShipmentsUSD.toLocaleString()}}
                                 <span>$</span></div>
@@ -167,28 +182,29 @@
     </p-tabPanel>
     <p-tabPanel header="تسديدات المندوبين">
         <div class="card">
-            <p-table  [loading]="loading" [value]="agentTransactions"
-                      [paginator]="true" [rows]="10"
-                      [showCurrentPageReport]="true"
-                      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10, 25, 50]"
-                      styleClass="p-datatable-gridlines"
-                      [tableStyle]="{ 'min-width': '50rem' }">
+            <p-table [loading]="loading" [value]="agentTransactions"
+                     [paginator]="true" [rows]="10"
+                     [showCurrentPageReport]="true"
+                     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                     [rowsPerPageOptions]="[10, 25, 50]"
+                     styleClass="p-datatable-gridlines"
+                     [tableStyle]="{ 'min-width': '50rem' }">
                 <ng-template pTemplate="header">
                     <tr>
                         <th>#</th>
-                        <th class="tab-header">رقم العملية	</th>
-                        <th class="tab-header">مبلغ العملية د.ع	</th>
-                        <th class="tab-header">مبلغ العملية $	</th>
-                        <th class="tab-header">مستلم/مدفوع د.ع	</th>
-                        <th class="tab-header">مستلم/مدفوع $	</th>
-                        <th class="tab-header">مدين د.ع	</th>
-                        <th class="tab-header">دائن د.ع	</th>
-                        <th class="tab-header">مدين $	</th>
-                        <th class="tab-header">دائن $	</th>
-                        <th class="tab-header">نوع العملية	</th>
+                        <th class="tab-header">رقم العملية</th>
+                        <th class="tab-header">مبلغ العملية د.ع</th>
+                        <th class="tab-header">مبلغ العملية $</th>
+                        <th class="tab-header">مستلم/مدفوع د.ع</th>
+                        <th class="tab-header">مستلم/مدفوع $</th>
+                        <th class="tab-header">مدين د.ع</th>
+                        <th class="tab-header">دائن د.ع</th>
+                        <th class="tab-header">مدين $</th>
+                        <th class="tab-header">دائن $</th>
+                        <th class="tab-header">نوع العملية</th>
                         <th class="tab-header">ملاحظات</th>
-                        <th class="tab-header">تمت من خلال	</th>
-                        <th class="tab-header">تاريخ التسديد	</th>
+                        <th class="tab-header">تمت من خلال</th>
+                        <th class="tab-header">تاريخ التسديد</th>
                         <th></th>
                     </tr>
                 </ng-template>
@@ -210,7 +226,8 @@
                         <td>{{item.transOperationEntity}}</td>
                         <td>{{item.transCreatedDt | date:'short'}}</td>
                         <td>
-                            <p-button icon="pi pi-trash" styleClass="p-button-danger" (onClick)="delete(item)"></p-button>
+                            <p-button icon="pi pi-trash" styleClass="p-button-danger"
+                                      (onClick)="delete(item)"></p-button>
                         </td>
                     </tr>
                 </ng-template>
@@ -223,12 +240,17 @@
     <div class="surface-card shadow-2 p-3 mb-4 border-round h-full">
         <div class="flex justify-content-between mb-3">
             <div>
-                <div class="block text-xl font-semibold mb-3">مندوب التوصيل: 	<span class="font-bold">{{agent?.userName}}</span></div>
-                <div class="text-900 font-medium text-xl mb-2"> حصة المندوب: <span class="font-bold">{{selectedalltotalAgentShare.toLocaleString()}}</span> <span class="font-bold"> د.ع</span>
+                <div class="block text-xl font-semibold mb-3">مندوب التوصيل: <span
+                    class="font-bold">{{agent?.userName}}</span></div>
+                <div class="text-900 font-medium text-xl mb-2"> حصة المندوب: <span
+                    class="font-bold">{{selectedalltotalAgentShare.toLocaleString()}}</span> <span class="font-bold"> د.ع</span>
                 </div>
-                <div class="text-900 font-medium text-xl mb-2"> المبلغ المطلوب أستلامه من مندوب التوصيل:  <span class="font-bold">{{selectednetAmountOfReceipts.toLocaleString()}}</span><span class="font-bold"> د.ع</span>
+                <div class="text-900 font-medium text-xl mb-2"> المبلغ المطلوب أستلامه من مندوب التوصيل: <span
+                    class="font-bold">{{selectednetAmountOfReceipts.toLocaleString()}}</span><span class="font-bold"> د.ع</span>
                 </div>
-                <div class="text-900 font-medium text-xl"> المبلغ المطلوب أستلامه من مندوب التوصيل : <span class="font-bold">{{selectedtotalAmountOfShipmentsUSD.toLocaleString()}}</span><span class="font-bold">$</span></div>
+                <div class="text-900 font-medium text-xl"> المبلغ المطلوب أستلامه من مندوب التوصيل : <span
+                    class="font-bold">{{selectedtotalAmountOfShipmentsUSD.toLocaleString()}}</span><span
+                    class="font-bold">$</span></div>
 
             </div>
 
@@ -238,25 +260,39 @@
 
     <div class="flex flex-column gap-2 mb-2">
         <label>المبلغ المستلم الفعلي د.ع</label>
-        <p-inputNumber class="w-full" styleClass="w-full" [(ngModel)]="actualReceivedAmtIqd"> </p-inputNumber>
+        <p-inputNumber class="w-full" styleClass="w-full" [(ngModel)]="actualReceivedAmtIqd"></p-inputNumber>
 
     </div>
 
     <div class="flex flex-column gap-2 mb-2">
         <label>المبلغ المستلم الفعلي $</label>
-        <p-inputNumber class="w-full" styleClass="w-full"  [(ngModel)]="actualReceivedAmtUsd"> </p-inputNumber>
+        <p-inputNumber class="w-full" styleClass="w-full" [(ngModel)]="actualReceivedAmtUsd"></p-inputNumber>
     </div>
 
     <div class="flex flex-column gap-2">
-        <label >ملاحظات</label>
+        <label>ملاحظات</label>
         <textarea rows="5" cols="30" pInputTextarea [(ngModel)]="note"></textarea>
     </div>
 
     <ng-template pTemplate="footer">
         <button pButton pRipple icon="pi pi-check" [loading]="loading" class="p-button-outlined" label="حفظ"
                 (click)="payAgent()"></button>
-        <button pButton pRipple icon="pi pi-times" [loading]="loading" class="p-button-outlined p-button-danger" label="الغاء"
+        <button pButton pRipple icon="pi pi-times" [loading]="loading" class="p-button-outlined p-button-danger"
+                label="الغاء"
                 (click)="close()"></button>
 
     </ng-template>
 </p-dialog>
+<p-dialog [(visible)]="showChangePrice" [header]="'مبلغ الوصل (يرجى ادخال الاصفار) '+selectedCurrency" [modal]="true" [style]="{width:'600px'}">
+    <p-inputNumber class="w-full" styleClass="w-full" [(ngModel)]="newPrice"></p-inputNumber>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-check" [loading]="changePriceLoading"  label="تعديل السعر"
+                (click)="changePrice($event)"></button>
+        <button pButton pRipple icon="pi pi-times" [loading]="changePriceLoading" class="p-button-danger"
+                label="الغاء"
+                (click)="closeChangePrice()"></button>
+
+    </ng-template>
+</p-dialog>
+<p-confirmPopup></p-confirmPopup>

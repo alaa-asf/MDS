@@ -3,17 +3,20 @@ import {ReturnablesService} from "../../../shared/Apis/returnables.service";
 import {IncomeOutcomeService} from "../../../shared/Apis/income-outcome.service";
 import {BaseComponent} from "../../../shared/base.component";
 import {Table} from "primeng/table";
-import {MessageService} from "primeng/api";
+import {ConfirmationService, MessageService} from "primeng/api";
 
 @Component({
   selector: 'app-agent-account',
   templateUrl: './agent-account.component.html',
-  styleUrls: ['./agent-account.component.scss']
+  styleUrls: ['./agent-account.component.scss'],
+    providers: [ConfirmationService, MessageService],
+
 })
 export class AgentAccountComponent extends BaseComponent  implements OnInit{
     constructor(injector: Injector,
                 private _returnablesService:ReturnablesService,
                 private messageService: MessageService,
+                private confirmationService: ConfirmationService,
                 private _IncomeOutcomeService:IncomeOutcomeService) {
         super(injector)
     }
@@ -21,8 +24,13 @@ export class AgentAccountComponent extends BaseComponent  implements OnInit{
 
     agents: any;
     agentOrders: any = [];
+    newPrice = 0
     agentTransactions:any = []
+    changePriceLoading = false
     note = ''
+    showChangePrice = false
+    selectedCurrency = ''
+    selectedItemToChangePrice:any = null
     checkedAll = false
     showAgentDialog = false
     selectedTab = 0
@@ -125,6 +133,39 @@ export class AgentAccountComponent extends BaseComponent  implements OnInit{
                 this.getTransactions()
             }
      }
+    changePriceDialog(item:any,Currency:any){
+        this.showChangePrice = true
+        this.selectedCurrency = Currency
+        this.selectedItemToChangePrice = item
+    }
+
+    changePrice(event: Event) {
+        this.confirmationService.confirm({
+            target: event.target as EventTarget,
+            message: 'هل أنت متأكد إنك تريد تغيير السعر',
+            icon: 'pi pi-exclamation-triangle',
+            acceptLabel:'نعم',
+            rejectLabel:'لا',
+            accept: () => {
+                let body ={
+                    "caseId": this.selectedItemToChangePrice?.caseId,
+                    "newReceipt": this.newPrice,
+                    "a_currency": this.selectedCurrency
+                }
+                this.changePriceLoading = true
+                this._IncomeOutcomeService.changePrice(body).subscribe(el=>{
+                    this.changePriceLoading = false
+                    this.showChangePrice = false
+                    this.getAgentData()
+                },()=>{
+                    this.changePriceLoading = false
+
+                })
+            },
+            reject: () => {
+            }
+        });
+    }
     getAgent() {
         this.loading = true
         this.haveOrder = true
@@ -216,6 +257,10 @@ export class AgentAccountComponent extends BaseComponent  implements OnInit{
         this.actualReceivedAmtUsd = 0
         this.note = ''
 
+    }
+    closeChangePrice(){
+        this.showChangePrice = false
+        this.newPrice = 0
     }
     totalReceiptIqd(manifestId:any){
         return this.agentOrders.filter((el:any)=>el.manifestId == manifestId).reduce((total:any, item:any) => item.receiptIqd + total, 0)

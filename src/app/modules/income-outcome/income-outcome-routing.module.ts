@@ -22,8 +22,28 @@ const routes: Routes = [
         data: {
             roles: ['ITBOSS'],
         }
-    }
+    },
+    {
+        path: 'pick-up-agent',
+        loadChildren:()=>import(
+            './pick-up-agent/pick-up-agent.module'
+            ).then((m) => m.PickUpAgentModule),
+        canActivate: [RoleGuard],
+        data: {
+            roles: ['ITBOSS'],
+        }
+    },
 
+    {
+        path: 'branches',
+        loadChildren:()=>import(
+            './branches/branches.module'
+            ).then((m) => m.BranchesModule),
+        canActivate: [RoleGuard],
+        data: {
+            roles: ['ITBOSS'],
+        }
+    }
 ];
 
 @NgModule({
